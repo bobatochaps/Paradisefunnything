@@ -24,7 +24,8 @@ jobs:
         run: |
           set -euo pipefail
           bash tools/ci/install_byond.sh STABLE
-          source "$HOME/BYOND/byond/bin/byondsetup"
+          export PATH="$HOME/BYOND/byond/bin:$PATH"
+          export LD_LIBRARY_PATH="$HOME/BYOND/byond/bin:${LD_LIBRARY_PATH:-}"
           DreamMaker -DGAME_TESTS -DGS13_TESTS -DTEST_CONFIG_OVERRIDE=\"gs13_tests\" -DCIBUILDING paradise.dme
           mkdir -p data tmp
           echo '/datum/map/test_tiny' > data/next_map.txt
