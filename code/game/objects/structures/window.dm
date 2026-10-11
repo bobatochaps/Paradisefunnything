@@ -30,7 +30,7 @@
 	var/mutable_appearance/crack_overlay
 	var/real_explosion_block	//ignore this, just use explosion_block
 	var/breaksound = "shatter"
-	var/hitsound = 'sound/effects/Glasshit.ogg'
+	var/hitsound = 'sound/effects/glasshit.ogg'
 	/// Used to restore colours from polarised glass
 	var/old_color
 	/// Used to define what file the edging sprite is contained within
@@ -397,7 +397,7 @@
 			else
 				playsound(src, 'sound/weapons/tap.ogg', 50, TRUE)
 		if(BURN)
-			playsound(src, 'sound/items/Welder.ogg', 100, TRUE)
+			playsound(src, 'sound/items/welder.ogg', 100, TRUE)
 
 /obj/structure/window/deconstruct(disassembled = TRUE)
 	if(QDELETED(src))

@@ -46,7 +46,7 @@
 	critdestrsound = 'sound/mecha/critdestrnano.ogg'
 	weapdestrsound = 'sound/mecha/weapdestrnano.ogg'
 	lowpowersound = 'sound/mecha/lowpowernano.ogg'
-	longactivationsound = 'sound/mecha/LongNanoActivation.ogg'
+	longactivationsound = 'sound/mecha/longnanoactivation.ogg'
 
 /obj/item/mecha_modkit/voice/syndicate
 	name = "mecha voice modification kit : Syndicate"
@@ -58,7 +58,7 @@
 	critdestrsound = 'sound/mecha/critdestrsyndi.ogg'
 	weapdestrsound = 'sound/mecha/weapdestrsyndi.ogg'
 	lowpowersound = 'sound/mecha/lowpowersyndi.ogg'
-	longactivationsound = 'sound/mecha/LongSyndiActivation.ogg'
+	longactivationsound = 'sound/mecha/longsyndiactivation.ogg'
 	materials = list(MAT_METAL = 400, MAT_TITANIUM = 100)
 
 /obj/item/mecha_modkit/voice/honk
@@ -67,9 +67,9 @@
 	icon_state = "harddisk_mini_clown"
 	nominalsound = 'sound/items/bikehorn.ogg'
 	zoomsound = 'sound/items/bikehorn.ogg'
-	critdestrsound = 'sound/items/Airhorn2.ogg'
-	weapdestrsound = 'sound/items/Airhorn2.ogg'
-	lowpowersound = 'sound/items/Airhorn2.ogg'
+	critdestrsound = 'sound/items/airhorn2.ogg'
+	weapdestrsound = 'sound/items/airhorn2.ogg'
+	lowpowersound = 'sound/items/airhorn2.ogg'
 	longactivationsound = 'sound/items/bikehorn.ogg'
 	materials = list(MAT_METAL = 400, MAT_BANANIUM = 100)
 

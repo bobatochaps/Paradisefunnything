@@ -20,6 +20,9 @@
 	flick("[icon_state]2", src)
 	playsound(loc, pick(hit_sounds), 25, TRUE, -1)
 	user.overeatduration = max(0, user.overeatduration - 1)
+	if(iscarbon(user))
+		var/mob/living/carbon/athlete = user
+		athlete.work_out(0.25)
 
 /obj/structure/punching_bag/wirecutter_act(mob/user, obj/item/I)
 	. = TRUE
@@ -74,6 +77,9 @@
 		icon_state = initial(icon_state)
 		to_chat(user, finishmessage)
 		user.overeatduration = max(0, user.overeatduration - 6)
+		if(iscarbon(user))
+			var/mob/living/carbon/athlete = user
+			athlete.work_out(2)
 
 /obj/structure/weightmachine/welder_act(mob/user, obj/item/I)
 	. = TRUE

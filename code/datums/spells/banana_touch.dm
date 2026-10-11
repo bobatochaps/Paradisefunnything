@@ -13,7 +13,7 @@
 	name = "banana touch"
 	desc = "It's time to start clowning around."
 	catchphrase = "NWOLC YRGNA"
-	on_use_sound = 'sound/items/AirHorn.ogg'
+	on_use_sound = 'sound/items/airhorn.ogg'
 	icon_state = "banana_touch"
 	var/is_apprentice_spell = FALSE
 

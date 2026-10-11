@@ -142,7 +142,7 @@ GLOBAL_LIST_INIT(migo_sounds, list(
 	'sound/machines/disposalflush.ogg', 'sound/machines/door_close.ogg', 'sound/machines/door_open.ogg', 'sound/machines/engine_alert1.ogg', 'sound/machines/engine_alert2.ogg',
 	'sound/machines/hiss.ogg', 'sound/machines/honkbot_evil_laugh.ogg', 'sound/machines/juicer.ogg', 'sound/machines/ping.ogg', 'sound/ambience/signal.ogg', 'sound/machines/synth_no.ogg',
 	'sound/machines/synth_yes.ogg', 'sound/machines/terminal_alert.ogg', 'sound/machines/twobeep.ogg', 'sound/machines/ventcrawl.ogg', 'sound/machines/warning-buzzer.ogg',
-	'sound/ai/outbreak5.ogg', 'sound/ai/outbreak7.ogg', 'sound/ai/alert.ogg', 'sound/ai/radiation.ogg', 'sound/ai/eshuttle_call.ogg', 'sound/ai/eshuttle_dock.ogg',
-	'sound/ai/eshuttle_recall.ogg', 'sound/ai/aimalf.ogg', 'sound/ambience/ambigen1.ogg', 'sound/ambience/ambigen3.ogg', 'sound/ambience/ambigen4.ogg', 'sound/ambience/ambigen5.ogg',
+	'sound/AI/outbreak5.ogg', 'sound/AI/outbreak7.ogg', 'sound/AI/alert.ogg', 'sound/AI/radiation.ogg', 'sound/AI/eshuttle_call.ogg', 'sound/AI/eshuttle_dock.ogg',
+	'sound/AI/eshuttle_recall.ogg', 'sound/AI/aimalf.ogg', 'sound/ambience/ambigen1.ogg', 'sound/ambience/ambigen3.ogg', 'sound/ambience/ambigen4.ogg', 'sound/ambience/ambigen5.ogg',
 	'sound/ambience/ambigen6.ogg', 'sound/ambience/ambigen10.ogg', 'sound/hallucinations/over_here1.ogg', 'sound/hallucinations/over_here2.ogg', 'sound/hallucinations/over_here3.ogg',
 	))

@@ -147,7 +147,7 @@
 
 /datum/ai_planning_subtree/random_speech/isopod
 	speech_chance = 2
-	sound = list('sound/creatures/chitter.ogg', 'sound/effects/kidanclack.ogg', 'sound/effects/kidanclack2.ogg')
+	sound = list('sound/creatures/chitter.ogg', 'sound/effects/Kidanclack.ogg', 'sound/effects/kidanclack2.ogg')
 	emote_hear = list("clicks.", "chitters.", "chatters.", "clacks.")
 	emote_see = list("clicks.", "chitters.", "chatters.", "clacks.")
 

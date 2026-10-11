@@ -36,7 +36,7 @@
 	icon_state = "match_unathi"
 	color = "#e1ff00" // red + yellow = orange
 	guns_left = 20
-	fire_sound = 'sound/magic/Fireball.ogg'
+	fire_sound = 'sound/magic/fireball.ogg'
 	mag_type = /obj/item/ammo_box/magazine/internal/boltaction/enchanted/arcane_barrage/fireball
 	flags = NOBLUDGEON | DROPDEL
 

@@ -127,8 +127,8 @@
 	icon_state = "santahat"
 	dog_fashion = /datum/dog_fashion/head/santa
 	sprite_sheets = list(
-		"Grey" = 'icons/mob/clothing/species/Grey/head.dmi',
-		"Drask" = 'icons/mob/clothing/species/Drask/helmet.dmi'
+		"Grey" = 'icons/mob/clothing/species/grey/head.dmi',
+		"Drask" = 'icons/mob/clothing/species/drask/helmet.dmi'
 		)
 
 /obj/item/clothing/head/greenbandana

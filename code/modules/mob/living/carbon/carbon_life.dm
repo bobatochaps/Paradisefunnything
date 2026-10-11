@@ -35,6 +35,7 @@
 
 	// Increase germ_level regularly
 	handle_germs()
+	handle_weight_gain(seconds)
 
 	if(stat != DEAD)
 		return TRUE

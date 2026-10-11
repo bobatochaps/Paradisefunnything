@@ -11,7 +11,7 @@
 	icon_state = "staffofchange"
 	worn_icon_state = "staffofchange"
 	ammo_type = /obj/item/ammo_casing/magic/change
-	fire_sound = 'sound/magic/Staff_Change.ogg'
+	fire_sound = 'sound/magic/staff_change.ogg'
 
 /obj/item/gun/magic/staff/animate
 	name = "staff of animation"

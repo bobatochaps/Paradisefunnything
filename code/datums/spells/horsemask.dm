@@ -11,7 +11,7 @@
 	selection_deactivated_message = SPAN_NOTICE("You stop neighing to yourself.")
 
 	action_icon_state = "barn"
-	sound = 'sound/magic/HorseHead_curse.ogg'
+	sound = 'sound/magic/horsehead_curse.ogg'
 
 /datum/spell/horsemask/create_new_targeting()
 	var/datum/spell_targeting/click/T = new()

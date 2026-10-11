@@ -101,7 +101,7 @@
 			ChangeTurf(/turf/simulated/floor/plating, keep_icon = FALSE)
 		else
 			ChangeTurf(Z.turf_type, keep_icon = FALSE)
-		playsound(src, 'sound/weapons/Genhit.ogg', 50, 1)
+		playsound(src, 'sound/weapons/genhit.ogg', 50, 1)
 
 /turf/simulated/floor/plating/asteroid/screwdriver_act(mob/user, obj/item/I)
 	return

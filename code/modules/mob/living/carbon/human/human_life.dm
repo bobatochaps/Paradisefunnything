@@ -552,11 +552,11 @@
 		return 0	//godmode
 
 	if(!HAS_TRAIT(src, TRAIT_NOHUNGER))
-		if(HAS_TRAIT(src, TRAIT_FAT))
-			if(overeatduration < 100)
-				becomeSlim()
-		else
-			if(overeatduration > 500 && !HAS_TRAIT(src, TRAIT_NOFAT))
+		if(!gs13_preferences["master_wg_pref"] && !HAS_TRAIT(src, TRAIT_UNIVERSAL_GAINER))
+			if(HAS_TRAIT(src, TRAIT_FAT))
+				if(overeatduration < 100)
+					becomeSlim()
+			else if(overeatduration > 500 && !HAS_TRAIT(src, TRAIT_NOFAT))
 				becomeFat()
 
 		// nutrition decrease

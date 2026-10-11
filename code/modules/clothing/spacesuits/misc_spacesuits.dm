@@ -111,8 +111,8 @@
 	icon_state = "santahat"
 	inhand_icon_state = null
 	sprite_sheets = list(
-		"Grey" = 'icons/mob/clothing/species/Grey/head.dmi',
-		"Drask" = 'icons/mob/clothing/species/Drask/helmet.dmi'
+		"Grey" = 'icons/mob/clothing/species/grey/head.dmi',
+		"Drask" = 'icons/mob/clothing/species/drask/helmet.dmi'
 		)
 	flags = BLOCKHAIR | STOPSPRESSUREDMAGE
 	flags_cover = HEADCOVERSEYES

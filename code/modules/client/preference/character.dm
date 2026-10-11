@@ -225,7 +225,8 @@
 					cyborg_brain_type=:cyborg_brain_type,
 					body_type=:body_type,
 					pda_ringtone=:pda_ringtone,
-					quirks=:quirks
+					quirks=:quirks,
+					gs13_preferences=:gs13_preferences
 					WHERE ckey=:ckey
 					AND slot=:slot"}, list(
 						// OH GOD SO MANY PARAMETERS
@@ -291,7 +292,8 @@
 						"pda_ringtone" = pda_ringtone,
 						"ckey" = C.ckey,
 						"slot" = slot_number,
-						"quirks" = quirks
+						"quirks" = quirks,
+						"gs13_preferences" = json_encode(gs13_sanitize_preferences(gs13_preferences))
 					))
 
 			if(!query.warn_execute())
@@ -330,7 +332,7 @@
 			player_alt_titles,
 			disabilities, organ_data, rlimb_data, nanotrasen_relation, physique, height, speciesprefs,
 			socks, body_accessory, gear, autohiss,
-			hair_gradient, hair_gradient_offset, hair_gradient_colour, hair_gradient_alpha, custom_emotes, runechat_color, cyborg_brain_type, body_type, pda_ringtone, quirks)
+			hair_gradient, hair_gradient_offset, hair_gradient_colour, hair_gradient_alpha, custom_emotes, runechat_color, cyborg_brain_type, body_type, pda_ringtone, quirks, gs13_preferences)
 		VALUES
 			(:ckey, :slot, :metadata, :name, :be_random_name, :gender,
 			:age, :species, :language,
@@ -357,7 +359,7 @@
 			:playertitlelist,
 			:disabilities, :organ_list, :rlimb_list, :nanotrasen_relation, :physique, :height, :speciesprefs,
 			:socks, :body_accessory, :gearlist, :autohiss_mode,
-			:h_grad_style, :h_grad_offset, :h_grad_colour, :h_grad_alpha, :custom_emotes, :runechat_color, :cyborg_brain_type, :body_type, :pda_ringtone, :quirks)
+			:h_grad_style, :h_grad_offset, :h_grad_colour, :h_grad_alpha, :custom_emotes, :runechat_color, :cyborg_brain_type, :body_type, :pda_ringtone, :quirks, :gs13_preferences)
 	"}, list(
 		// This has too many params for anyone to look at this without going insae
 		"ckey" = C.ckey,
@@ -422,7 +424,8 @@
 		"runechat_color" = runechat_color,
 		"cyborg_brain_type" = cyborg_brain_type,
 		"pda_ringtone" = pda_ringtone,
-		"quirks" = quirks
+		"quirks" = quirks,
+		"gs13_preferences" = json_encode(gs13_sanitize_preferences(gs13_preferences))
 	))
 
 	if(!query.warn_execute())
@@ -519,6 +522,7 @@
 	pda_ringtone = query.item[61]
 
 	quirks = query.item[62]
+	gs13_preferences = gs13_sanitize_preferences(query.item[63])
 
 	//Sanitize
 	var/datum/species/SP = GLOB.all_species[species]
@@ -1827,6 +1831,7 @@
 	for(var/datum/quirk/to_add in quirks)
 		to_add.apply_quirk_effects(character)
 	apply_appearance(character)
+	apply_gs13_preferences(character)
 	if(balance_check > 0)
 		log_debug("[src] spawned in with more quirks than they should have been able to. Quirk balance of [balance_check].")
 	character.add_language(language)

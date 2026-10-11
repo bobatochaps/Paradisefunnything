@@ -3,6 +3,7 @@
 	. += ..()
 	. += GLOB.configuration.movement.human_delay
 	. += dna.species.movement_delay(src)
+	. += gs13_movement_delay
 
 /mob/living/carbon/human/mob_has_gravity()
 	. = ..()

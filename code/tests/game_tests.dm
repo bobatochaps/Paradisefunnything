@@ -9,6 +9,10 @@
 #endif
 
 #ifdef GAME_TESTS
+#include "test_gs13_weight.dm"
+#endif
+
+#if defined(GAME_TESTS) && !defined(GS13_TESTS)
 #include "atmos\test_ventcrawl.dm"
 #include "attack_chain\test_attack_chain_borgs.dm"
 #include "attack_chain\test_attack_chain_cult_dagger.dm"

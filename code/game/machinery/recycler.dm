@@ -197,7 +197,7 @@
 		playsound(loc, 'sound/machines/buzz-sigh.ogg', 50, 0)
 		return
 	var/mob/living/carbon/human/victim = L
-	playsound(src, 'sound/items/AirHorn.ogg', 100, TRUE, -1)
+	playsound(src, 'sound/items/airhorn.ogg', 100, TRUE, -1)
 	victim.bananatouched_harmless()
 
 /obj/machinery/recycler/proc/crush_living(mob/living/L)

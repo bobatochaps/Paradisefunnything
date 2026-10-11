@@ -22,26 +22,26 @@
 /datum/instrument/guitar/clean_crisis
 	name = "Crisis Clean Guitar"
 	id = "ccleangt"
-	real_samples = list("36"='sound/instruments/synthesis_samples/guitar/crisis_clean/c2.ogg',
-				"48"='sound/instruments/synthesis_samples/guitar/crisis_clean/c3.ogg',
-				"60"='sound/instruments/synthesis_samples/guitar/crisis_clean/c4.ogg',
-				"72"='sound/instruments/synthesis_samples/guitar/crisis_clean/c5.ogg')
+	real_samples = list("36"='sound/instruments/synthesis_samples/guitar/crisis_clean/C2.ogg',
+				"48"='sound/instruments/synthesis_samples/guitar/crisis_clean/C3.ogg',
+				"60"='sound/instruments/synthesis_samples/guitar/crisis_clean/C4.ogg',
+				"72"='sound/instruments/synthesis_samples/guitar/crisis_clean/C5.ogg')
 
 /datum/instrument/guitar/muted_crisis
 	name = "Crisis Muted Guitar"
 	id = "cmutedgt"
-	real_samples = list("36"='sound/instruments/synthesis_samples/guitar/crisis_muted/c2.ogg',
-				"48"='sound/instruments/synthesis_samples/guitar/crisis_muted/c3.ogg',
-				"60"='sound/instruments/synthesis_samples/guitar/crisis_muted/c4.ogg',
-				"72"='sound/instruments/synthesis_samples/guitar/crisis_muted/c5.ogg')
+	real_samples = list("36"='sound/instruments/synthesis_samples/guitar/crisis_muted/C2.ogg',
+				"48"='sound/instruments/synthesis_samples/guitar/crisis_muted/C3.ogg',
+				"60"='sound/instruments/synthesis_samples/guitar/crisis_muted/C4.ogg',
+				"72"='sound/instruments/synthesis_samples/guitar/crisis_muted/C5.ogg')
 
 /datum/instrument/guitar/synth_legacy  // A synth version of legacy for efficiency.  Better for crowded scores.
 	name = "Synth Legacy Guitar"
 	id = "sleggt"
-	real_samples = list("36"='sound/instruments/synthesis_samples/guitar/synth_legacy/cn3.ogg',
-				"48"='sound/instruments/synthesis_samples/guitar/synth_legacy/cn4.ogg',
-				"60"='sound/instruments/synthesis_samples/guitar/synth_legacy/cn5.ogg',
-				"72"='sound/instruments/synthesis_samples/guitar/synth_legacy/cn6.ogg')
+	real_samples = list("36"='sound/instruments/synthesis_samples/guitar/synth_legacy/Cn3.ogg',
+				"48"='sound/instruments/synthesis_samples/guitar/synth_legacy/Cn4.ogg',
+				"60"='sound/instruments/synthesis_samples/guitar/synth_legacy/Cn5.ogg',
+				"72"='sound/instruments/synthesis_samples/guitar/synth_legacy/Cn6.ogg')
 
 /datum/instrument/guitar/pgm_clean
 	name = "Pigments Clean Guitar"

@@ -81,8 +81,8 @@
 	materials = list(MAT_METAL = 75000, MAT_GLASS = 37500, MAT_SILVER = 3000)
 	origin_tech = "engineering=4;materials=2;bluespace=3"
 	ranged = TRUE
-	primary_sound = 'sound/items/PSHOOM.ogg'
-	alt_sound = 'sound/items/PSHOOM_2.ogg'
+	primary_sound = 'sound/items/pshoom.ogg'
+	alt_sound = 'sound/items/pshoom_2.ogg'
 
 //Procs
 

@@ -2,6 +2,10 @@
 	if(!user)
 		return
 
+	if(href_list["preference"] == "gs13")
+		process_gs13_preferences(user, href_list["setting"])
+		return TRUE
+
 	var/datum/species/S = GLOB.all_species[active_character.species]
 	if(href_list["preference"] == "job")
 		switch(href_list["task"])
