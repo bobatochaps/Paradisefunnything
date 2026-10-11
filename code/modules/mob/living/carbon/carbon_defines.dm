@@ -1,4 +1,25 @@
 /mob/living/carbon
+	// GS13 body composition and per-body preference snapshot.
+	var/fatness = 0
+	var/fatness_real = 0
+	var/fatness_perma = 0
+	var/max_weight = 0
+	var/muscle = 0
+	var/muscle_real = 0
+	var/muscle_gain_rate = 0.5
+	var/muscle_loss_rate = 1
+	var/weight_gain_rate = 0.5
+	var/weight_loss_rate = 0.5
+	var/list/weight_gain_modifiers = list()
+	var/list/weight_loss_modifiers = list()
+	var/flip_gain_rate = FALSE
+	var/flip_loss_rate = FALSE
+	var/list/fat_hiders = list()
+	/// Preference snapshot belongs to this body, including while disconnected.
+	var/list/gs13_preferences = list()
+	var/gs13_character_slot = 0
+	var/gs13_movement_delay = 0
+
 	gender = MALE
 	pressure_resistance = 15
 	var/list/stomach_contents

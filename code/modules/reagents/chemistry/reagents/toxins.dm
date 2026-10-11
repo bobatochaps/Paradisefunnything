@@ -1049,8 +1049,18 @@
 	metabolization_rate = 0.2
 	taste_description = "battery acid"
 	taste_flag = ORGANIC | SYNTHETIC
+	process_flags = ORGANIC | SYNTHETIC
 
 /datum/reagent/lipolicide/on_mob_life(mob/living/M)
+	// GS13 lipolicide burns ordinary weight without poisoning an empty stomach.
+	// Characters using Paradise's original weight system retain its metabolism.
+	if(iscarbon(M))
+		var/mob/living/carbon/carbon = M
+		if(carbon.gs13_preferences["master_wg_pref"] || HAS_TRAIT(carbon, TRAIT_UNIVERSAL_GAINER))
+			carbon.adjust_nutrition(-6)
+			carbon.overeatduration = 0
+			carbon.adjust_fatness(HAS_TRAIT(carbon, TRAIT_LIPOLICIDE_TOLERANCE) ? -0.5 : -17.5, FATTENING_TYPE_WEIGHT_LOSS)
+			return ..()
 	var/update_flags = STATUS_UPDATE_NONE
 	if(!M.nutrition)
 		if(prob(66.66))

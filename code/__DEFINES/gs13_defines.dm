@@ -49,6 +49,8 @@
 #define TRAIT_NO_FAT_SLOWDOWN "no_fat_slowdown"
 #define TRAIT_WEAKLEGS "weak_legs"
 #define TRAIT_STRONGLEGS "strong_legs"
+#define TRAIT_LIPOLICIDE_TOLERANCE "lipolicide_tolerance"
+#define TRAIT_MACERINIC_TOLERANCE "macerinic_tolerance"
 #define COMSIG_FATNESS_REAL_CHANGED "fatness_real_changed"
 #define COMSIG_FATNESS_PERMA_CHANGED "fatness_perma_changed"
 #define COMSIG_FATNESS_CHANGED "fatness_changed"

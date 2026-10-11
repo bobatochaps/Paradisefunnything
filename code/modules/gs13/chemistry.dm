@@ -48,6 +48,7 @@
 	metabolization_rate = REAGENTS_METABOLISM / 2
 	process_flags = ORGANIC | SYNTHETIC
 	overdose_threshold = 50
+	allowed_overdose_process = TRUE
 
 /datum/reagent/fermi_fat/on_mob_life(mob/living/subject)
 	if(iscarbon(subject))
@@ -61,7 +62,7 @@
 		var/mob/living/carbon/carbon = subject
 		carbon.adjust_fatness(20, FATTENING_TYPE_CHEM)
 		carbon.adjust_perma(6, FATTENING_TYPE_CHEM)
-	return ..()
+	return list(0, STATUS_UPDATE_NONE)
 
 /datum/reagent/fermi_slim
 	name = "Macerinic Solution"
@@ -72,20 +73,22 @@
 	metabolization_rate = REAGENTS_METABOLISM / 2
 	process_flags = ORGANIC | SYNTHETIC
 	overdose_threshold = 50
+	allowed_overdose_process = TRUE
 
 /datum/reagent/fermi_slim/on_mob_life(mob/living/subject)
 	if(iscarbon(subject))
 		var/mob/living/carbon/carbon = subject
-		carbon.adjust_fatness(-50, FATTENING_TYPE_WEIGHT_LOSS)
-		carbon.adjust_perma(-5, FATTENING_TYPE_WEIGHT_LOSS)
+		var/weight_loss_modifier = HAS_TRAIT(carbon, TRAIT_MACERINIC_TOLERANCE) ? 1 : 5
+		carbon.adjust_fatness(-10 * weight_loss_modifier, FATTENING_TYPE_WEIGHT_LOSS)
+		carbon.adjust_perma(-weight_loss_modifier, FATTENING_TYPE_WEIGHT_LOSS)
 	return ..()
 
 /datum/reagent/fermi_slim/overdose_process(mob/living/subject, severity)
-	if(iscarbon(subject))
+	if(iscarbon(subject) && !HAS_TRAIT(subject, TRAIT_MACERINIC_TOLERANCE))
 		var/mob/living/carbon/carbon = subject
 		carbon.adjust_nutrition(-5)
 		carbon.weight_loss_rate = min(5, carbon.weight_loss_rate + 0.01)
-	return ..()
+	return list(0, STATUS_UPDATE_NONE)
 
 /datum/chemical_reaction/gs13_lipoifier
 	name = "Lipoifier"

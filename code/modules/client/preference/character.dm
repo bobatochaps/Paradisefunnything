@@ -2,6 +2,8 @@
 // Good fucking luck. You will need this: https://www.youtube.com/watch?v=QHRuTYtSbJQ
 
 /datum/character_save
+	/// Validated GS13 settings, serialized as JSON in the character row.
+	var/list/gs13_preferences
 	var/real_name							//our character's name
 	var/be_random_name = FALSE				//whether we are a random name every round
 	var/gender = MALE						//gender of character (well duh)

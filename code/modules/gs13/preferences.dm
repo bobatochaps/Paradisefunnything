@@ -65,9 +65,6 @@
 				result[pref] = (value == TRUE)
 	return result
 
-/datum/character_save
-	var/list/gs13_preferences
-
 /datum/character_save/proc/apply_gs13_preferences(mob/living/carbon/character, initialize_weight = TRUE)
 	gs13_preferences = gs13_sanitize_preferences(gs13_preferences)
 	character.gs13_preferences = gs13_preferences.Copy()

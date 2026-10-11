@@ -4,7 +4,7 @@ set -euo pipefail
 # This is needed now
 sudo dpkg --add-architecture i386
 sudo apt-get update
-sudo apt install libcurl4:i386
+sudo apt-get install -y libcurl4:i386
 
 if [ -z "${BYOND_MAJOR+x}" ]; then
   source _build_dependencies.sh
@@ -13,7 +13,7 @@ if [ -z "${BYOND_MAJOR+x}" ]; then
   BYOND_MAJOR=$STABLE_BYOND_MAJOR
   BYOND_MINOR=$STABLE_BYOND_MINOR
 
-  if [ -z "$1" ]; then
+  if [ -z "${1:-}" ]; then
     echo "No arg specified. Assuming STABLE."
   else
     if [ "$1" == "BETA" ]; then
@@ -31,7 +31,11 @@ else
   rm -rf "$HOME/BYOND"
   mkdir -p "$HOME/BYOND"
   cd "$HOME/BYOND"
-  curl -H "User-Agent: ParadiseSS13/1.0 CI Script" "https://www.byond.com/download/build/${BYOND_MAJOR}/${BYOND_MAJOR}.${BYOND_MINOR}_byond_linux.zip" -o byond.zip
+  if ! curl --fail --location --retry 3 -H "User-Agent: ParadiseSS13/1.0 CI Script" "https://www.byond.com/download/build/${BYOND_MAJOR}/${BYOND_MAJOR}.${BYOND_MINOR}_byond_linux.zip" -o byond.zip || ! unzip -qt byond.zip; then
+    # Community mirror also used by tgstation's CI when the official host is unavailable.
+    curl --fail --location --retry 3 -H "User-Agent: ParadiseSS13/1.0 CI Script" "https://byond-builds.dm-lang.org/${BYOND_MAJOR}/${BYOND_MAJOR}.${BYOND_MINOR}_byond_linux.zip" -o byond.zip
+    unzip -qt byond.zip
+  fi
   unzip byond.zip
   rm byond.zip
   cd byond

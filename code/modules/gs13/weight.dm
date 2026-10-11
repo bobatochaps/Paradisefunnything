@@ -1,25 +1,4 @@
 // Adapted from GS13 modular_gs/code/mechanics/fatness.dm and muscle.dm (AGPL-3.0).
-/mob/living/carbon
-	var/fatness = 0
-	var/fatness_real = 0
-	var/fatness_perma = 0
-	var/max_weight = 0
-	var/muscle = 0
-	var/muscle_real = 0
-	var/muscle_gain_rate = 0.5
-	var/muscle_loss_rate = 1
-	var/weight_gain_rate = 0.5
-	var/weight_loss_rate = 0.5
-	var/list/weight_gain_modifiers = list()
-	var/list/weight_loss_modifiers = list()
-	var/flip_gain_rate = FALSE
-	var/flip_loss_rate = FALSE
-	var/list/fat_hiders = list()
-	/// Preference snapshot belongs to this body, including while disconnected.
-	var/list/gs13_preferences = list()
-	var/gs13_character_slot = 0
-	var/gs13_movement_delay = 0
-
 /mob/living/carbon/proc/check_weight_prefs(type_of_fattening = FATTENING_TYPE_ITEM, perma = FALSE)
 	if(type_of_fattening == FATTENING_TYPE_ALMIGHTY || HAS_TRAIT(src, TRAIT_UNIVERSAL_GAINER))
 		return TRUE

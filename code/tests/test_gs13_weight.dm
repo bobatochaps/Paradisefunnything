@@ -126,3 +126,48 @@
 	subject.gs13_preferences["weight_gain_permanent"] = TRUE
 	galbanic.on_mob_life(subject)
 	TEST_ASSERT_EQUAL(subject.fatness_perma, 2, "Galbanic permanent weight when enabled")
+
+/datum/game_test/gs13_weight_loss_chemistry/Run()
+	var/mob/living/carbon/human/subject = allocate(/mob/living/carbon/human)
+	subject.gs13_preferences = gs13_default_preferences()
+	subject.gs13_preferences["master_wg_pref"] = TRUE
+	subject.gs13_preferences["weight_gain_permanent"] = TRUE
+	subject.adjust_fatness(100, FATTENING_TYPE_ALMIGHTY, TRUE)
+	subject.adjust_perma(30, FATTENING_TYPE_ALMIGHTY, TRUE)
+	subject.nutrition = 0
+	subject.reagents.add_reagent("lipolicide", 10)
+	subject.reagents.metabolize(subject)
+	TEST_ASSERT_EQUAL(subject.fatness_real, 91.25, "Lipolicide reduces ordinary weight through native metabolism")
+	TEST_ASSERT_EQUAL(subject.fatness_perma, 30, "Lipolicide cannot remove permanent weight")
+	TEST_ASSERT_EQUAL(subject.getToxLoss(), 0, "GS13 lipolicide does not poison a starving subject")
+	ADD_TRAIT(subject, TRAIT_LIPOLICIDE_TOLERANCE, "test")
+	subject.reagents.metabolize(subject)
+	TEST_ASSERT_EQUAL(subject.fatness_real, 91, "Lipolicide tolerance reduces its weight-loss effect")
+	subject.reagents.clear_reagents()
+	subject.reagents.add_reagent("fermi_slim", 10)
+	subject.reagents.metabolize(subject)
+	TEST_ASSERT_EQUAL(subject.fatness_real, 66, "Macerinic removes ordinary weight")
+	TEST_ASSERT_EQUAL(subject.fatness_perma, 27.5, "Macerinic removes permanent weight")
+	ADD_TRAIT(subject, TRAIT_MACERINIC_TOLERANCE, "test")
+	subject.reagents.metabolize(subject)
+	TEST_ASSERT_EQUAL(subject.fatness_real, 61, "Macerinic tolerance reduces ordinary loss")
+	TEST_ASSERT_EQUAL(subject.fatness_perma, 27, "Macerinic tolerance reduces permanent loss")
+
+/datum/game_test/gs13_chemical_overdose/Run()
+	var/mob/living/carbon/human/subject = allocate(/mob/living/carbon/human)
+	subject.gs13_preferences = gs13_default_preferences()
+	subject.gs13_preferences["master_wg_pref"] = TRUE
+	subject.gs13_preferences["weight_gain_chems"] = TRUE
+	subject.gs13_preferences["weight_gain_permanent"] = TRUE
+	subject.reagents.add_reagent("fermi_fat", 60)
+	subject.reagents.metabolize(subject)
+	TEST_ASSERT_EQUAL(subject.fatness_real, 20, "Galbanic normal and overdose effects both apply")
+	TEST_ASSERT_EQUAL(subject.fatness_perma, 5, "Galbanic overdose adds to normal permanent gain")
+	TEST_ASSERT_EQUAL(subject.getToxLoss(), 0, "Galbanic does not inherit Paradise's generic toxic overdose")
+	subject.reagents.clear_reagents()
+	subject.adjust_fatness(100, FATTENING_TYPE_ALMIGHTY, TRUE)
+	subject.reagents.add_reagent("fermi_slim", 60)
+	ADD_TRAIT(subject, TRAIT_MACERINIC_TOLERANCE, "test")
+	subject.reagents.metabolize(subject)
+	TEST_ASSERT_EQUAL(subject.fatness_real, 115, "Macerinic keeps working during overdose")
+	TEST_ASSERT_EQUAL(subject.weight_loss_rate, 0.5, "Tolerance blocks the overdose rate boost")
