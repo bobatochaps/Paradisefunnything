@@ -121,6 +121,7 @@
 	else
 		REMOVE_TRAIT(src, TRAIT_FAT, GS13_WEIGHT_TRAIT)
 	update_gs13_weight_alerts()
+	handle_gs13_fullness(seconds)
 
 /mob/living/carbon/proc/calculate_fatness_weight_in_pounds(amount)
 	return round(amount * FATNESS_TO_WEIGHT_RATIO, 0.1)

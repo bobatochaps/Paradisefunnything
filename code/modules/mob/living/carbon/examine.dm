@@ -294,7 +294,10 @@
 		else
 			msg += "[p_they(TRUE)] [p_are()] severely malnourished.\n"
 
-	if(HAS_TRAIT(src, TRAIT_FAT))
+	if(gs13_weight_enabled())
+		msg += get_gs13_weight_text()
+		msg += get_gs13_fullness_text()
+	else if(HAS_TRAIT(src, TRAIT_FAT))
 		msg += "[p_they(TRUE)] [p_are()] morbidly obese.\n"
 		if(user.nutrition < NUTRITION_LEVEL_HYPOGLYCEMIA)
 			msg += "[p_they(TRUE)] [p_are()] plump and delicious looking - Like a fat little piggy. A tasty piggy.\n"  // guh

@@ -1204,7 +1204,9 @@ GLOBAL_LIST_INIT(ventcrawl_machinery, list(/obj/machinery/atmospherics/unary/ven
 		return FALSE
 
 	var/fullness = nutrition + 10
-	if(istype(to_eat, /obj/item/food))
+	if(gs13_weight_enabled())
+		fullness = get_fullness() + 10
+	else if(istype(to_eat, /obj/item/food))
 		for(var/datum/reagent/consumable/C in reagents.reagent_list) // We add the nutrition value of what we're currently digesting
 			fullness += C.nutriment_factor * C.volume / (C.metabolization_rate * metabolism_efficiency)
 
@@ -1246,6 +1248,15 @@ GLOBAL_LIST_INIT(ventcrawl_machinery, list(/obj/machinery/atmospherics/unary/ven
 		to_chat(src, SPAN_NOTICE("You don't feel like eating any more junk food at the moment."))
 		return FALSE
 
+	if(gs13_weight_enabled())
+		if(fullness > get_gs13_fullness_limit())
+			to_chat(src, SPAN_WARNING("You cannot force any more of [to_eat] to go down your throat."))
+			return FALSE
+		if(is_glutton)
+			changeNext_move(CLICK_CD_RAPID)
+		to_chat(src, SPAN_NOTICE(fullness >= FULLNESS_LEVEL_BLOATED ? "You squeeze in another bite of [to_eat]." : "You take a bite of [to_eat]."))
+		return TRUE
+
 	var/list/reaction_msg = list()
 	if(fullness <= 50)
 		reaction_msg += "You hungrily chew out a piece of [to_eat] and gobble it!"
@@ -1269,12 +1280,17 @@ GLOBAL_LIST_INIT(ventcrawl_machinery, list(/obj/machinery/atmospherics/unary/ven
 	return TRUE
 
 /mob/living/carbon/proc/forceFed(obj/item/reagent_containers/to_eat, mob/user, fullness)
-	if(fullness > (600 * (1 + overeatduration / 1000)))
+	var/fullness_limit = gs13_weight_enabled() ? get_gs13_fullness_limit() : 600 * (1 + overeatduration / 1000)
+	if(gs13_weight_enabled())
+		fullness = get_fullness() + 10
+	if(fullness > fullness_limit)
 		visible_message(SPAN_WARNING("[user] cannot force anymore of [to_eat] down [src]'s throat."))
 		return FALSE
 
 	visible_message(SPAN_WARNING("[user] attempts to force [src] to swallow [to_eat]."))
 	if(!do_after(user, 3 SECONDS, TRUE, src))
+		return FALSE
+	if(gs13_weight_enabled() && get_fullness() + 10 > get_gs13_fullness_limit())
 		return FALSE
 	forceFedAttackLog(to_eat, user)
 	visible_message(SPAN_WARNING("[user] forces [src] to swallow [to_eat]."))

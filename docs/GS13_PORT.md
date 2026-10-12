@@ -13,16 +13,19 @@ Base: `ParadiseSS13/Paradise@7084a06407db70b41389045dd38f54ae3eb2d1f1`.
 - Weight analyzer, floor scale, bluespace concealment belt, autolathe analyzer design, and cargo weighing-equipment crate.
 - Initial chemistry: lipoifier, weak lipoifier, galbanic compound, macerinic solution, lipolicide integration, and caramel as a recipe ingredient. Overdoses preserve their normal GS13 effects.
 - Strong/weak legs and lipolicide/macerinic tolerance quirks through Paradise character setup. Quirk costs use Paradise's smaller point scale.
-- Nine focused game regression tests for preferences, limits, rate arithmetic, serialization, nutrition, movement, concealment, and reagent behavior.
+- Fullness from nutrition and undigested food, temporary bloating/hunger recovery, larger feeding limits, fullness HUD and examine descriptions, and burp relief with a cooldown.
+- Fizulphite/extilphite chemistry and galbanic addiction adapted to Paradise metabolism and withdrawal stages.
+- Weight Gain disease symptom, available through native virology, with GS13 source preferences and lipolicide treatment.
+- Fourteen focused game regression tests for preferences, limits, rate arithmetic, serialization, nutrition, movement, concealment, and reagent behavior.
 - Resource filename case corrections in 22 existing Paradise files, required for the pinned upstream revision to compile on Linux.
 
 ## Still incomplete
 
-Most of GS13 remains to be ported. Its source has 302 DM files in `modular_gs`, plus base-code modifications and inherited Bubber/Skyrat systems. Remaining areas include multistage body/clothing rendering, body size and taurs, fullness and helplessness, blueberry transformations and bursting, gases/MILLA integration, calorite, power machinery, weapons and spells, diseases and genetics, species and organs, quirks, maps, jobs, research, food/drinks, and inherited systems. Galbanic addiction is also pending.
+Most of GS13 remains to be ported. Its source has 302 DM files in `modular_gs`, plus base-code modifications and inherited Bubber/Skyrat systems. Remaining areas include multistage body/clothing rendering, body size and taurs, helplessness, blueberry transformations and bursting, gases/MILLA integration, calorite, power machinery, weapons and spells, diseases and genetics, species and organs, quirks, maps, jobs, research, food/drinks, and inherited systems. Digestive speech effects and most additional chemicals are still pending.
 
 Rendering currently uses Paradise's appearance system, and mass measurements assume GS13's default body size. Chemistry uses Paradise's discrete reactions and temperature limits; TG pH/purity simulation is not implemented. Starting-weight edits apply on the next spawn. During-round preference edits affect a body only when editing its original character slot; snapshots stay with disconnected bodies.
 
-Two source arithmetic bugs were corrected: changes now report the actual bounded amount applied, and muscle gain uses its configured multiplier.
+Source arithmetic fixes: changes report the actual bounded amount applied, muscle gain uses its configured multiplier, repeated withdrawal cannot stack the galbanic modifier without limit, and excess food cannot create an automatic negative fullness adjustment.
 
 ## Testing this checkpoint
 
@@ -36,6 +39,8 @@ The focused test build uses `GAME_TESTS`, `GS13_TESTS`, `CIBUILDING`, and `TEST_
 
 ## Validation record
 
-The initial implementation compiled with BYOND 516.1666 with zero errors and zero warnings, including the seven game tests. DreamChecker 1.11.0 reported zero diagnostics. A later workspace reset required restoration from the recorded changes; the restored revision passes DreamChecker with zero diagnostics and the duplicate-definition check. The first native CI attempt failed before compilation because the official BYOND host returned a non-ZIP response; the installer now has the same community-mirror fallback used by tgstation. No successful runtime test result has yet been established. Compilation and static analysis alone do not establish gameplay correctness.
+Commit `a026f725c22b2bd5e6a9cabc04c730472273d5f6` compiled with BYOND 516.1666 with zero errors and zero warnings and passed all nine core game tests without runtime failures in [GitHub Actions](https://github.com/bobatochaps/Paradisefunnything/actions/runs/38203625291). The expanded fourteen-test suite is being validated separately.
+
+DreamChecker 1.11.0 reports zero diagnostics on the expanded game code. The duplicate-definition and define-sanity checks have passed. The BYOND installer uses the community mirror when the official download host fails. No manual client gameplay test or live SQL migration test has been performed yet.
 
 Source and asset attribution is in `modular_gs/ATTRIBUTION.md`.

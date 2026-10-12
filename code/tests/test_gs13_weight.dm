@@ -172,3 +172,97 @@
 	subject.reagents.metabolize(subject)
 	TEST_ASSERT_EQUAL(subject.fatness_real, 115, "Macerinic keeps working during overdose")
 	TEST_ASSERT_EQUAL(subject.weight_loss_rate, 0.5, "Tolerance blocks the overdose rate boost")
+
+/datum/game_test/room_test/gs13_fullness/Run()
+	var/mob/living/carbon/human/subject = allocate(/mob/living/carbon/human)
+	subject.gs13_preferences = gs13_default_preferences()
+	subject.gs13_preferences["master_wg_pref"] = TRUE
+	subject.nutrition = 300
+	subject.reagents.add_reagent("nutriment", 10)
+	TEST_ASSERT_EQUAL(subject.get_fullness(), 450, "Undigested food contributes its future nutrition")
+	subject.fullness_adjustment = 30
+	subject.handle_gs13_fullness(1)
+	TEST_ASSERT_EQUAL(subject.fullness_adjustment, 22.5, "Bloating recovery scales with tick duration")
+	subject.fullness_adjustment = -30
+	subject.handle_gs13_fullness(1)
+	TEST_ASSERT_EQUAL(subject.fullness_adjustment, -22.5, "Hunger recovers toward zero without overshooting")
+	subject.fullness_adjustment = 9999
+	subject.handle_gs13_fullness(0)
+	TEST_ASSERT_EQUAL(subject.get_fullness(), FULLNESS_MAX, "Temporary bloating is bounded")
+	subject.fullness_adjustment = -9999
+	subject.handle_gs13_fullness(0)
+	TEST_ASSERT_EQUAL(subject.get_fullness(), 0, "Hunger cannot make displayed fullness negative")
+	subject.reagents.clear_reagents()
+	subject.nutrition = FULLNESS_MAX + 1
+	subject.fullness_adjustment = 0
+	subject.handle_gs13_fullness(0)
+	TEST_ASSERT_EQUAL(subject.get_fullness(), FULLNESS_MAX + 1, "Real excess food must not be hidden by an invented negative adjustment")
+	TEST_ASSERT(subject.reduce_fullness(60, FALSE), "A full subject can relieve some fullness")
+	TEST_ASSERT_NOT(subject.reduce_fullness(60, FALSE), "Repeated relief respects its cooldown")
+
+/datum/game_test/room_test/gs13_feeding_limit/Run()
+	var/mob/living/carbon/human/subject = allocate(/mob/living/carbon/human)
+	var/obj/item/food/food = allocate(/obj/item/food)
+	subject.gs13_preferences = gs13_default_preferences()
+	TEST_ASSERT_NOT(subject.selfFeed(food, 800), "Paradise's original capacity remains when GS13 is disabled")
+	subject.gs13_preferences["master_wg_pref"] = TRUE
+	TEST_ASSERT(subject.selfFeed(food, 800), "GS13 allows eating beyond Paradise's original capacity")
+	TEST_ASSERT_NOT(subject.selfFeed(food, FULLNESS_MAX + 1), "GS13 still enforces a capacity limit")
+
+/datum/game_test/room_test/gs13_bloating_chemistry/Run()
+	var/mob/living/carbon/human/subject = allocate(/mob/living/carbon/human)
+	subject.gs13_preferences = gs13_default_preferences()
+	subject.gs13_preferences["master_wg_pref"] = TRUE
+	subject.nutrition = 0
+	subject.reagents.add_reagent("fizulphite", 10)
+	subject.reagents.metabolize(subject)
+	TEST_ASSERT_EQUAL(subject.fullness_adjustment, 0, "Bloating respects the chemical preference")
+	subject.gs13_preferences["weight_gain_chems"] = TRUE
+	subject.reagents.metabolize(subject)
+	TEST_ASSERT_EQUAL(subject.fullness_adjustment, 35, "Fizulphite increases temporary fullness")
+	subject.reagents.clear_reagents()
+	subject.nutrition = 1000
+	subject.reagents.add_reagent("extilphite", 10)
+	subject.reagents.metabolize(subject)
+	TEST_ASSERT_EQUAL(subject.fullness_adjustment, -15, "Extilphite reduces fullness in a bloated subject")
+
+/datum/game_test/room_test/gs13_galbanic_withdrawal/Run()
+	var/mob/living/carbon/human/subject = allocate(/mob/living/carbon/human)
+	subject.gs13_preferences = gs13_default_preferences()
+	subject.gs13_preferences["master_wg_pref"] = TRUE
+	subject.gs13_preferences["weight_gain_chems"] = TRUE
+	subject.reagents.add_reagent("fermi_fat", 10)
+	var/datum/reagent/fermi_fat/galbanic = subject.reagents.has_reagent("fermi_fat")
+	galbanic.handle_addiction(subject, 81)
+	TEST_ASSERT_EQUAL(length(subject.reagents.addiction_list), 1, "Galbanic uses Paradise's native addiction tracking")
+	var/datum/reagent/fermi_fat/withdrawal = subject.reagents.addiction_list[1]
+	withdrawal.addiction_act_stage2(subject)
+	TEST_ASSERT_EQUAL(subject.get_weight_gain_modifier("galbanic"), 0.25, "Early withdrawal increases gain rate")
+	withdrawal.addiction_act_stage4(subject)
+	withdrawal.addiction_act_stage5(subject)
+	TEST_ASSERT_EQUAL(subject.get_weight_gain_modifier("galbanic"), 1, "Late withdrawal is bounded across repeated processing")
+	TEST_ASSERT(subject.fullness_adjustment < 0, "Withdrawal causes hunger")
+	var/before = subject.fatness_real
+	subject.gs13_preferences["weight_gain_chems"] = FALSE
+	withdrawal.addiction_act_stage5(subject)
+	TEST_ASSERT_EQUAL(subject.fatness_real, before, "Withdrawal still respects source preferences")
+
+/datum/game_test/room_test/gs13_virology/Run()
+	var/datum/disease/advance/gs13_weight_gain/disease = allocate(/datum/disease/advance/gs13_weight_gain)
+	var/mob/living/carbon/human/subject = allocate(/mob/living/carbon/human)
+	disease.affected_mob = subject
+	disease.stage = 5
+	subject.gs13_preferences = gs13_default_preferences()
+	subject.gs13_preferences["master_wg_pref"] = TRUE
+	var/datum/symptom/gs13_weight_gain/symptom = disease.symptoms[1]
+	symptom.symptom_act(disease, 1)
+	TEST_ASSERT_EQUAL(subject.fatness_real, 0, "Viral weight gain requires its source preference")
+	subject.gs13_preferences["weight_gain_viruses"] = TRUE
+	disease.base_properties["stage rate"] = 1
+	symptom.symptom_act(disease, 1)
+	TEST_ASSERT_EQUAL(subject.fatness_real, 1, "Basic virus uses the configured gain multiplier")
+	disease.base_properties["stage rate"] = 9
+	symptom.symptom_act(disease, 1)
+	TEST_ASSERT_EQUAL(subject.fatness_real, 6, "Fast virus uses the higher GS13 gain threshold")
+	symptom.symptom_act(disease, 0)
+	TEST_ASSERT_EQUAL(subject.fatness_real, 6, "Full treatment blocks the symptom's effect")

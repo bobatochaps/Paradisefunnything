@@ -49,6 +49,8 @@
 	process_flags = ORGANIC | SYNTHETIC
 	overdose_threshold = 50
 	allowed_overdose_process = TRUE
+	addiction_threshold = 80
+	addiction_chance = 100
 
 /datum/reagent/fermi_fat/on_mob_life(mob/living/subject)
 	if(iscarbon(subject))
@@ -63,6 +65,38 @@
 		carbon.adjust_fatness(20, FATTENING_TYPE_CHEM)
 		carbon.adjust_perma(6, FATTENING_TYPE_CHEM)
 	return list(0, STATUS_UPDATE_NONE)
+
+/datum/reagent/fermi_fat/overdose_start(mob/living/subject)
+	to_chat(subject, SPAN_WARNING("You took too much [name]! Your body is growing out of control!"))
+
+// Map GS13's three withdrawal stages onto Paradise's native addiction stages.
+/datum/reagent/fermi_fat/addiction_act_stage2(mob/living/subject)
+	return gs13_withdrawal(subject, 1)
+
+/datum/reagent/fermi_fat/addiction_act_stage3(mob/living/subject)
+	return gs13_withdrawal(subject, 2)
+
+/datum/reagent/fermi_fat/addiction_act_stage4(mob/living/subject)
+	return gs13_withdrawal(subject, 3)
+
+/datum/reagent/fermi_fat/addiction_act_stage5(mob/living/subject)
+	return gs13_withdrawal(subject, 3)
+
+/datum/reagent/fermi_fat/proc/gs13_withdrawal(mob/living/subject, stage)
+	if(!iscarbon(subject))
+		return STATUS_UPDATE_NONE
+	var/mob/living/carbon/carbon = subject
+	if(!carbon.check_weight_prefs(FATTENING_TYPE_CHEM))
+		return STATUS_UPDATE_NONE
+	var/growth = 2 ** (stage - 1)
+	carbon.adjust_fatness(growth, FATTENING_TYPE_CHEM)
+	carbon.adjust_hunger(growth)
+	// As in GS13, the increased gain rate remains after withdrawal ends.
+	// Repeated processing or later addictions must not accumulate it without limit.
+	carbon.set_weight_gain_modifier("galbanic", max(carbon.get_weight_gain_modifier("galbanic"), 0.25 * growth))
+	if(prob(30))
+		to_chat(carbon, SPAN_NOTICE(stage == 3 ? "You are ravenous and crave more galbanic compound!" : "You feel hungry and think about galbanic compound."))
+	return STATUS_UPDATE_NONE
 
 /datum/reagent/fermi_slim
 	name = "Macerinic Solution"
@@ -87,6 +121,7 @@
 	if(iscarbon(subject) && !HAS_TRAIT(subject, TRAIT_MACERINIC_TOLERANCE))
 		var/mob/living/carbon/carbon = subject
 		carbon.adjust_nutrition(-5)
+		carbon.adjust_hunger(5)
 		carbon.weight_loss_rate = min(5, carbon.weight_loss_rate + 0.01)
 	return list(0, STATUS_UPDATE_NONE)
 
@@ -131,3 +166,49 @@
 	name = "macerinic solution bottle"
 	desc = "A bottle of macerinic solution."
 	list_reagents = list("fermi_slim" = 30)
+
+/datum/reagent/consumable/fizulphite
+	name = "Fizulphite"
+	id = "fizulphite"
+	description = "A chemical that produces large amounts of gas in organic environments."
+	color = "#4CFFED"
+	taste_description = "fizziness"
+	metabolization_rate = 2 * REAGENTS_METABOLISM
+
+/datum/reagent/consumable/fizulphite/on_mob_life(mob/living/subject)
+	if(iscarbon(subject))
+		var/mob/living/carbon/carbon = subject
+		if(carbon.check_weight_prefs(FATTENING_TYPE_CHEM))
+			carbon.fullness_adjustment += 35
+			if(prob(10))
+				carbon.emote("burp")
+	return ..()
+
+/datum/reagent/consumable/extilphite
+	name = "Extilphite"
+	id = "extilphite"
+	description = "A chemical that soothes bloated stomachs."
+	color = "#2AED96"
+	taste_description = "smoothness"
+	metabolization_rate = 0.8 * REAGENTS_METABOLISM
+
+/datum/reagent/consumable/extilphite/on_mob_life(mob/living/subject)
+	if(iscarbon(subject))
+		var/mob/living/carbon/carbon = subject
+		if(carbon.check_weight_prefs(FATTENING_TYPE_CHEM) && carbon.get_fullness() > FULLNESS_LEVEL_BLOATED)
+			carbon.fullness_adjustment -= 50
+	return ..()
+
+/datum/chemical_reaction/gs13_fizulphite
+	name = "Fizulphite"
+	id = "gs13_fizulphite"
+	result = "fizulphite"
+	required_reagents = list("sugar" = 1, "nitrogen" = 1, "oxygen" = 3)
+	result_amount = 5
+
+/datum/chemical_reaction/gs13_extilphite
+	name = "Extilphite"
+	id = "gs13_extilphite"
+	result = "extilphite"
+	required_reagents = list("sugar" = 1, "hydrogen" = 2, "carbon" = 2)
+	result_amount = 5
