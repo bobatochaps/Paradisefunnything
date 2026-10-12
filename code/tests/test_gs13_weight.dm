@@ -575,7 +575,7 @@
 	var/obj/item/stack/tile/mineral/calorite/tiles = allocate(/obj/item/stack/tile/mineral/calorite, subject, 4)
 	var/list/floor_coordinates = list(plating.x, plating.y, plating.z)
 	plating.item_interaction(subject, tiles, list())
-	var/turf/simulated/floor/mineral/calorite/floor = locate(arglist(floor_coordinates))
+	var/turf/simulated/floor/mineral/calorite/floor = locate(floor_coordinates[1], floor_coordinates[2], floor_coordinates[3])
 	TEST_ASSERT(istype(floor), "Calorite tiles install through native plating interaction")
 	TEST_ASSERT_EQUAL(tiles.amount, 3, "Installing flooring consumes one tile")
 	subject.forceMove(floor)
@@ -625,7 +625,7 @@
 	TEST_ASSERT(wall.blocks_air, "Calorite walls use native solid-turf air blocking")
 	var/list/wall_coordinates = list(wall.x, wall.y, wall.z)
 	wall.dismantle_wall()
-	var/turf/location = locate(arglist(wall_coordinates))
+	var/turf/location = locate(wall_coordinates[1], wall_coordinates[2], wall_coordinates[3])
 	var/obj/item/stack/sheet/mineral/calorite/sheets = locate() in location
 	TEST_ASSERT_NOTNULL(sheets, "Wall dismantling recovers calorite instead of another material")
 	TEST_ASSERT_EQUAL(sheets.amount, 2, "Wall dismantling returns the construction sheet cost")
