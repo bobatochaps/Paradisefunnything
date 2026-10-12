@@ -299,20 +299,22 @@
 	subject.gs13_preferences["weight_gain_weapons"] = TRUE
 	subject.bullet_act(gain, "chest")
 	subject.bullet_act(loss, "chest")
-	TEST_ASSERT_EQUAL(round(subject.get_weight_gain_rate(), 0.01), 0.6, "Gain mode increases only the gain multiplier")
-	TEST_ASSERT_EQUAL(round(subject.get_weight_loss_rate(), 0.01), 0.4, "Loss mode decreases only the loss multiplier")
+	TEST_ASSERT(abs(subject.get_weight_gain_rate() - (0.6)) < 0.0001, "Gain mode increases only the gain multiplier")
+	TEST_ASSERT(abs(subject.get_weight_loss_rate() - (0.4)) < 0.0001, "Loss mode decreases only the loss multiplier")
 	gain.on_hit(subject, INFINITY, "chest")
 	reverse.on_hit(subject, INFINITY, "chest")
-	TEST_ASSERT_EQUAL(round(subject.get_weight_gain_rate(), 0.01), 0.6, "Immunity blocks rate changes")
+	TEST_ASSERT(abs(subject.get_weight_gain_rate() - (0.6)) < 0.0001, "Immunity blocks rate changes")
 	TEST_ASSERT_NOT(subject.flip_loss_rate, "Immunity blocks reversal")
 	subject.bullet_act(reverse, "chest")
-	TEST_ASSERT_EQUAL(round(subject.get_weight_loss_rate(), 0.01), -0.4, "Reverser inverts the final loss multiplier")
+	TEST_ASSERT(abs(subject.get_weight_loss_rate() - (-0.4)) < 0.0001, "Reverser inverts the final loss multiplier")
 	subject.bullet_act(reverse, "chest")
-	TEST_ASSERT_EQUAL(round(subject.get_weight_loss_rate(), 0.01), 0.4, "A second reverser hit restores the multiplier")
+	TEST_ASSERT(abs(subject.get_weight_loss_rate() - (0.4)) < 0.0001, "A second reverser hit restores the multiplier")
 
 /datum/game_test/room_test/gs13_energy_weapons/Run()
 	var/mob/living/carbon/human/shooter = allocate(/mob/living/carbon/human)
 	var/mob/living/carbon/human/subject = allocate(/mob/living/carbon/human)
+	// The room allocator chooses random tiles. Keep these hits point-blank and synchronous.
+	subject.forceMove(get_turf(shooter))
 	subject.gs13_preferences = gs13_default_preferences()
 	subject.gs13_preferences["master_wg_pref"] = TRUE
 	subject.gs13_preferences["weight_gain_weapons"] = TRUE
@@ -327,6 +329,7 @@
 		/obj/item/gun/energy/gun/fattening/antag)
 	for(var/gun_type in gun_types)
 		var/obj/item/gun/energy/gun = allocate(gun_type)
+		gun.forceMove(shooter)
 		TEST_ASSERT(gun.can_shoot(), "[gun_type] starts with enough charge to fire")
 		TEST_ASSERT_NOTNULL(gun.chambered?.BB, "[gun_type] prepares its projectile")
 		var/obj/item/ammo_casing/energy/casing = gun.chambered
@@ -343,9 +346,10 @@
 	TEST_ASSERT(istype(matador.chambered.BB, /obj/projectile/beam/disabler), "Matador switches to the native disabler")
 	var/obj/item/gun/energy/laser/alter_ray/gainrate/alter = allocate(/obj/item/gun/energy/laser/alter_ray/gainrate)
 	TEST_ASSERT_EQUAL(length(alter.ammo_type), 4, "Metabolism gun provides all four source modes")
+	alter.forceMove(shooter)
 	alter.select_fire(shooter)
 	alter.process_fire(subject, shooter, FALSE, zone_override = "chest")
-	TEST_ASSERT_EQUAL(round(subject.get_weight_gain_rate(), 0.01), 0.6, "Selected metabolism mode reaches the target")
+	TEST_ASSERT(abs(subject.get_weight_gain_rate() - (0.6)) < 0.0001, "Selected metabolism mode reaches the target")
 	for(var/i in 1 to alter.charge_delay)
 		alter.process()
 	TEST_ASSERT_EQUAL(alter.cell.charge, alter.cell.maxcharge, "Alter-ray self-charging restores the spent shot")
