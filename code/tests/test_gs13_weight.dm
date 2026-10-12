@@ -484,3 +484,82 @@
 	TEST_ASSERT_EQUAL(subject.micro_calorite_poisoning, 8, "Conversion consumes the source amount of exposure")
 	shot.on_hit(subject, INFINITY, "chest")
 	TEST_ASSERT_EQUAL(subject.fatness_perma, 200, "Armor immunity blocks the calorite reaction")
+
+/datum/game_test/room_test/gs13_melee_weapons/Run()
+	var/mob/living/carbon/human/attacker = allocate(/mob/living/carbon/human)
+	var/mob/living/carbon/human/subject = allocate(/mob/living/carbon/human)
+	subject.forceMove(get_turf(attacker))
+	attacker.a_intent = INTENT_HARM
+	subject.gs13_preferences = gs13_default_preferences()
+	subject.gs13_preferences["master_wg_pref"] = TRUE
+	subject.gs13_preferences["weight_gain_weapons"] = TRUE
+	for(var/weapon_type in list(/obj/item/melee/baton/loaded/fattening, /obj/item/melee/baton/loaded/fattening/stunsword, /obj/item/melee/classic_baton/fattening, /obj/item/melee/chainofcommand/fattening, /obj/item/gavelhammer/fattening))
+		var/obj/item/weapon = allocate(weapon_type)
+		weapon.forceMove(attacker)
+		var/before = subject.fatness_real
+		weapon.melee_attack_chain(attacker, subject)
+		TEST_ASSERT_EQUAL(subject.fatness_real - before, weapon.force * 2, "[weapon.type] applies weight through the native attack chain")
+		TEST_ASSERT(weapon.icon_state in icon_states(weapon.icon), "[weapon.type] has a valid object sprite")
+	TEST_ASSERT_EQUAL(subject.getBruteLoss(), 0, "Weight melee attacks do not deal brute damage")
+	var/obj/item/gavelhammer/fattening/permanent/hammer = allocate(/obj/item/gavelhammer/fattening/permanent)
+	hammer.forceMove(attacker)
+	subject.gs13_preferences["weight_gain_permanent"] = TRUE
+	hammer.melee_attack_chain(attacker, subject)
+	TEST_ASSERT_EQUAL(subject.fatness_perma, 45, "Galbanic melee damage reaches the permanent-weight channel")
+	subject.gs13_preferences["weight_gain_weapons"] = FALSE
+	hammer.melee_attack_chain(attacker, subject)
+	TEST_ASSERT_EQUAL(subject.getStaminaLoss(), 30, "Disabled weapon effects fall back to stamina in real melee combat")
+	var/obj/item/melee/baton/loaded/fattening/baton = allocate(/obj/item/melee/baton/loaded/fattening)
+	baton.forceMove(attacker)
+	subject.gs13_preferences["weight_gain_weapons"] = TRUE
+	attacker.a_intent = INTENT_DISARM
+	baton.turned_on = TRUE
+	var/before_fat = subject.fatness_real
+	var/before_charge = baton.cell.charge
+	baton.melee_attack_chain(attacker, subject)
+	TEST_ASSERT_EQUAL(subject.fatness_real, before_fat, "Non-harm baton intent retains the native stun without weight damage")
+	TEST_ASSERT_EQUAL(baton.cell.charge, before_charge - baton.hitcost, "Native stun consumes the baton cell")
+
+/datum/game_test/room_test/gs13_whip_disarm/Run()
+	var/mob/living/carbon/human/attacker = allocate(/mob/living/carbon/human)
+	var/mob/living/carbon/human/subject = allocate(/mob/living/carbon/human)
+	subject.forceMove(get_turf(attacker))
+	attacker.a_intent = INTENT_HARM
+	var/obj/item/melee/chainofcommand/fattening/whip = allocate(/obj/item/melee/chainofcommand/fattening)
+	whip.forceMove(attacker)
+	var/obj/item/pen/left = allocate(/obj/item/pen)
+	var/obj/item/pen/right = allocate(/obj/item/pen)
+	subject.put_in_l_hand(left)
+	subject.put_in_r_hand(right)
+	whip.after_attack(subject, attacker, FALSE)
+	TEST_ASSERT_EQUAL(subject.l_hand, left, "Ranged clicks cannot disarm the left hand")
+	TEST_ASSERT_EQUAL(subject.r_hand, right, "Ranged clicks cannot disarm the right hand")
+	whip.melee_attack_chain(attacker, subject)
+	TEST_ASSERT_NULL(subject.l_hand, "Close-range whip strikes drop the left-hand item")
+	TEST_ASSERT_NULL(subject.r_hand, "Close-range whip strikes drop the right-hand item")
+	TEST_ASSERT_EQUAL(left.loc, get_turf(subject), "Disarmed items remain on the floor")
+
+/datum/game_test/room_test/gs13_cyborg_fatoray/Run()
+	var/mob/living/carbon/human/installer = allocate(/mob/living/carbon/human)
+	var/mob/living/silicon/robot/robot = allocate(/mob/living/silicon/robot)
+	var/obj/item/borg/upgrade/fatoray/upgrade = allocate(/obj/item/borg/upgrade/fatoray)
+	TEST_ASSERT_NOT(upgrade.pre_install_checks(installer, robot), "A module-less cyborg cannot receive the upgrade")
+	robot.module = allocate(/obj/item/robot_module/engineering, robot)
+	installer.put_in_active_hand(upgrade)
+	TEST_ASSERT(upgrade.action(installer, robot), "The Fatoray installs using the native upgrade action")
+	var/obj/item/gun/energy/fatoray/weak/cyborg/gun = locate() in robot.module.modules
+	TEST_ASSERT_NOTNULL(gun, "The installed weapon appears in the cyborg's usable module list")
+	var/obj/item/borg/upgrade/fatoray/duplicate = allocate(/obj/item/borg/upgrade/fatoray)
+	TEST_ASSERT_NOT(duplicate.pre_install_checks(installer, robot), "Duplicate upgrades are rejected")
+	var/mob/living/carbon/human/subject = allocate(/mob/living/carbon/human)
+	subject.forceMove(get_turf(robot))
+	subject.gs13_preferences = gs13_default_preferences()
+	subject.gs13_preferences["master_wg_pref"] = TRUE
+	subject.gs13_preferences["weight_gain_weapons"] = TRUE
+	gun.forceMove(robot)
+	robot.cell.charge = robot.cell.maxcharge
+	var/before_charge = robot.cell.charge
+	gun.process_fire(subject, robot, FALSE, zone_override = "chest")
+	TEST_ASSERT_EQUAL(subject.fatness_real, 50, "The mounted weapon fires its Basic Fatoray projectile")
+	TEST_ASSERT_EQUAL(robot.cell.charge, before_charge - 100, "Mounted weapon recharging consumes cyborg power")
+	TEST_ASSERT_EQUAL(gun.cell.charge, gun.cell.maxcharge, "Cyborg power restores the internal gun cell")
