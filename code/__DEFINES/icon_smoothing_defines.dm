@@ -130,3 +130,5 @@ DEFINE_BITFIELD(smoothing_flags, list(
 #define SMOOTH_GROUP_RIPPLE	S_OBJ(68)					///obj/effect/temp_visual/ripple
 
 #define SMOOTH_GROUP_CATWALK S_OBJ(69)					///obj/structure/lattice/catwalk
+
+#define SMOOTH_GROUP_CALORITE_WALLS S_OBJ(70)			/// GS13 calorite walls and falsewalls.

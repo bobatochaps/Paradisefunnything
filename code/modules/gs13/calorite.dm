@@ -42,11 +42,12 @@
 	origin_tech = "materials=4;biotech=3"
 	point_value = 40
 	damtype = FAT
-	wall_allowed = FALSE // Calorite construction needs its own Paradise turf adapter.
+	wall_allowed = TRUE
 
 /obj/item/stack/sheet/mineral/calorite/Initialize(mapload, new_amount, merge)
 	. = ..()
 	AddComponent(/datum/component/fattening, 2, FATTENING_TYPE_ITEM)
+	recipes = GLOB.calorite_recipes
 
 /obj/item/stack/sheet/mineral/calorite/five
 	amount = 5

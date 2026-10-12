@@ -23,6 +23,11 @@
 	var/walltype = /turf/simulated/wall
 	var/girder_type = /obj/structure/girder/displaced
 	var/opening = FALSE
+	/// Optional separate icon file for opening/closing and the open appearance.
+	var/open_icon
+	var/open_icon_state = "fwall_open"
+	var/opening_icon_state = "fwall_opening"
+	var/closing_icon_state = "fwall_closing"
 	/// Minimum environment smash level (found on simple animals) to break through this instantly
 	var/env_smash_level = ENVIRONMENT_SMASH_STRUCTURES
 
@@ -79,20 +84,22 @@
 	var/direction = get_current_direction()
 	dir = direction ? direction : NORTH
 	if(density)
-		flick("fwall_opening", src)
+		if(open_icon)
+			icon = open_icon
+		flick(opening_icon_state, src)
 		density = FALSE
 		set_opacity(FALSE)
 		clear_smooth_overlays()
-		icon_state = "fwall_opening"
+		icon_state = opening_icon_state
 	else
 		var/srcturf = get_turf(src)
 		for(var/mob/living/obstacle in srcturf) //Stop people from using this as a shield
 			opening = FALSE
 			return
-		flick("fwall_closing", src)
+		flick(closing_icon_state, src)
 		density = TRUE
 		set_opacity(TRUE)
-		icon_state = "fwall_closing"
+		icon_state = closing_icon_state
 	if(!silent)
 		user.visible_message(
 			SPAN_WARNING("[user] pushes the wall, and it begins to slide [density ? "closed" : "open"]!"),
@@ -108,13 +115,17 @@
 		smoothing_flags = NONE
 		clear_smooth_overlays()
 		if(density)
-			icon_state = "fwall_opening"
+			icon_state = opening_icon_state
 			return
-		icon_state = "fwall_closing"
+		icon_state = closing_icon_state
 		return
 	if(!density)
-		icon_state = "fwall_open"
+		if(open_icon)
+			icon = open_icon
+		icon_state = open_icon_state
 		return
+	if(open_icon)
+		icon = initial(icon)
 	smoothing_flags = SMOOTH_BITMASK | SMOOTH_OBJ
 	icon_state = initial(icon_state)
 	icon_state = "[base_icon_state]-[smoothing_junction]"
