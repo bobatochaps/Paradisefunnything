@@ -95,7 +95,8 @@
 	// Repeated processing or later addictions must not accumulate it without limit.
 	carbon.set_weight_gain_modifier("galbanic", max(carbon.get_weight_gain_modifier("galbanic"), 0.25 * growth))
 	if(prob(30))
-		to_chat(carbon, SPAN_NOTICE(stage == 3 ? "You are ravenous and crave more galbanic compound!" : "You feel hungry and think about galbanic compound."))
+		var/withdrawal_message = stage == 3 ? "You are ravenous and crave more galbanic compound!" : "You feel hungry and think about galbanic compound."
+		to_chat(carbon, SPAN_NOTICE(withdrawal_message))
 	return STATUS_UPDATE_NONE
 
 /datum/reagent/fermi_slim

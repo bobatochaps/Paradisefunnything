@@ -21,7 +21,8 @@
 		var/gain = speed >= 12 ? 10 : (speed >= 7 ? 4 : 2)
 		host.adjust_fatness(gain * unmitigated, FATTENING_TYPE_VIRUS)
 	if(prob(10))
-		to_chat(host, SPAN_WARNING(disease.stage >= 5 ? "You feel heavier as your body churns." : "You feel oddly full."))
+		var/symptom_message = disease.stage >= 5 ? "You feel heavier as your body churns." : "You feel oddly full."
+		to_chat(host, SPAN_WARNING(symptom_message))
 
 /datum/disease/advance/gs13_weight_gain/New(datum/disease/advance/to_copy, _event = FALSE, copy_stage = FALSE)
 	if(!to_copy)

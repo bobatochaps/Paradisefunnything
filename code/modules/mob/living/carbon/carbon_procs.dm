@@ -1254,7 +1254,8 @@ GLOBAL_LIST_INIT(ventcrawl_machinery, list(/obj/machinery/atmospherics/unary/ven
 			return FALSE
 		if(is_glutton)
 			changeNext_move(CLICK_CD_RAPID)
-		to_chat(src, SPAN_NOTICE(fullness >= FULLNESS_LEVEL_BLOATED ? "You squeeze in another bite of [to_eat]." : "You take a bite of [to_eat]."))
+		var/bite_message = fullness >= FULLNESS_LEVEL_BLOATED ? "You squeeze in another bite of [to_eat]." : "You take a bite of [to_eat]."
+		to_chat(src, SPAN_NOTICE(bite_message))
 		return TRUE
 
 	var/list/reaction_msg = list()
