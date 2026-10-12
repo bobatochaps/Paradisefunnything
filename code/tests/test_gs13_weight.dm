@@ -1,4 +1,5 @@
-/datum/game_test/gs13_weight_preferences/Run()
+// These tests need the native room fixture; test_tiny has no station event area.
+/datum/game_test/room_test/gs13_weight_preferences/Run()
 	var/mob/living/carbon/human/subject = allocate(/mob/living/carbon/human)
 	TEST_ASSERT_EQUAL(subject.adjust_fatness(100), 0, "Weight gain defaults to disabled")
 	subject.gs13_preferences = gs13_default_preferences()
@@ -14,7 +15,7 @@
 	TEST_ASSERT_EQUAL(subject.adjust_fatness(-100, FATTENING_TYPE_WEIGHT_LOSS), 0, "Master switch gates ordinary loss")
 	TEST_ASSERT_EQUAL(subject.adjust_fatness(20, FATTENING_TYPE_ALMIGHTY, TRUE), 20, "Administrative adjustment remains available")
 
-/datum/game_test/gs13_weight_bounds/Run()
+/datum/game_test/room_test/gs13_weight_bounds/Run()
 	var/mob/living/carbon/human/subject = allocate(/mob/living/carbon/human)
 	subject.max_weight = 101
 	TEST_ASSERT_EQUAL(subject.adjust_fatness(1000, FATTENING_TYPE_ALMIGHTY, TRUE), 100, "Return actual gain at the cap")
@@ -32,7 +33,7 @@
 	subject.fully_heal_fatness(TRUE, "", "")
 	TEST_ASSERT_EQUAL(subject.fatness, 0, "Permanent healing recalculates apparent weight")
 
-/datum/game_test/gs13_weight_rates/Run()
+/datum/game_test/room_test/gs13_weight_rates/Run()
 	var/mob/living/carbon/human/subject = allocate(/mob/living/carbon/human)
 	subject.set_weight_gain_modifier("test", 100)
 	TEST_ASSERT_EQUAL(subject.get_weight_gain_rate(), 2.5, "Individual modifiers are bounded")
@@ -48,7 +49,7 @@
 	TEST_ASSERT_EQUAL(subject.adjust_muscle(100), 50, "Muscle gain uses its multiplier")
 	TEST_ASSERT_EQUAL(subject.adjust_muscle(-100), -50, "Muscle loss cannot exceed available muscle")
 
-/datum/game_test/gs13_preference_roundtrip/Run()
+/datum/game_test/room_test/gs13_preference_roundtrip/Run()
 	var/list/saved = list("master_wg_pref" = TRUE, "weight_gain_food" = TRUE, "weight_gain_rate" = 99, "weight_loss_rate" = -1, "starting_fatness" = "bad", "unknown" = TRUE)
 	var/list/loaded = gs13_sanitize_preferences(json_encode(saved))
 	TEST_ASSERT_EQUAL(loaded["master_wg_pref"], TRUE, "Boolean survives JSON roundtrip")
@@ -68,7 +69,7 @@
 	TEST_ASSERT_EQUAL(subject.gs13_preferences["master_wg_pref"], TRUE, "Body preferences are not a shared mutable list")
 	qdel(character)
 
-/datum/game_test/gs13_food_and_movement/Run()
+/datum/game_test/room_test/gs13_food_and_movement/Run()
 	var/mob/living/carbon/human/subject = allocate(/mob/living/carbon/human)
 	subject.gs13_preferences = gs13_default_preferences()
 	subject.gs13_preferences["master_wg_pref"] = TRUE
@@ -88,7 +89,7 @@
 	TEST_ASSERT_EQUAL(subject.gs13_movement_delay, 0, "Muscle offsets effective weight")
 	TEST_ASSERT_EQUAL(gs13_weight_stage(FATNESS_LEVEL_BLOB), 9, "Stage boundary selects the new stage")
 
-/datum/game_test/gs13_bluespace_belt/Run()
+/datum/game_test/room_test/gs13_bluespace_belt/Run()
 	var/mob/living/carbon/human/subject = allocate(/mob/living/carbon/human)
 	var/obj/item/bluespace_belt/belt = allocate(/obj/item/bluespace_belt)
 	subject.adjust_fatness(100, FATTENING_TYPE_ALMIGHTY, TRUE)
@@ -106,7 +107,7 @@
 	qdel(belt)
 	TEST_ASSERT_EQUAL(subject.fatness, 130, "Deleting belt removes concealment")
 
-/datum/game_test/gs13_chemistry/Run()
+/datum/game_test/room_test/gs13_chemistry/Run()
 	var/mob/living/carbon/human/subject = allocate(/mob/living/carbon/human)
 	subject.gs13_preferences = gs13_default_preferences()
 	subject.gs13_preferences["master_wg_pref"] = TRUE
@@ -127,7 +128,7 @@
 	galbanic.on_mob_life(subject)
 	TEST_ASSERT_EQUAL(subject.fatness_perma, 2, "Galbanic permanent weight when enabled")
 
-/datum/game_test/gs13_weight_loss_chemistry/Run()
+/datum/game_test/room_test/gs13_weight_loss_chemistry/Run()
 	var/mob/living/carbon/human/subject = allocate(/mob/living/carbon/human)
 	subject.gs13_preferences = gs13_default_preferences()
 	subject.gs13_preferences["master_wg_pref"] = TRUE
@@ -153,7 +154,7 @@
 	TEST_ASSERT_EQUAL(subject.fatness_real, 61, "Macerinic tolerance reduces ordinary loss")
 	TEST_ASSERT_EQUAL(subject.fatness_perma, 27, "Macerinic tolerance reduces permanent loss")
 
-/datum/game_test/gs13_chemical_overdose/Run()
+/datum/game_test/room_test/gs13_chemical_overdose/Run()
 	var/mob/living/carbon/human/subject = allocate(/mob/living/carbon/human)
 	subject.gs13_preferences = gs13_default_preferences()
 	subject.gs13_preferences["master_wg_pref"] = TRUE
