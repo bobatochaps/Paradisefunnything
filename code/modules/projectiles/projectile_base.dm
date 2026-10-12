@@ -43,6 +43,8 @@
 	var/ignore_source_check = FALSE
 
 	var/damage = 10
+	/// GS13 regular weight delivered by this projectile, before armor and personal rates.
+	var/fat_added = 0
 	var/tile_dropoff = 0	//how much damage should be decremented as the bullet moves
 	var/tile_dropoff_s = 0	//same as above but for stamina
 	var/damage_type = BRUTE //BRUTE, BURN, TOX, OXY, CLONE are the only things that should be in here
@@ -270,6 +272,9 @@
 		additional_log_text = "[additional_log_text] (containing [reagent_note])"
 
 	var/were_affects_applied = L.apply_effects(stun, weaken, knockdown, paralyze, irradiate, slur, stutter, eyeblur, drowsy, blocked, stamina, jitter)
+	if(fat_added && iscarbon(L) && blocked != INFINITY && !(L.status_flags & GODMODE))
+		var/mob/living/carbon/carbon = L
+		carbon.adjust_fatness(ARMOUR_EQUATION(fat_added, blocked, 1), FATTENING_TYPE_WEAPON)
 
 	if(!log_override && firer && !alwayslog)
 		add_attack_logs(firer, L, "Shot with a [type][additional_log_text]")

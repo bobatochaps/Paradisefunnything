@@ -16,7 +16,8 @@ Base: `ParadiseSS13/Paradise@7084a06407db70b41389045dd38f54ae3eb2d1f1`.
 - Fullness from nutrition and undigested food, temporary bloating/hunger recovery, larger feeding limits, fullness HUD and examine descriptions, and burp relief with a cooldown.
 - Fizulphite/extilphite chemistry and galbanic addiction adapted to Paradise metabolism and withdrawal stages.
 - Weight Gain disease symptom, available through native virology, with GS13 source preferences and lipolicide treatment.
-- Fourteen focused game regression tests for preferences, limits, rate arithmetic, serialization, nutrition, movement, concealment, and reagent behavior.
+- Fatoray variants, Salamander and Matador energy guns, and AL-T-Ray metabolism/reversal modes using Paradise's firing, armor, and cell systems. Original gun/projectile/in-hand sprites are included. These are currently admin-spawnable; research and cargo distribution depend on the remaining calorite work.
+- Seventeen focused game regression tests for preferences, limits, rate arithmetic, serialization, nutrition, movement, concealment, reagents, virology, projectile impacts, and energy weapons.
 - Resource filename case corrections in 22 existing Paradise files, required for the pinned upstream revision to compile on Linux.
 
 ## Still incomplete
@@ -25,7 +26,7 @@ Most of GS13 remains to be ported. Its source has 302 DM files in `modular_gs`, 
 
 Rendering currently uses Paradise's appearance system, and mass measurements assume GS13's default body size. Chemistry uses Paradise's discrete reactions and temperature limits; TG pH/purity simulation is not implemented. Starting-weight edits apply on the next spawn. During-round preference edits affect a body only when editing its original character slot; snapshots stay with disconnected bodies.
 
-Source arithmetic fixes: changes report the actual bounded amount applied, muscle gain uses its configured multiplier, repeated withdrawal cannot stack the galbanic modifier without limit, and excess food cannot create an automatic negative fullness adjustment.
+Source arithmetic fixes: changes report the actual bounded amount applied, muscle gain uses its configured multiplier, repeated withdrawal cannot stack the galbanic modifier without limit, and excess food cannot create an automatic negative fullness adjustment. Metabolism rays respect weapon preferences and complete armor immunity. Projectile weight effects use Paradise's armor equation. Gun power costs are scaled to Paradise's 1,000-unit standard cell, preserving the source's ratios to its 10,000-unit cell.
 
 ## Testing this checkpoint
 
@@ -39,7 +40,7 @@ The focused test build uses `GAME_TESTS`, `GS13_TESTS`, `CIBUILDING`, and `TEST_
 
 ## Validation record
 
-Commit `a026f725c22b2bd5e6a9cabc04c730472273d5f6` compiled with BYOND 516.1666 with zero errors and zero warnings and passed all nine core game tests without runtime failures in [GitHub Actions](https://github.com/bobatochaps/Paradisefunnything/actions/runs/38203625291). The expanded fourteen-test suite is being validated separately.
+Commit `effef62a83b6cfff886634211aee4ed2ca290be2` compiled with BYOND 516.1666 with zero errors and zero warnings and passed all fourteen core, fullness, chemistry, and virology game tests without runtime failures in [GitHub Actions](https://github.com/bobatochaps/Paradisefunnything/actions/runs/38204514551). The expanded seventeen-test weapon suite is being validated separately.
 
 DreamChecker 1.11.0 reports zero diagnostics on the expanded game code. The duplicate-definition and define-sanity checks have passed. The BYOND installer uses the community mirror when the official download host fails. No manual client gameplay test or live SQL migration test has been performed yet.
 
