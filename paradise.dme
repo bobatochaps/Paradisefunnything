@@ -3796,6 +3796,8 @@
 #include "code\modules\gs13\virology.dm"
 #include "code\modules\gs13\examine.dm"
 #include "code\modules\gs13\weapons.dm"
+#include "code\modules\gs13\fattening_component.dm"
+#include "code\modules\gs13\calorite.dm"
 #include "code\modules\gs13\equipment.dm"
 #include "code\modules\gs13\preferences.dm"
 #include "code\modules\gs13\weight.dm"

@@ -858,6 +858,7 @@ won't update every console in existence) but it's more of a hassle to do. Also, 
 			materials_list[++materials_list.len] = list("name" = "Titanium", "id" = MAT_TITANIUM, "amount" = machine.materials.amount(MAT_TITANIUM))
 			materials_list[++materials_list.len] = list("name" = "Plastic", "id" = MAT_PLASTIC, "amount" = machine.materials.amount(MAT_PLASTIC))
 			materials_list[++materials_list.len] = list("name" = "Bluespace Mesh", "id" = MAT_BLUESPACE, "amount" = machine.materials.amount(MAT_BLUESPACE))
+			materials_list[++materials_list.len] = list("name" = "Calorite", "id" = MAT_CALORITE, "amount" = machine.materials.amount(MAT_CALORITE))
 		else if(submenu == SUBMENU_PRINTER_CHEMICALS)
 			for(var/datum/reagent/R in machine.reagents.reagent_list)
 				var/list/loaded_chemical = list()

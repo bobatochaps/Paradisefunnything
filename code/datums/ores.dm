@@ -9,6 +9,9 @@
 	var/spread_chance = 0
 	/// The icon state of the ore used for mining scanner overlays.
 	var/scan_icon_state = ""
+	/// Most Paradise scan sprites are 480px; other ores can supply a smaller sprite.
+	var/scan_icon = 'icons/effects/ore_visuals.dmi'
+	var/scan_pixel_offset = -224
 
 /**
  * Called when the containing turf is "mined", such as with a pickaxe or other

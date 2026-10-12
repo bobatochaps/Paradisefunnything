@@ -501,6 +501,8 @@
 	var/total_armour = blocked + armor
 
 	switch(damagetype)
+		if(FAT, PERMA_FAT)
+			H.apply_gs13_weight_damage(damage, damagetype, total_armour)
 		if(BRUTE)
 			var/damage_amount = ARMOUR_EQUATION(damage, total_armour, brute_mod * H.physiology.brute_mod)
 			if(damage_amount)

@@ -120,6 +120,7 @@
 			REMOVE_TRAIT(src, TRAIT_FAT, GS13_WEIGHT_TRAIT)
 	else
 		REMOVE_TRAIT(src, TRAIT_FAT, GS13_WEIGHT_TRAIT)
+	handle_calorite_poisoning(seconds)
 	update_gs13_weight_alerts()
 	handle_gs13_fullness(seconds)
 

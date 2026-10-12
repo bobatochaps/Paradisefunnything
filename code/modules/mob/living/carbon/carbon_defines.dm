@@ -19,6 +19,8 @@
 	var/list/gs13_preferences = list()
 	var/gs13_character_slot = 0
 	var/gs13_movement_delay = 0
+	/// Persistent body exposure, from 0 to 100; effects require the severe-effects preference.
+	var/micro_calorite_poisoning = 0
 	/// Nutrition plus food awaiting digestion, before temporary fullness adjustments.
 	var/fullness = 0
 	var/fullness_adjustment = 0

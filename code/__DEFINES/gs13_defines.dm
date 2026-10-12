@@ -1,4 +1,9 @@
 // GS13 weight mechanics, AGPL-3.0. See modular_gs/ATTRIBUTION.md.
+#define MAT_CALORITE "calorite"
+#define FAT "fat"
+#define PERMA_FAT "perma_fat"
+#define FAT_DAMAGE_TO_FATNESS 4
+#define PERMA_FAT_DAMAGE_TO_FATNESS 3
 #define FATTENING_TYPE_ITEM "item"
 #define FATTENING_TYPE_FOOD "food"
 #define FATTENING_TYPE_CHEM "chem"

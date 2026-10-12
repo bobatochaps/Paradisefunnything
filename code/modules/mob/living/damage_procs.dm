@@ -10,6 +10,11 @@
 */
 /mob/living/proc/apply_damage(damage = 0, damagetype = BRUTE, def_zone, blocked = 0, sharp = FALSE, used_weapon, spread_damage = FALSE)
 	SEND_SIGNAL(src, COMSIG_MOB_APPLY_DAMAGE, damage, damagetype, def_zone)
+	if(damagetype == FAT || damagetype == PERMA_FAT)
+		if(iscarbon(src))
+			var/mob/living/carbon/carbon = src
+			return carbon.apply_gs13_weight_damage(damage, damagetype, blocked)
+		damagetype = STAMINA
 	var/hit_percent = (100 - blocked) / 100
 	if(!damage || (hit_percent <= 0))
 		return FALSE
@@ -36,6 +41,8 @@
 
 /mob/living/proc/apply_damage_type(damage = 0, damagetype = BRUTE) //like apply damage except it always uses the damage procs
 	switch(damagetype)
+		if(FAT, PERMA_FAT)
+			return apply_damage(damage, damagetype)
 		if(BRUTE)
 			return adjustBruteLoss(damage)
 		if(BURN)

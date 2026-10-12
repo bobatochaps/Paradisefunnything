@@ -162,6 +162,7 @@
 	desc = "An early-model Fatoray with a weaker beam."
 	icon_state = "fatoray_weak"
 	ammo_type = list(/obj/item/ammo_casing/energy/fattening/weak)
+	materials = list(MAT_METAL = 800, MAT_GLASS = 600, MAT_CALORITE = 1000)
 
 /obj/item/gun/energy/fatoray/weak/cyborg
 	name = "mounted Basic Fatoray"
@@ -187,6 +188,7 @@
 	name = "Basic Fatoray Cannon"
 	icon_state = "fatoray_cannon_weak"
 	ammo_type = list(/obj/item/ammo_casing/energy/fattening/cannon/weak)
+	materials = list(MAT_METAL = 1000, MAT_GLASS = 800, MAT_CALORITE = 2000)
 
 /obj/item/gun/energy/fatoray/stunning
 	name = "\improper GATO EG-1 Salamander"
@@ -232,6 +234,7 @@
 	ammo_type = list(/obj/item/ammo_casing/energy/laser/alter_ray/gainrate_increase)
 	can_be_lensed = FALSE
 	can_fit_in_turrets = FALSE
+	materials = list(MAT_METAL = 1000, MAT_GLASS = 800, MAT_CALORITE = 2600)
 
 /obj/item/gun/energy/laser/alter_ray/examine_more(mob/user)
 	..()

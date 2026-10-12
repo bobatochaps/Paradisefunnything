@@ -16,6 +16,7 @@
 	// IMPORTANT NOTE! A negative number is a multiplier, a positive number is a flat amount to add. 0 means equal to the amount of the original reagent
 	var/list/blend_items = list (
 		// Sheets
+		/obj/item/stack/sheet/mineral/calorite = list("lipoifier" = 2, "micro_calorite" = 1),
 		/obj/item/stack/sheet/mineral/plasma = list("plasma_dust" = 20),
 		/obj/item/stack/sheet/metal = list("iron" = 20),
 		/obj/item/stack/rods = list("iron" = 10),

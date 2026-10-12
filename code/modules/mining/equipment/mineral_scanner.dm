@@ -26,6 +26,7 @@
 /obj/item/mining_scanner/admin/attack_self__legacy__attackchain(mob/user)
 	for(var/turf/simulated/mineral/M in world)
 		if(M.ore?.scan_icon_state)
+			M.icon = M.ore.scan_icon
 			M.icon_state = M.ore.scan_icon_state
 	qdel(src)
 
@@ -66,7 +67,10 @@
 			if(oldC)
 				qdel(oldC)
 			var/obj/effect/temp_visual/mining_overlay/C = new /obj/effect/temp_visual/mining_overlay(M)
+			C.icon = M.ore.scan_icon
 			C.icon_state = M.ore.scan_icon_state
+			C.pixel_x = M.ore.scan_pixel_offset
+			C.pixel_y = M.ore.scan_pixel_offset
 			M.vis_contents += C
 
 /obj/effect/temp_visual/mining_overlay
