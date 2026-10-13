@@ -104,13 +104,18 @@
 			if(!AM.CanPass(dummy,turf,1))
 				qdel(dummy)
 				return FALSE
-		for(var/obj/effect/ebeam/medical/B in turf)// Don't cross the str-beams!
-			if(B.owner && B.owner != current_beam && !QDELETED(B)) // only blow up if it has a CONFIRMED different owner than us. Don't want it blowing up on creation/deletion of beams.
-				turf.visible_message(SPAN_USERDANGER("The medbeams cross and EXPLODE!"))
-				explosion(B.loc,0,3,5,8, cause = "Crossed beams")
-				qdel(dummy)
-				return FALSE
+		if(!check_beam_crossing(turf, current_beam))
+			qdel(dummy)
+			return FALSE
 	qdel(dummy)
+	return TRUE
+
+/obj/item/gun/medbeam/proc/check_beam_crossing(turf/tile, datum/beam/current_beam)
+	for(var/obj/effect/ebeam/medical/B in tile)// Don't cross the str-beams!
+		if(B.owner && B.owner != current_beam && !QDELETED(B)) // Only confirmed different owners can explode.
+			tile.visible_message(SPAN_USERDANGER("The medbeams cross and EXPLODE!"))
+			explosion(B.loc,0,3,5,8, cause = "Crossed beams")
+			return FALSE
 	return TRUE
 
 /obj/item/gun/medbeam/proc/on_beam_tick(mob/living/user, mob/living/target)
