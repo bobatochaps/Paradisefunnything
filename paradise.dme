@@ -3803,6 +3803,7 @@
 #include "code\modules\gs13\cyborg_feeding.dm"
 #include "code\modules\gs13\portable_blender.dm"
 #include "code\modules\gs13\feeding_machine.dm"
+#include "code\modules\gs13\adipoelectric.dm"
 #include "code\modules\gs13\fattening_component.dm"
 #include "code\modules\gs13\calorite.dm"
 #include "code\modules\gs13\fat_stun.dm"
