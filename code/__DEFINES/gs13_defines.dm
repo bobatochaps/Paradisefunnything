@@ -60,6 +60,7 @@
 #define COMSIG_FATNESS_REAL_CHANGED "fatness_real_changed"
 #define COMSIG_FATNESS_PERMA_CHANGED "fatness_perma_changed"
 #define COMSIG_FATNESS_CHANGED "fatness_changed"
+#define COMSIG_GS13_BLENDER_CONTAINER_CHANGED "gs13_blender_container_changed"
 #define GS13_WEIGHT_TRAIT "gs13_weight"
 #define FULLNESS_MAX 2000
 #define FULLNESS_LEVEL_BLOATED 750
