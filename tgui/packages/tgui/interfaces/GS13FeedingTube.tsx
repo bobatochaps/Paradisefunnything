@@ -19,15 +19,11 @@ export const GS13FeedingTube = () => {
       <Window.Content>
         <Section title="Feeding tube">
           <LabeledList>
-            <LabeledList.Item label="Container">
-              {data.container || 'None loaded'}
-            </LabeledList.Item>
+            <LabeledList.Item label="Container">{data.container || 'None loaded'}</LabeledList.Item>
             <LabeledList.Item label="Contents">
               {data.volume.toFixed(1)} / {data.capacity} units
             </LabeledList.Item>
-            <LabeledList.Item label="Recipient">
-              {data.target || 'Drag the machine onto a recipient'}
-            </LabeledList.Item>
+            <LabeledList.Item label="Recipient">{data.target || 'Drag the machine onto a recipient'}</LabeledList.Item>
             <LabeledList.Item label="Flow rate">
               <NumberInput
                 value={data.rate}
