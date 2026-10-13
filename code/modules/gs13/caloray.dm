@@ -172,6 +172,10 @@
 	var/datum/beam/current_beam = locateUID(beam_UID)
 	if(current_beam)
 		UnregisterSignal(current_beam, COMSIG_PARENT_QDELETING)
+	// The native parent unconditionally qdels its beam. A beam's QDELETING
+	// callback must clear the UID first to avoid re-entering its Destroy().
+	if(QDELETED(current_beam))
+		beam_UID = null
 	if(current_target)
 		UnregisterSignal(current_target, COMSIG_PARENT_QDELETING)
 	. = ..()

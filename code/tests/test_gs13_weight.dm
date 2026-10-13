@@ -1388,6 +1388,7 @@
 	var/mob/living/carbon/human/subject = allocate(/mob/living/carbon/human)
 	var/obj/item/gun/medbeam/caloray/gun = gs13_prepare_caloray(user, subject)
 	subject.adjustBruteLoss(10)
+	var/starting_damage = subject.getBruteLoss()
 	subject.adjust_perma(20, FATTENING_TYPE_ALMIGHTY, TRUE)
 	var/starting_charge = gun.cell.charge
 	gun.afterattack__legacy__attackchain(subject, user, FALSE, null)
@@ -1396,7 +1397,7 @@
 	TEST_ASSERT_EQUAL(subject.fatness_real, 10, "Default intensity converts 500 cell charge to ten weight after the gain multiplier")
 	TEST_ASSERT_EQUAL(gun.cell.charge, starting_charge - 500, "Native boolean cell.use must still account for the actual requested energy")
 	TEST_ASSERT_EQUAL(subject.fatness_perma, 20, "The Caloray never converts permanent weight")
-	TEST_ASSERT_EQUAL(subject.getBruteLoss(), 10, "The Caloray must not inherit medical beam healing")
+	TEST_ASSERT(abs(subject.getBruteLoss() - starting_damage) < 0.001, "The Caloray must not inherit medical beam healing")
 	gun.cell.charge = 250
 	gs13_tick_caloray(gun)
 	TEST_ASSERT_EQUAL(subject.fatness_real, 15, "A partially charged cell supplies only its remaining energy")
