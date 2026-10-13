@@ -715,3 +715,88 @@
 	TEST_ASSERT_NOTNULL(sheets, "Dismantled statues recover calorite sheets")
 	TEST_ASSERT_EQUAL(sheets.amount, 5, "Statue recovery matches its construction cost")
 	qdel(sheets)
+
+/datum/game_test/room_test/gs13_calorite_pen/Run()
+	var/mob/living/carbon/human/attacker = allocate(/mob/living/carbon/human)
+	var/mob/living/carbon/human/subject = allocate(/mob/living/carbon/human)
+	subject.forceMove(get_turf(attacker))
+	attacker.a_intent = INTENT_HARM
+	subject.gs13_preferences = gs13_default_preferences()
+	subject.gs13_preferences["master_wg_pref"] = TRUE
+	subject.gs13_preferences["severe_fatness_penalty"] = TRUE
+	var/obj/item/pen/calorite/syndicate/pen = allocate(/obj/item/pen/calorite/syndicate)
+	pen.forceMove(attacker)
+	pen.melee_attack_chain(attacker, subject)
+	TEST_ASSERT_EQUAL(subject.micro_calorite_poisoning, 0, "Pen effects require the item preference")
+	subject.gs13_preferences["weight_gain_items"] = TRUE
+	pen.melee_attack_chain(attacker, subject)
+	TEST_ASSERT_EQUAL(subject.fatness_real, 2.5, "Pen applies ordinary weight through the native attack chain")
+	TEST_ASSERT_EQUAL(subject.micro_calorite_poisoning, 0.5, "A permitted pen stab applies calorite exposure")
+	TEST_ASSERT_EQUAL(subject.fatness_perma, 0, "Permanent pen effects require their own preference")
+	subject.gs13_preferences["weight_gain_permanent"] = TRUE
+	pen.melee_attack_chain(attacker, subject)
+	TEST_ASSERT_EQUAL(subject.fatness_perma, 10, "Permanent pen effects use the configured gain multiplier")
+	subject.status_flags |= GODMODE
+	pen.melee_attack_chain(attacker, subject)
+	TEST_ASSERT_EQUAL(subject.micro_calorite_poisoning, 1, "Godmode prevents pen exposure")
+	TEST_ASSERT_EQUAL(subject.getBruteLoss(), 0, "Calorite pens retain the native pen's zero brute damage")
+
+/datum/game_test/room_test/gs13_feeder_crossbow/Run()
+	var/mob/living/carbon/human/shooter = allocate(/mob/living/carbon/human)
+	var/mob/living/carbon/human/subject = allocate(/mob/living/carbon/human)
+	subject.forceMove(get_turf(shooter))
+	subject.gs13_preferences = gs13_default_preferences()
+	subject.gs13_preferences["master_wg_pref"] = TRUE
+	subject.gs13_preferences["weight_gain_weapons"] = TRUE
+	var/obj/item/gun/energy/kinetic_accelerator/crossbow/feeder/gun = allocate(/obj/item/gun/energy/kinetic_accelerator/crossbow/feeder)
+	gun.forceMove(shooter)
+	gun.process_fire(subject, shooter, FALSE, zone_override = "chest")
+	TEST_ASSERT_EQUAL(subject.reagents.get_reagent_amount("lipoifier"), 2, "A native crossbow shot delivers its chemical payload")
+	TEST_ASSERT_EQUAL(subject.getToxLoss(), 0, "The feeder variant replaces toxin damage")
+	TEST_ASSERT(subject.getStaminaLoss() > 0, "The feeder variant retains native incapacitation")
+	TEST_ASSERT(gun.icon_state in icon_states(gun.icon), "The crossbow has its source object sprite")
+	TEST_ASSERT(gun.empty_state in icon_states(gun.icon), "The crossbow has its source empty overlay")
+	subject.reagents.metabolize(subject)
+	TEST_ASSERT_EQUAL(subject.fatness_real, 0, "Injected chemicals still respect the chemical preference")
+	subject.gs13_preferences["weight_gain_chems"] = TRUE
+	subject.reagents.metabolize(subject)
+	TEST_ASSERT_EQUAL(subject.fatness_real, 6, "Permitted lipoifier metabolizes normally after injection")
+	subject.reagents.clear_reagents()
+	var/obj/projectile/energy/bolt/fattening/bolt = allocate(/obj/projectile/energy/bolt/fattening)
+	bolt.on_hit(subject, INFINITY, "chest")
+	TEST_ASSERT_EQUAL(subject.reagents.get_reagent_amount("lipoifier"), 0, "Complete armor immunity prevents injection")
+	bolt.on_hit(subject, 50, "chest")
+	TEST_ASSERT_EQUAL(subject.reagents.get_reagent_amount("lipoifier"), 1, "Partial armor scales injection through the native armor equation")
+	subject.gs13_preferences["weight_gain_weapons"] = FALSE
+	bolt.on_hit(subject, 0, "chest")
+	TEST_ASSERT_EQUAL(subject.reagents.get_reagent_amount("lipoifier"), 1, "Disabling weapon effects prevents further injection")
+
+/datum/game_test/room_test/gs13_chemical_grenades/Run()
+	for(var/grenade_type in list(/obj/item/grenade/chem_grenade/lipoifier, /obj/item/grenade/chem_grenade/galbanic, /obj/item/grenade/chem_grenade/fatmix))
+		var/obj/item/grenade/chem_grenade/grenade = allocate(grenade_type)
+		TEST_ASSERT_EQUAL(length(grenade.beakers), 2, "[grenade_type] contains both prepared beakers")
+		var/turf/location = get_turf(grenade)
+		var/mob/living/carbon/human/unprotected = allocate(/mob/living/carbon/human, location)
+		var/mob/living/carbon/human/protected = allocate(/mob/living/carbon/human, location)
+		var/obj/item/clothing/mask/gas/mask = allocate(/obj/item/clothing/mask/gas)
+		protected.equip_to_slot_if_possible(mask, ITEM_SLOT_MASK)
+		var/list/previous_processing = SSfastprocess.processing.Copy()
+		grenade.prime()
+		TEST_ASSERT(QDELETED(grenade), "[grenade_type] detonates through the native grenade mechanism")
+		var/datum/effect_system/smoke_spread/chem/smoke
+		for(var/datum/effect_system/smoke_spread/chem/candidate in SSfastprocess.processing - previous_processing)
+			if(candidate.location == location)
+				smoke = candidate
+				break
+		TEST_ASSERT_NOTNULL(smoke, "[grenade_type] creates native chemical smoke")
+		var/payload = grenade_type == /obj/item/grenade/chem_grenade/galbanic ? "fermi_fat" : "lipoifier"
+		TEST_ASSERT(smoke.chemholder.reagents.has_reagent(payload), "The smoke retains the grenade's active payload")
+		smoke.SmokeEm(1)
+		TEST_ASSERT(unprotected.reagents.has_reagent(payload), "An unprotected carbon inhales the payload")
+		TEST_ASSERT_NOT(protected.reagents.has_reagent(payload), "A native gas mask blocks payload inhalation")
+		unprotected.reagents.metabolize(unprotected)
+		TEST_ASSERT_EQUAL(unprotected.fatness_real, 0, "Smoke cannot bypass disabled weight preferences")
+		STOP_PROCESSING(SSfastprocess, smoke)
+		qdel(smoke)
+		qdel(unprotected)
+		qdel(protected)

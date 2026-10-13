@@ -74,6 +74,67 @@
 	reference = "GSMAT"
 	cost = 5
 
+/datum/uplink_item/adipowarfare/lipoifiergrenade
+	name = "Lipoifier Smoke Grenade"
+	desc = "A smoke grenade containing lipoifier, which causes rapid weight gain when inhaled."
+	item = /obj/item/grenade/chem_grenade/lipoifier
+	reference = "GSLGR"
+	cost = 2
+	can_discount = FALSE
+
+/datum/uplink_item/adipowarfare/galbanicgrenade
+	name = "Galbanic Smoke Grenade"
+	desc = "A smoke grenade containing galbanic compound, which causes ordinary and permanent weight gain."
+	item = /obj/item/grenade/chem_grenade/galbanic
+	reference = "GSGGR"
+	cost = 3
+	can_discount = FALSE
+
+/datum/uplink_item/adipowarfare/fattonatorgrenade
+	name = "Fattonator Smoke Grenade"
+	desc = "A smoke grenade containing lipoifier, galbanic compound, and micro calorite."
+	item = /obj/item/grenade/chem_grenade/fatmix
+	reference = "GSFGR"
+	cost = 4
+
+/datum/uplink_item/adipowarfare/caloritepen
+	name = "Galbanic-Infused Calorite Pen"
+	desc = "A calorite-tipped pen that causes ordinary and permanent weight gain and calorite exposure on a stab."
+	item = /obj/item/pen/calorite/syndicate
+	reference = "GSPEN"
+	cost = 1
+	can_discount = FALSE
+
+/datum/uplink_item/adipowarfare/feeder_ebow
+	name = "Feeder's Mini Energy Crossbow"
+	desc = "A self-charging mini energy crossbow that injects lipoifier while incapacitating its target."
+	item = /obj/item/gun/energy/kinetic_accelerator/crossbow/feeder
+	reference = "GSBOW"
+	cost = 2
+	can_discount = FALSE
+
+/datum/uplink_item/adipowarfare/lipoifier_beaker
+	name = "Beaker of Lipoifier"
+	desc = "A beaker containing 50 units of lipoifier. Ingestion causes rapid weight gain."
+	item = /obj/item/reagent_containers/glass/beaker/lipoifier
+	reference = "GSLBE"
+	cost = 1
+	can_discount = FALSE
+
+/datum/uplink_item/adipowarfare/galbanic_beaker
+	name = "Beaker of Galbanic Compound"
+	desc = "A beaker containing 50 units of galbanic compound. Some of the resulting weight gain is permanent."
+	item = /obj/item/reagent_containers/glass/beaker/galbanic
+	reference = "GSGBE"
+	cost = 2
+
+/datum/uplink_item/adipowarfare/micro_calorite_beaker
+	name = "Beaker of Micro-Calorite"
+	desc = "A beaker containing 50 units of micro calorite. Ingestion changes weight metabolism and accumulates calorite exposure."
+	item = /obj/item/reagent_containers/glass/beaker/micro_calorite
+	reference = "GSMBE"
+	cost = 2
+
 /obj/item/borg/upgrade/fatoray
 	name = "cyborg Fatoray module"
 	desc = "Adds a mounted Basic Fatoray to a cyborg's selected module. The gun recharges from the cyborg's cell."
