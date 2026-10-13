@@ -128,7 +128,8 @@
 		icon = initial(icon)
 	smoothing_flags = SMOOTH_BITMASK | SMOOTH_OBJ
 	icon_state = initial(icon_state)
-	icon_state = "[base_icon_state]-[smoothing_junction]"
+	// A newly spawned falsewall can close before its first smoothing pass.
+	icon_state = "[base_icon_state]-[isnull(smoothing_junction) ? 0 : smoothing_junction]"
 	QUEUE_SMOOTH(src)
 
 /obj/structure/falsewall/proc/ChangeToWall(delete = TRUE)
