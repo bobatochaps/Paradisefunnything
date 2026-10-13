@@ -50,6 +50,11 @@
 	var/icon_state_skirt = dye_key == DYE_REGISTRY_UNDER ? "" : "skirt"
 	icon_state = "[icon_state_prefix][icon_state_skirt]"
 	inhand_icon_state = "[icon_state_prefix]_suit"
+	gs13_modular_palette_key = palette_key
+	if(gs13_modular_icon && ishuman(loc))
+		var/mob/living/carbon/human/wearer = loc
+		if(wearer.w_uniform == src)
+			wearer.update_inv_w_uniform()
 
 /obj/item/clothing/under/color/set_icon_from_cache(palette_key, dye_key)
 	palette_key = palette_key || icon_palette_key
@@ -115,6 +120,7 @@
 
 /obj/item/clothing/under/color/grey
 	name = "grey jumpsuit"
+	gs13_modular_icon = 'modular_gs/icons/mob/modclothes/modular_grey.dmi'
 	desc = "A tasteful grey jumpsuit that reminds you of the good old days."
 	icon_palette_key = DYE_GREY
 
@@ -128,6 +134,7 @@
 
 /obj/item/clothing/under/color/grey/glorf
 	name = "ancient jumpsuit"
+	gs13_modular_icon = null
 	desc = "A terribly ragged and frayed grey jumpsuit. It looks like it hasn't been washed in over a decade."
 	icon_state = "ancient"
 	icon_palette_key = null

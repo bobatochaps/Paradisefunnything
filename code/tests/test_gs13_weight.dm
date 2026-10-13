@@ -1567,3 +1567,152 @@
 	gs13_tick_caloray(gun)
 	TEST_ASSERT_NOT(gun.active, "Native process range checking interrupts a distant target")
 	TEST_ASSERT_NOT(gun.process_fire(subject, user), "A target beyond range cannot start a beam")
+
+/datum/game_test/room_test/proc/gs13_weight_panel_states(mob/living/carbon/human/subject)
+	var/list/states = list()
+	for(var/mutable_appearance/panel as anything in subject.overlays_standing[GS13_WEIGHT_BODY_LAYER])
+		states += panel.icon_state
+	return states
+
+/datum/game_test/room_test/proc/gs13_render_weight_preview(mob/living/carbon/human/subject, label)
+	COMPILE_OVERLAYS(subject)
+	var/icon/preview = icon('icons/effects/effects.dmi', "nothing")
+	preview.Crop(1, 1, 128, 32)
+	var/column = 0
+	for(var/direction in list(SOUTH, NORTH, EAST, WEST))
+		subject.dir = direction
+		var/icon/flat = getFlatIcon(subject, defdir = direction, no_anim = TRUE)
+		preview.Blend(flat, ICON_OVERLAY, column * 32 + 1, 1)
+		column++
+	// Retain real BYOND renders in the CI log for visual review, not mockups.
+	world.log << "GS13_WEIGHT_PREVIEW [label] [icon2base64(preview)]"
+
+/datum/game_test/room_test/gs13_weight_appearance_stages/Run()
+	var/mob/living/carbon/human/subject = allocate(/mob/living/carbon/human)
+	subject.gs13_preferences = gs13_default_preferences()
+	subject.gs13_preferences["master_wg_pref"] = TRUE
+	var/stage = 0
+	for(var/threshold in list(FATNESS_LEVEL_FAT, FATNESS_LEVEL_FATTER, FATNESS_LEVEL_VERYFAT, FATNESS_LEVEL_OBESE, FATNESS_LEVEL_MORBIDLY_OBESE, FATNESS_LEVEL_EXTREMELY_OBESE, FATNESS_LEVEL_BARELYMOBILE, FATNESS_LEVEL_IMMOBILE, FATNESS_LEVEL_BLOB))
+		stage++
+		subject.fatness_real = threshold
+		subject.calculate_fatness()
+		var/list/states = gs13_weight_panel_states(subject)
+		TEST_ASSERT("m_belly_smoothnoarms_[stage]_FRONT" in states, "Each native weight boundary selects the corresponding source belly sprite")
+		TEST_ASSERT("m_butt_pair_gs_[stage]_ADJ_primary" in states, "Each native weight boundary selects the corresponding source hip sprite")
+		for(var/mutable_appearance/panel as anything in subject.overlays_standing[GS13_WEIGHT_BODY_LAYER])
+			TEST_ASSERT(icon_exists(panel.icon, panel.icon_state), "All selected source body sprites exist")
+	var/list/cached = subject.overlays_standing[GS13_WEIGHT_BODY_LAYER]
+	subject.adjust_fatness(1, FATTENING_TYPE_ALMIGHTY, TRUE)
+	TEST_ASSERT_EQUAL(subject.overlays_standing[GS13_WEIGHT_BODY_LAYER], cached, "Weight changes within a stage reuse the cached appearance")
+	subject.fully_heal_fatness(TRUE, "", "")
+	TEST_ASSERT_NULL(subject.overlays_standing[GS13_WEIGHT_BODY_LAYER], "Losing all added weight removes the body panels")
+	subject.adjust_fatness(FATNESS_LEVEL_OBESE, FATTENING_TYPE_ALMIGHTY, TRUE)
+	subject.gs13_preferences["weight_body_sprites"] = FALSE
+	subject.calculate_fatness()
+	TEST_ASSERT_NULL(subject.overlays_standing[GS13_WEIGHT_BODY_LAYER], "The appearance preference removes existing panels without changing weight")
+	TEST_ASSERT_EQUAL(subject.fatness_real, FATNESS_LEVEL_OBESE, "Disabling appearance does not discard weight")
+
+/datum/game_test/room_test/gs13_weight_appearance_uniforms/Run()
+	var/mob/living/carbon/human/subject = allocate(/mob/living/carbon/human)
+	subject.gs13_preferences = gs13_default_preferences()
+	subject.gs13_preferences["master_wg_pref"] = TRUE
+	subject.adjust_fatness(FATNESS_LEVEL_OBESE, FATTENING_TYPE_ALMIGHTY, TRUE)
+	var/obj/item/clothing/under/color/grey/uniform = allocate(/obj/item/clothing/under/color/grey)
+	TEST_ASSERT(subject.equip_to_slot_if_possible(uniform, ITEM_SLOT_JUMPSUIT), "The modular grey suit uses native equipment slots")
+	var/list/states = gs13_weight_panel_states(subject)
+	TEST_ASSERT("belly_soft_4" in states, "Equipping a modular suit covers the current belly stage")
+	TEST_ASSERT("butt_4_NORTH" in states, "Directional hip panels are included")
+	TEST_ASSERT_EQUAL(length(states), 4, "Clothed bodies do not leak unclothed body panels")
+	uniform.roll_undersuit(subject)
+	states = gs13_weight_panel_states(subject)
+	TEST_ASSERT("belly_soft_4_d" in states, "Native uniform rolling selects the source rolled-down panels")
+	TEST_ASSERT("m_belly_smoothnoarms_4_FRONT" in states, "Rolling down a suit exposes the native body overlay")
+	uniform.roll_undersuit(subject)
+	uniform.dye_item(DYE_RED)
+	var/list/red_palette = GLOB.palette_registry[DYE_REGISTRY_UNDER][DYE_RED]
+	for(var/mutable_appearance/panel as anything in subject.overlays_standing[GS13_WEIGHT_BODY_LAYER])
+		TEST_ASSERT_EQUAL(panel.color, red_palette[length(red_palette)], "Native dyeing updates every modular panel immediately")
+	var/obj/item/clothing/suit/space/cover = allocate(/obj/item/clothing/suit/space)
+	TEST_ASSERT(subject.equip_to_slot_if_possible(cover, ITEM_SLOT_OUTER_SUIT), "A native spacesuit can cover the modular uniform")
+	TEST_ASSERT_NULL(subject.overlays_standing[GS13_WEIGHT_BODY_LAYER], "HIDEJUMPSUIT suppresses the complete expansion overlay")
+	subject.drop_item_to_ground(cover)
+	TEST_ASSERT("belly_soft_4" in gs13_weight_panel_states(subject), "Removing the cover restores the modular silhouette")
+	subject.drop_item_to_ground(uniform)
+	TEST_ASSERT_EQUAL(length(gs13_weight_panel_states(subject)), 2, "Removing the uniform restores body panels and clears clothing panels")
+
+/datum/game_test/room_test/gs13_weight_appearance_concealment/Run()
+	var/mob/living/carbon/human/subject = allocate(/mob/living/carbon/human)
+	subject.gs13_preferences = gs13_default_preferences()
+	subject.gs13_preferences["master_wg_pref"] = TRUE
+	subject.adjust_fatness(FATNESS_LEVEL_OBESE, FATTENING_TYPE_ALMIGHTY, TRUE)
+	var/obj/item/bluespace_belt/belt = allocate(/obj/item/bluespace_belt)
+	belt.forceMove(subject)
+	belt.equipped(subject, ITEM_SLOT_BELT)
+	TEST_ASSERT_NULL(subject.overlays_standing[GS13_WEIGHT_BODY_LAYER], "The belt hides regular weight in both measurements and silhouette")
+	subject.adjust_perma(FATNESS_LEVEL_FAT, FATTENING_TYPE_ALMIGHTY, TRUE)
+	TEST_ASSERT("m_belly_smoothnoarms_1_FRONT" in gs13_weight_panel_states(subject), "Unconcealed permanent weight still affects the body stage")
+	qdel(belt)
+	TEST_ASSERT("m_belly_smoothnoarms_4_FRONT" in gs13_weight_panel_states(subject), "Removing concealment restores the combined weight stage")
+	subject.nutrition = FULLNESS_LEVEL_BEEG + 1
+	var/obj/item/clothing/under/color/grey/uniform = allocate(/obj/item/clothing/under/color/grey)
+	subject.equip_to_slot_if_possible(uniform, ITEM_SLOT_JUMPSUIT)
+	TEST_ASSERT("belly_stuffed_5" in gs13_weight_panel_states(subject), "Fullness selects stuffed clothing one size up at the source threshold")
+	subject.nutrition = NUTRITION_LEVEL_FULL
+	subject.handle_weight_gain(0)
+	TEST_ASSERT("belly_soft_4" in gs13_weight_panel_states(subject), "Fullness recovery refreshes clothing even when weight stage is unchanged")
+	subject.gs13_preferences["master_wg_pref"] = FALSE
+	subject.handle_weight_gain(0)
+	TEST_ASSERT_NULL(subject.overlays_standing[GS13_WEIGHT_BODY_LAYER], "Disabling the master switch clears the complete appearance layer")
+
+/datum/game_test/room_test/gs13_weight_appearance_anatomy/Run()
+	var/mob/living/carbon/human/subject = allocate(/mob/living/carbon/human)
+	subject.gs13_preferences = gs13_default_preferences()
+	subject.gs13_preferences["master_wg_pref"] = TRUE
+	subject.adjust_fatness(FATNESS_LEVEL_OBESE, FATTENING_TYPE_ALMIGHTY, TRUE)
+	var/obj/item/organ/external/leg = subject.get_organ(BODY_ZONE_L_LEG)
+	leg.droplimb(clean = TRUE, nodamage = TRUE)
+	subject.update_body(TRUE)
+	var/list/states = gs13_weight_panel_states(subject)
+	TEST_ASSERT("m_belly_smoothnoarms_4_FRONT" in states, "Removing a leg preserves the remaining torso appearance")
+	TEST_ASSERT_EQUAL(length(states), 1, "Source hip sprites cannot redraw a missing leg")
+	var/obj/item/organ/external/chest = subject.get_organ(BODY_ZONE_CHEST)
+	chest.status |= ORGAN_ROBOT
+	subject.update_body(TRUE)
+	TEST_ASSERT_NULL(subject.overlays_standing[GS13_WEIGHT_BODY_LAYER], "Organic weight sprites are not painted over a robotic torso")
+	chest.status &= ~ORGAN_ROBOT
+	ADD_TRAIT(subject, TRAIT_SKELETONIZED, "gs13_render_test")
+	subject.update_body(TRUE)
+	TEST_ASSERT_NULL(subject.overlays_standing[GS13_WEIGHT_BODY_LAYER], "Skeletonized bodies do not regain flesh from the adapter")
+	REMOVE_TRAIT(subject, TRAIT_SKELETONIZED, "gs13_render_test")
+	subject.set_species(/datum/species/unathi)
+	TEST_ASSERT_NULL(subject.overlays_standing[GS13_WEIGHT_BODY_LAYER], "Changing to an unadapted species removes the human panels")
+
+/datum/game_test/room_test/gs13_weight_appearance_skin_and_previews/Run()
+	var/mob/living/carbon/human/subject = allocate(/mob/living/carbon/human)
+	subject.gs13_preferences = gs13_default_preferences()
+	subject.gs13_preferences["master_wg_pref"] = TRUE
+	var/obj/item/clothing/under/color/grey/uniform = allocate(/obj/item/clothing/under/color/grey)
+	subject.equip_to_slot_if_possible(uniform, ITEM_SLOT_JUMPSUIT)
+	gs13_render_weight_preview(subject, "uniform_normal")
+	for(var/threshold in list(FATNESS_LEVEL_FAT, FATNESS_LEVEL_OBESE, FATNESS_LEVEL_BLOB))
+		subject.fatness_real = threshold
+		subject.calculate_fatness()
+		gs13_render_weight_preview(subject, "uniform_[gs13_weight_stage(threshold)]")
+	subject.fatness_real = FATNESS_LEVEL_OBESE
+	subject.calculate_fatness()
+	subject.drop_item_to_ground(uniform)
+	subject.s_tone = 1
+	subject.update_body(TRUE)
+	var/list/panels = subject.overlays_standing[GS13_WEIGHT_BODY_LAYER]
+	var/mutable_appearance/light_skin = panels[1]
+	var/light_color = light_skin.color
+	gs13_render_weight_preview(subject, "body_light")
+	subject.s_tone = 13
+	subject.update_body(TRUE)
+	panels = subject.overlays_standing[GS13_WEIGHT_BODY_LAYER]
+	var/mutable_appearance/dark_skin = panels[1]
+	TEST_ASSERT(dark_skin.color != light_color, "Changing native skin tone also updates the body panels")
+	gs13_render_weight_preview(subject, "body_dark")
+	var/list/cached = subject.overlays_standing[GS13_WEIGHT_BODY_LAYER]
+	subject.regenerate_icons()
+	TEST_ASSERT_EQUAL(length(subject.overlays_standing[GS13_WEIGHT_BODY_LAYER]), length(cached), "Native icon regeneration preserves exactly one set of body panels")

@@ -62,6 +62,7 @@
 	if(max_weight && !HAS_TRAIT(src, TRAIT_UNIVERSAL_GAINER))
 		fatness = min(fatness, max(0, max_weight - 1))
 	SEND_SIGNAL(src, COMSIG_FATNESS_CHANGED, fatness)
+	update_gs13_weight_appearance()
 
 /mob/living/carbon/proc/fully_heal_fatness(remove_perma = FALSE, custom_remove_text = "You feel much lighter.", custom_perma_remove_text = "Your permanent weight vanishes.")
 	fatness_real = 0
@@ -123,6 +124,7 @@
 	handle_calorite_poisoning(seconds)
 	update_gs13_weight_alerts()
 	handle_gs13_fullness(seconds)
+	update_gs13_weight_appearance()
 
 /mob/living/carbon/proc/calculate_fatness_weight_in_pounds(amount)
 	return round(amount * FATNESS_TO_WEIGHT_RATIO, 0.1)

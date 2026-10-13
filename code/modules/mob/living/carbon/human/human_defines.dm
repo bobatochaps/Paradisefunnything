@@ -103,6 +103,8 @@
 	var/original_eye_color = "#000000"
 
 	var/list/overlays_standing[TOTAL_LAYERS]
+	/// The last GS13 body stage/fullness combination used to build overlays.
+	var/gs13_weight_appearance_key
 	/// Stores what the body last looked like. Prevents updating the body when we don't need to
 	var/previous_damage_appearance
 

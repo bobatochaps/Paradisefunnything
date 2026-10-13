@@ -2,6 +2,7 @@
 /proc/gs13_default_preferences()
 	return list(
 		"master_wg_pref" = FALSE,
+		"weight_body_sprites" = TRUE,
 		"starting_fatness" = 0,
 		"weight_gain_rate" = 0.5,
 		"weight_loss_rate" = 0.5,
@@ -24,6 +25,7 @@
 /proc/gs13_preference_labels()
 	return list(
 		"master_wg_pref" = "Enable weight gain",
+		"weight_body_sprites" = "Show weight body sprites (human body and modular uniforms)",
 		"starting_fatness" = "Starting body fat index",
 		"weight_gain_rate" = "Weight gain multiplier",
 		"weight_loss_rate" = "Weight loss multiplier",

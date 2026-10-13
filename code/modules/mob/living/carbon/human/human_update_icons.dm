@@ -298,6 +298,7 @@ GLOBAL_LIST_EMPTY(damage_icon_parts)
 	//hair
 	update_hair()
 	update_fhair()
+	update_gs13_weight_appearance(TRUE)
 
 
 //MARKINGS OVERLAY
@@ -677,6 +678,7 @@ GLOBAL_LIST_EMPTY(damage_icon_parts)
 					thing.plane = initial(thing.plane)
 	apply_overlay(UNIFORM_LAYER)
 	update_hands_layer()
+	update_gs13_weight_appearance(TRUE)
 
 /mob/living/carbon/human/update_inv_wear_id()
 	remove_overlay(ID_LAYER)
@@ -968,6 +970,7 @@ GLOBAL_LIST_EMPTY(damage_icon_parts)
 	update_wing_layer()
 	update_spines_layer()
 	update_collar()
+	update_gs13_weight_appearance(TRUE)
 
 /mob/living/carbon/human/update_inv_pockets()
 	if(!(client && hud_used))

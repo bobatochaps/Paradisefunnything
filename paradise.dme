@@ -3814,5 +3814,6 @@
 #include "code\modules\gs13\weight.dm"
 #include "code\modules\gs13\weight_hiders.dm"
 #include "code\modules\gs13\weight_hud.dm"
+#include "code\modules\gs13\weight_appearance.dm"
 #include "code\modules\gs13\weight_rates.dm"
 // END_INCLUDE

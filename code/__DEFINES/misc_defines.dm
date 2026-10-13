@@ -188,6 +188,7 @@
 #define FOAM_REACT_BEFORE_SPREAD	(1<<3)
 
 //Human Overlays Indexes/////////
+#define GS13_WEIGHT_BODY_LAYER	54 // Cached GS13 body/clothing panels specify their own draw layers.
 #define EYES_OVERLAY_LAYER		53
 #define MISC_LAYER				52 // Handles eye_shine() -> cybernetic eyes, specific eye traits.
 #define SPINES_LAYER			51
@@ -241,7 +242,7 @@
 #define HALO_LAYER				3	//blood cult ascended halo, because there's currently no better solution for adding/removing
 #define FIRE_LAYER				2	//If you're on fire
 #define FROZEN_LAYER			1
-#define TOTAL_LAYERS			53
+#define TOTAL_LAYERS			54
 
 ///Access Region Codes///
 #define REGION_ALL			0

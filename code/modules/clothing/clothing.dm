@@ -1132,6 +1132,9 @@
 	var/list/accessories = list()
 	var/displays_id = TRUE
 	var/rolled_down = FALSE
+	/// Optional GS13 sheet with belly and hip panels for each weight stage.
+	var/gs13_modular_icon
+	var/gs13_modular_palette_key
 
 /obj/item/clothing/under/rank
 	inhand_icon_state = "bl_suit"
