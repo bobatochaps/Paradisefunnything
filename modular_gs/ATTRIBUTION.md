@@ -5,3 +5,5 @@ Adapted from sheepishgoat/GS13-Blubberstation at ec3ad13bd34b64451813004e32892d4
 Collar behavior is adapted from GS13 `modular_gs/code/clothing/{calorite_collar,bluespace_collar}.dm` and its inherited Skyrat `modules/customization/modules/clothing/neck/collars.dm`. The unchanged Skyrat GAGS collar sheet is preserved as `modular_gs/icons/upstream/gs13_collar.dmi`; GS13 calorite collar sheets and gurgle sounds retain their source paths. Layer colors match the original GAGS JSON configurations.
 
 The turbo nutriment pump and mobility nanite core are adapted from GS13 `modular_gs/code/modules/surgery/organs/augments.dm` and its nutritional research designs, with native Paradise implant assets.
+
+Hydraulic assistance and calovoltaic MOD modules are adapted from GS13 `modular_gs/code/modules/mod/modules/modules_fat.dm`; additive/multiplicative movement modifiers follow its `modular_gs/code/modules/mob/living/species.dm`. The MOD module sheet is copied unchanged at its original `modular_gs/icons/obj/clothing/modsuit/mod_modules.dmi` path.

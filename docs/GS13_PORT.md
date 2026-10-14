@@ -30,7 +30,8 @@ Base: `ParadiseSS13/Paradise@7084a06407db70b41389045dd38f54ae3eb2d1f1`.
 - First native appearance adapter: nine human weight stages, original belly/hip sprites, modular grey and departmental uniform variants, fullness panels, skin-tone updates, dyeing/rolling, clothing concealment, and limb-safe cleanup. Other species and additional clothing families still need adapters.
 - Calorite and bluespace collars: original sprites, native neck slots, key locks and treat storage, dynamic gain modifiers, research/crafting, and remote food/drink/feeding-machine routing. Receiver eligibility is checked on each transfer, and doses are limited to actual capacity.
 - Turbo nutriment pump and mobility nanite core, using native internal-organ surgery, research, EMP/cooldown behavior, and trait cleanup. Original GS13 spawn paths are retained as aliases.
-- Seventy-four focused game regression tests covering the above mechanics and their native integration.
+- Hydraulic movement assistance and calovoltaic MOD modules, using native installation, activation, power cores, research, and removal cleanup. Locked variants and the original module artwork are included. The source's helplessness immunity depends on the remaining helplessness port.
+- Eighty-two focused game regression tests covering the above mechanics and their native integration.
 - Resource filename case corrections in 22 existing Paradise files, required for the pinned upstream revision to compile on Linux.
 
 ## Still incomplete
@@ -71,11 +72,15 @@ The turbo nutriment pump requires Materials 5, Power Storage 4, and Biotech 4; t
 
 The focused test build uses `GAME_TESTS`, `GS13_TESTS`, `CIBUILDING`, and `TEST_CONFIG_OVERRIDE="gs13_tests"`. Set `data/next_map.txt` to `/datum/map/test_tiny`, ensure `tmp/` exists, and run `tools/ci/run_server.sh`. The GS13 Actions workflow performs these steps when Actions is enabled for the fork. This focused suite disables SQL; it does not validate the database migration against a running database.
 
+Hydraulic Assistance research requires Engineering 3 and Materials 3. Calovoltaic Generator research requires Engineering 3, Power Storage 3, and Biotech 3. Both use the native exosuit fabricator's MODsuit Modules category. Install them in a MOD controller, equip and activate the suit, then select the calovoltaic module through the native suit panel. Hydraulics passively reduce body-fat slowdown by two, at one native charge per two-second tick. Calovoltaic generation requests ten ordinary weight loss per second; the default loss multiplier burns five per second and returns 2.5 native charge per weight unit. Master opt-out and weight-loss immunity apply; permanent weight is preserved. A full, missing, or infinite core does not consume weight. Direct spawn paths are `/obj/item/mod/module/hydraulic_movement` and `/obj/item/mod/module/calovoltaic`, each with a `/locked` subtype. Exoskeleton suit distribution and the remaining helplessness effects are still pending.
+
 ## Validation record
 
 Commit `a0e83c3d5924a9b06c1f5fe8b1e0a0d09b041640` compiled with BYOND 516.1666 with zero errors and zero warnings and passed all sixty-two focused game tests without runtime failures in [GitHub Actions](https://github.com/bobatochaps/Paradisefunnything/actions/runs/38449764051). Native BYOND previews of four clothed weight stages and two skin tones were inspected in all four directions. The follow-up prosthetic-leg exclusion at `1ec69f683307d562585b370676c1e495b25a5b5b` also compiled cleanly and passed all sixty-two tests in [GitHub Actions](https://github.com/bobatochaps/Paradisefunnything/actions/runs/38488976610). The collar checkpoint `c741cfa15c694e8ac8b4d726a978ad6bc0bc391e` compiled with zero errors and zero warnings and passed all seventy tests in [GitHub Actions](https://github.com/bobatochaps/Paradisefunnything/actions/runs/38489960953). Its native collar sprite previews were inspected in all four directions. The nutritional-implant checkpoint `c7f2869f315147ac339fcead8cf939db74c2fdf9` compiled with zero errors and zero warnings and passed all seventy-four tests without runtime failures in [GitHub Actions](https://github.com/bobatochaps/Paradisefunnything/actions/runs/38490422041). A follow-up check also covers preservation of the food overlay after a partial spoonful. The new feeding controls passed TypeScript checking and ESLint, and their production TGUI bundle was rebuilt and committed.
 
 DreamChecker 1.11.0 reports zero diagnostics on the expanded game code. The duplicate-definition and define-sanity checks have passed. The BYOND installer uses the community mirror when the official download host fails. No manual client gameplay test or live SQL migration test has been performed yet.
+
+The partial-spoonful checkpoint `5aeb95de556cc01b6e202661f961340cded7acb1` passed all seventy-four tests in [GitHub Actions](https://github.com/bobatochaps/Paradisefunnything/actions/runs/38515935919). The eight added MOD tests are awaiting the expanded native run.
 
 Source and asset attribution is in `modular_gs/ATTRIBUTION.md`.
 

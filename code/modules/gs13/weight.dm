@@ -115,6 +115,8 @@
 				gs13_movement_delay *= FATNESS_STRONGLEGS_MODIFIER
 			if(HAS_TRAIT(src, TRAIT_WEAKLEGS))
 				gs13_movement_delay *= FATNESS_WEAKLEGS_MODIFIER
+			if(gs13_movement_delay)
+				gs13_movement_delay = apply_fatness_speed_modifiers(gs13_movement_delay)
 		if(fatness >= FATNESS_LEVEL_FATTER)
 			ADD_TRAIT(src, TRAIT_FAT, GS13_WEIGHT_TRAIT)
 		else
@@ -125,6 +127,26 @@
 	update_gs13_weight_alerts()
 	handle_gs13_fullness(seconds)
 	update_gs13_weight_appearance()
+
+/// Match GS13's replace-by-name API without allocating unowned modifier datums.
+/mob/living/carbon/proc/add_fat_delay_modifier(name = "", amount = 0, multiplier = 1)
+	if(!istext(name) || !isnum(amount) || !GS13_IS_FINITE(amount) || !isnum(multiplier) || !GS13_IS_FINITE(multiplier))
+		return FALSE
+	fatness_delay_modifiers[name] = list("amount" = amount, "multiplier" = multiplier)
+	return TRUE
+
+/mob/living/carbon/proc/remove_fat_delay_modifier(name)
+	fatness_delay_modifiers -= name
+
+/mob/living/carbon/proc/apply_fatness_speed_modifiers(fatness_delay)
+	var/delay_cap = FATNESS_MAX_MOVE_PENALTY
+	if(HAS_TRAIT(src, TRAIT_WEAKLEGS))
+		delay_cap *= FATNESS_WEAKLEGS_MODIFIER
+	for(var/source in fatness_delay_modifiers)
+		fatness_delay += fatness_delay_modifiers[source]["amount"]
+	for(var/source in fatness_delay_modifiers)
+		fatness_delay *= fatness_delay_modifiers[source]["multiplier"]
+	return clamp(fatness_delay, 0, delay_cap)
 
 /mob/living/carbon/proc/calculate_fatness_weight_in_pounds(amount)
 	return round(amount * FATNESS_TO_WEIGHT_RATIO, 0.1)
