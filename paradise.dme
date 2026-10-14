@@ -3810,6 +3810,7 @@
 #include "code\modules\gs13\mod_modules.dm"
 #include "code\modules\gs13\mod_exoskeleton.dm"
 #include "code\modules\gs13\magic.dm"
+#include "code\modules\gs13\magic_traps.dm"
 #include "code\modules\gs13\fattening_component.dm"
 #include "code\modules\gs13\calorite.dm"
 #include "code\modules\gs13\fat_stun.dm"

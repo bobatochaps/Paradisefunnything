@@ -2429,7 +2429,7 @@
 	spell.charge_hand(caster)
 	var/obj/item/melee/touch_attack/deleted_hand = spell.attached_hand
 	qdel(spell)
-	TEST_ASSERT(QDELETED(deleted_hand), "Deleting the spell removes its active hand before deleting its action")
+	TEST_ASSERT(QDELETED(deleted_hand), "Deleting the spell removes its active hand even after action deletion")
 
 /datum/game_test/room_test/gs13_gain_book/Run()
 	var/mob/living/carbon/human/reader = allocate(/mob/living/carbon/human)
@@ -2518,3 +2518,164 @@
 	wall = wall.ChangeTurf(/turf/simulated/wall)
 	TEST_ASSERT_NOT(bolt.on_hit(wall), "Food cannot be conjured inside a wall")
 	wall.ChangeTurf(original_turf_type)
+
+/datum/game_test/room_test/proc/gs13_cross_trap(atom/movable/victim, obj/structure/trap/gs13/trap, rearm = TRUE)
+	victim.forceMove(get_step(trap, NORTH))
+	if(rearm)
+		trap.last_trigger = world.time - trap.time_between_triggers
+	victim.forceMove(get_turf(trap))
+
+/datum/game_test/room_test/gs13_fattening_trap/Run()
+	var/mob/living/carbon/human/subject = allocate(/mob/living/carbon/human)
+	var/obj/structure/trap/fattening/trap = allocate(/obj/structure/trap/fattening)
+	trap.forceMove(get_turf(bottom_left))
+	subject.gs13_preferences["master_wg_pref"] = TRUE
+	subject.gs13_preferences["weight_gain_magic"] = TRUE
+	gs13_cross_trap(subject, trap, FALSE)
+	TEST_ASSERT_EQUAL(subject.fatness_real, 75, "A newly placed trap is armed and uses the target's magic gain multiplier")
+	gs13_cross_trap(subject, trap, FALSE)
+	TEST_ASSERT_EQUAL(subject.fatness_real, 75, "A persistent trap respects its native cooldown")
+	gs13_cross_trap(subject, trap)
+	TEST_ASSERT_EQUAL(subject.fatness_real, 150, "A persistent trap can trigger after recharging")
+	subject.gs13_preferences["weight_gain_magic"] = FALSE
+	gs13_cross_trap(subject, trap)
+	TEST_ASSERT_EQUAL(subject.fatness_real, 150, "Magic opt-out blocks trap weight gain")
+	subject.gs13_preferences["weight_gain_magic"] = TRUE
+	subject.gs13_preferences["master_wg_pref"] = FALSE
+	gs13_cross_trap(subject, trap)
+	TEST_ASSERT_EQUAL(subject.fatness_real, 150, "Master opt-out blocks trap weight gain")
+	subject.gs13_preferences["master_wg_pref"] = TRUE
+	subject.status_flags |= GODMODE
+	gs13_cross_trap(subject, trap)
+	TEST_ASSERT_EQUAL(subject.fatness_real, 150, "Godmode prevents trap weight gain")
+	var/mob/living/carbon/monkey/monkey = allocate(/mob/living/carbon/monkey)
+	monkey.gs13_preferences["master_wg_pref"] = TRUE
+	monkey.gs13_preferences["weight_gain_magic"] = TRUE
+	gs13_cross_trap(monkey, trap)
+	TEST_ASSERT_EQUAL(monkey.fatness_real, 0, "The source fattening trap affects only human bodies")
+
+/datum/game_test/room_test/gs13_trap_lifecycle/Run()
+	var/obj/projectile/magic/food/projectile = allocate(/obj/projectile/magic/food)
+	var/obj/effect/effect = allocate(/obj/effect)
+	var/obj/item/food/donut/item = allocate(/obj/item/food/donut)
+	var/obj/structure/trap/fattening/trap = allocate(/obj/structure/trap/fattening)
+	var/turf/original_tile = get_turf(bottom_left)
+	trap.forceMove(original_tile)
+	trap.charges = 2
+	gs13_cross_trap(projectile, trap)
+	gs13_cross_trap(effect, trap)
+	TEST_ASSERT_EQUAL(trap.charges, 2, "Projectiles and effects cannot consume trap charges")
+	gs13_cross_trap(item, trap)
+	TEST_ASSERT_EQUAL(trap.charges, 1, "Ordinary objects trigger the native trap")
+	var/turf/new_tile = get_step(original_tile, EAST)
+	trap.forceMove(new_tile)
+	trap.last_trigger = world.time - trap.time_between_triggers
+	item.forceMove(get_step(original_tile, NORTH))
+	item.forceMove(original_tile)
+	TEST_ASSERT_EQUAL(trap.charges, 1, "Moving a trap disconnects its former turf")
+	item.forceMove(new_tile)
+	TEST_ASSERT_EQUAL(trap.charges, 0, "The trap listens on its new turf")
+	gs13_cross_trap(item, trap)
+	TEST_ASSERT_EQUAL(trap.charges, 0, "An exhausted trap cannot trigger during its fading animation")
+	sleep(2 SECONDS)
+	TEST_ASSERT(QDELETED(trap), "The native timer removes an exhausted trap")
+	item.forceMove(original_tile)
+	item.forceMove(new_tile)
+
+/datum/game_test/room_test/gs13_trap_immunity/Run()
+	var/mob/living/carbon/human/caster = allocate(/mob/living/carbon/human)
+	var/mob/living/carbon/human/victim = allocate(/mob/living/carbon/human)
+	caster.mind_initialize()
+	victim.gs13_preferences["master_wg_pref"] = TRUE
+	victim.gs13_preferences["weight_gain_magic"] = TRUE
+	var/datum/spell/aoe/conjure/gs13_traps/fattening/spell = allocate(/datum/spell/aoe/conjure/gs13_traps/fattening)
+	var/list/traps = spell.cast(list(get_turf(bottom_left)), caster)
+	var/obj/structure/trap/fattening/trap = traps[1]
+	gs13_cross_trap(caster, trap)
+	TEST_ASSERT_EQUAL(trap.charges, 1, "A caster cannot trigger their own trap")
+	caster.mind.transfer_to(victim)
+	gs13_cross_trap(victim, trap)
+	TEST_ASSERT_EQUAL(trap.charges, 1, "Trap immunity follows the caster's mind into another body")
+	TEST_ASSERT_EQUAL(victim.fatness_real, 0, "The new caster body remains immune")
+	caster.gs13_preferences["master_wg_pref"] = TRUE
+	caster.gs13_preferences["weight_gain_magic"] = TRUE
+	ADD_TRAIT(caster, TRAIT_ANTIMAGIC, "test")
+	gs13_cross_trap(caster, trap)
+	TEST_ASSERT_EQUAL(trap.charges, 0, "Antimagic consumes a hostile trap's charge")
+	TEST_ASSERT_EQUAL(caster.fatness_real, 0, "Native antimagic blocks the trap effect")
+
+/datum/game_test/room_test/gs13_belch_trap/Run()
+	var/mob/living/carbon/human/subject = allocate(/mob/living/carbon/human)
+	subject.nutrition = FULLNESS_LEVEL_BLOATED + 100
+	var/obj/structure/trap/belch/trap = allocate(/obj/structure/trap/belch)
+	trap.forceMove(get_turf(bottom_left))
+	gs13_cross_trap(subject, trap)
+	TEST_ASSERT_EQUAL(subject.AmountKnockDown(), 8 SECONDS, "Belch traps retain their native knockdown when weight effects are disabled")
+	TEST_ASSERT_EQUAL(subject.fullness_adjustment, 0, "Master opt-out prevents the source emote's fullness effect")
+	subject.gs13_preferences["master_wg_pref"] = TRUE
+	subject.gs13_preferences["weight_gain_magic"] = TRUE
+	gs13_cross_trap(subject, trap)
+	TEST_ASSERT_EQUAL(subject.fullness_adjustment, 0, "The belch effect follows the source's chemical switch rather than the magic switch")
+	subject.gs13_preferences["weight_gain_chems"] = TRUE
+	subject.gs13_preferences["weight_gain_magic"] = FALSE
+	gs13_cross_trap(subject, trap)
+	TEST_ASSERT(subject.fullness_adjustment >= -70 && subject.fullness_adjustment <= -50, "The native burp emote relieves fullness through the chemical preference")
+	var/relief = subject.fullness_adjustment
+	gs13_cross_trap(subject, trap)
+	TEST_ASSERT_EQUAL(subject.fullness_adjustment, relief, "Repeated traps cannot bypass the fullness-relief cooldown")
+	subject.SetKnockDown(0)
+	subject.status_flags |= GODMODE
+	gs13_cross_trap(subject, trap)
+	TEST_ASSERT_NOT(subject.IsKnockedDown(), "Godmode prevents trap knockdown")
+
+/datum/game_test/room_test/gs13_trap_conjuration/Run()
+	var/mob/living/carbon/human/caster = allocate(/mob/living/carbon/human)
+	caster.mind_initialize()
+	var/list/targets = available_turfs.Copy(1, 7)
+	var/turf/dense_tile = targets[6]
+	var/original_type = dense_tile.type
+	dense_tile = dense_tile.ChangeTurf(/turf/simulated/wall)
+	targets[6] = dense_tile
+	for(var/spell_type in list(/datum/spell/aoe/conjure/gs13_traps, /datum/spell/aoe/conjure/gs13_traps/fattening, /datum/spell/aoe/conjure/gs13_traps/belch))
+		var/datum/spell/aoe/conjure/gs13_traps/spell = allocate(spell_type)
+		TEST_ASSERT_EQUAL(spell.summon_lifespan, 5 MINUTES, "Conjured traps retain the source's five-minute lifetime")
+		TEST_ASSERT_EQUAL(spell.cooldown_handler.recharge_duration, 25 SECONDS, "Trap spells retain the source's initial cooldown")
+		TEST_ASSERT(spell.action_icon_state in icon_states(spell.action_icon), "Each trap spell has valid source action artwork")
+		var/list/traps = spell.cast(targets.Copy(), caster)
+		TEST_ASSERT_EQUAL(length(traps), 5, "Every spell variant conjures five traps")
+		var/list/used_turfs = list()
+		for(var/obj/structure/trap/gs13/trap as anything in traps)
+			TEST_ASSERT_NOT(get_turf(trap) in used_turfs, "Each trap occupies a distinct tile")
+			TEST_ASSERT_NOTEQUAL(get_turf(trap), dense_tile, "Conjuration excludes walls")
+			TEST_ASSERT(trap.type in spell.summon_type, "Each variant selects only its declared trap types")
+			TEST_ASSERT_EQUAL(trap.charges, 1, "Summoned traps have one charge")
+			TEST_ASSERT(caster.mind in trap.immune_minds, "Every summoned trap recognizes the caster's mind")
+			TEST_ASSERT(trap.icon_state in icon_states(trap.icon), "Both traps retain valid source artwork")
+			used_turfs += get_turf(trap)
+			qdel(trap)
+	dense_tile.ChangeTurf(original_type)
+	var/datum/spell/aoe/conjure/gs13_traps/timed_spell = allocate(/datum/spell/aoe/conjure/gs13_traps)
+	timed_spell.summon_lifespan = 1 SECONDS
+	var/list/timed_traps = timed_spell.cast(list(get_turf(bottom_left)), caster)
+	var/obj/structure/trap/gs13/expiring = timed_traps[1]
+	sleep(2 SECONDS)
+	TEST_ASSERT(QDELETED(expiring), "Native conjuration timers remove unused traps")
+
+/datum/game_test/room_test/gs13_trap_books/Run()
+	var/mob/living/carbon/human/reader = allocate(/mob/living/carbon/human)
+	reader.mind_initialize()
+	for(var/book_type in list(/obj/item/book/granter/action/spell/traps_fattening, /obj/item/book/granter/action/spell/traps_belch))
+		var/obj/item/book/granter/spell/gs13_traps/book = allocate(book_type)
+		TEST_ASSERT(istype(book), "Both source tome paths use the native spell-granter adapter")
+		TEST_ASSERT(book.icon_state in icon_states(book.icon), "Both trap tomes have valid artwork")
+		book.pages_to_mastery = 0
+		book.reading_time = 0
+		reader.put_in_active_hand(book)
+		book.activate_self(reader)
+		var/datum/spell/learned_spell = locate(book.granted_spell) in reader.mind.spell_list
+		TEST_ASSERT_NOTNULL(learned_spell, "Native reading teaches the corresponding trap spell")
+		TEST_ASSERT(learned_spell.can_cast(reader), "Trap spells do not require wizard clothing")
+		TEST_ASSERT_EQUAL(book.uses, 0, "Each tome supplies one lesson")
+		TEST_ASSERT_NOT(book.can_learn(reader), "Readers cannot learn duplicate copies of a trap spell")
+		reader.drop_item_to_ground(book)
+	TEST_ASSERT_EQUAL(length(reader.mind.spell_list), 2, "The two tomes teach independent spells")

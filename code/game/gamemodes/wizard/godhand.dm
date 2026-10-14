@@ -23,7 +23,10 @@
 /obj/item/melee/touch_attack/Destroy()
 	if(attached_spell)
 		attached_spell.attached_hand = null
-		attached_spell.UnregisterSignal(attached_spell.action.owner, COMSIG_MOB_WILLINGLY_DROP)
+		// The action may already have been removed by the spell's deletion signal.
+		var/mob/spell_owner = attached_spell.action?.owner
+		if(spell_owner)
+			attached_spell.UnregisterSignal(spell_owner, COMSIG_MOB_WILLINGLY_DROP)
 	return ..()
 
 /obj/item/melee/touch_attack/customised_abstract_text(mob/living/carbon/owner)
