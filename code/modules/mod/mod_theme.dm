@@ -114,6 +114,10 @@
 	. = ..()
 	armor_type_2 = new armor_type_1
 
+/// Apply theme-specific part settings to both fabricated and pre-equipped suits.
+/datum/mod_theme/proc/on_apply_skin(obj/item/mod/control/control)
+	return
+
 /obj/item/mod/armor/mod_theme
 	armor = list(MELEE = 15, BULLET = 5, LASER = 5, ENERGY = 5, BOMB = 0, RAD = 25, FIRE = 33, ACID = 33)
 

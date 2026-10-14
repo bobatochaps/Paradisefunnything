@@ -37,8 +37,9 @@
 	var/has_belly = chest && !chest.is_robotic()
 	// The source hip sprite includes both thighs. Do not draw phantom limbs.
 	var/has_hips = groin && !groin.is_robotic() && left_leg && !left_leg.is_robotic() && right_leg && !right_leg.is_robotic()
-	var/chest_covered = (w_uniform?.body_parts_covered & UPPER_TORSO) || (wear_suit?.body_parts_covered & UPPER_TORSO)
-	var/hips_covered = (w_uniform?.body_parts_covered & (LOWER_TORSO | LEGS)) || (wear_suit?.body_parts_covered & (LOWER_TORSO | LEGS))
+	var/suit_coverage = wear_suit?.gs13_shows_weight_body ? NONE : wear_suit?.body_parts_covered
+	var/chest_covered = (w_uniform?.body_parts_covered & UPPER_TORSO) || (suit_coverage & UPPER_TORSO)
+	var/hips_covered = (w_uniform?.body_parts_covered & (LOWER_TORSO | LEGS)) || (suit_coverage & (LOWER_TORSO | LEGS))
 	if(has_belly && stage && !chest_covered)
 		// This source shape does not paint arms over amputations or prosthetics.
 		var/mutable_appearance/belly = mutable_appearance('modular_gs/icons/mob/human/genitals/belly_smooth_noarms.dmi', "m_belly_smoothnoarms_[stage]_FRONT", layer = -LIMBS_LAYER + 0.5)

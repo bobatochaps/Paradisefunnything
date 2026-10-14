@@ -11,6 +11,8 @@
 	var/list/species_restricted
 	/// If set to a sprite path, replaces the sprite for monitor heads
 	var/icon_monitor = null
+	/// Open frames can protect limbs without covering the GS13 body silhouette.
+	var/gs13_shows_weight_body = FALSE
 	/// Can the wearer see reagents inside transparent containers while it's equipped?
 	var/scan_reagents = FALSE
 	/// Can the wearer see reagents inside any container and identify blood types while it's equipped?

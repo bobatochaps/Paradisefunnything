@@ -817,6 +817,7 @@
 		overslotting_parts |= part
 	var/used_skin_modifiers = theme.skin_modifiers[new_skin]
 	apply_modifiers(used_skin_modifiers)
+	theme.on_apply_skin(src)
 	wearer?.regenerate_icons()
 
 /obj/item/mod/control/proc/apply_modifiers(modifiers)

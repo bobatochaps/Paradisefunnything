@@ -7,3 +7,5 @@ Collar behavior is adapted from GS13 `modular_gs/code/clothing/{calorite_collar,
 The turbo nutriment pump and mobility nanite core are adapted from GS13 `modular_gs/code/modules/surgery/organs/augments.dm` and its nutritional research designs, with native Paradise implant assets.
 
 Hydraulic assistance and calovoltaic MOD modules are adapted from GS13 `modular_gs/code/modules/mod/modules/modules_fat.dm`; additive/multiplicative movement modifiers follow its `modular_gs/code/modules/mob/living/species.dm`. The MOD module sheet is copied unchanged at its original `modular_gs/icons/obj/clothing/modsuit/mod_modules.dmi` path.
+
+The exoskeleton suit is adapted from GS13 `modular_gs/code/modules/mod/mod_exoskeleton.dm`. Its object, worn, and plating sheets are copied unchanged at their original `modular_gs/icons/{obj,mob}/clothing/modsuit/` paths. The invisible worn variant uses Paradise's explicit blank effect state.
