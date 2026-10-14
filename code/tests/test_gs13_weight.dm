@@ -2272,6 +2272,7 @@
 
 /datum/game_test/room_test/gs13_exoskeleton_appearance/Run()
 	var/mob/living/carbon/human/subject = allocate(/mob/living/carbon/human)
+	subject.gs13_preferences = gs13_default_preferences()
 	subject.gs13_preferences["master_wg_pref"] = TRUE
 	subject.adjust_fatness(FATNESS_LEVEL_OBESE, FATTENING_TYPE_ALMIGHTY, TRUE)
 	var/obj/item/mod/control/pre_equipped/exoskeleton/control = allocate(/obj/item/mod/control/pre_equipped/exoskeleton)
