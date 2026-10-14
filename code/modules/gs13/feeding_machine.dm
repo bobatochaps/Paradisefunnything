@@ -158,14 +158,17 @@
 		return PROCESS_KILL
 	if(!transfer_rate || !GS13_IS_FINITE(seconds_per_tick) || seconds_per_tick <= 0)
 		return
-	var/amount = min(transfer_rate * seconds_per_tick, supply.total_volume, connected_target.reagents.maximum_volume - connected_target.reagents.total_volume)
+	var/mob/living/carbon/consumer = connected_target.get_gs13_food_recipient()
+	var/amount = min(transfer_rate * seconds_per_tick, supply.total_volume, consumer.reagents.maximum_volume - consumer.reagents.total_volume)
 	if(amount <= 0)
 		return
 	// Paradise uses one body holder. Apply native ingestion to exactly the dose
 	// that fits, then let native metabolism handle nutrition and GS13 preferences.
-	supply.reaction(connected_target, REAGENT_INGEST, amount / supply.total_volume, show_message = FALSE)
-	if(!QDELETED(supply) && can_feed(connected_target))
-		supply.trans_to(connected_target, amount)
+	supply.reaction(consumer, REAGENT_INGEST, amount / supply.total_volume, show_message = FALSE)
+	if(!QDELETED(supply) && !QDELETED(consumer) && can_feed(connected_target) && connected_target.get_gs13_food_recipient() == consumer)
+		supply.trans_to(consumer, amount)
+		if(consumer != connected_target && prob(10))
+			consumer.gs13_receiving_feedback()
 	update_icon()
 
 /obj/machinery/iv_drip/feeding_tube/proc/set_transfer_rate(new_rate)

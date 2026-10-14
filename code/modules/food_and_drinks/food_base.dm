@@ -184,9 +184,10 @@
 
 	if(iscarbon(target))
 		var/mob/living/carbon/C = target
-		if(C.eat(src, user))
+		var/mob/living/carbon/consumer = C.eat(src, user)
+		if(consumer)
 			bitecount++
-			On_Consume(C, user)
+			On_Consume(consumer, user)
 		return ITEM_INTERACT_COMPLETE
 
 	return NONE

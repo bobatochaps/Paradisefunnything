@@ -1217,10 +1217,25 @@ GLOBAL_LIST_INIT(ventcrawl_machinery, list(/obj/machinery/atmospherics/unary/ven
 		if(!forceFed(to_eat, user, fullness))
 			return FALSE
 
-	consume(to_eat, bitesize_override)
+	// Return the actual consumer so native bite/trash callbacks follow the dose.
+	// Resolve after force-feeding's delay: collars and preferences can change.
+	var/mob/living/carbon/consumer = get_gs13_food_recipient()
+	if(consumer != src)
+		if(is_mouth_covered())
+			return FALSE
+		var/bite_size = bitesize_override ? bitesize_override : to_eat.bitesize
+		bite_size = min(bite_size, to_eat.reagents.total_volume, consumer.reagents.maximum_volume - consumer.reagents.total_volume)
+		if(bite_size <= 0)
+			to_chat(user, SPAN_WARNING("The linked receiver cannot accept any more food."))
+			return FALSE
+		add_attack_logs(user, consumer, "Bluespace-fed [to_eat] through [src]. Reagents: [to_eat.reagents.log_list()]", to_eat.reagents.harmless_helper() ? ATKLOG_ALMOSTALL : null)
+		consumer.consume(to_eat, bite_size)
+		consumer.gs13_receiving_feedback()
+	else
+		consume(to_eat, bitesize_override)
 
 	SSticker.score.score_food_eaten++
-	return TRUE
+	return consumer
 
 /mob/living/carbon/proc/drink(obj/item/reagent_containers/drinks/to_drink, mob/user, drinksize_override)
 	if(user == src)
@@ -1229,15 +1244,31 @@ GLOBAL_LIST_INIT(ventcrawl_machinery, list(/obj/machinery/atmospherics/unary/ven
 	else if(!forceFed(to_drink, user, nutrition))
 		return FALSE
 
+	var/mob/living/carbon/consumer = get_gs13_food_recipient()
+	if(consumer != src && is_mouth_covered())
+		return FALSE
 	if(to_drink.consume_sound)
 		playsound(loc, to_drink.consume_sound, rand(10, 50), TRUE)
 	if(to_drink.reagents.total_volume)
-		taste(to_drink.reagents)
 		var/drink_size = max(initial(to_drink.amount_per_transfer_from_this), 5)
 		if(drinksize_override)
 			drink_size = drinksize_override
-		to_drink.reagents.reaction(src, REAGENT_INGEST)
-		to_drink.reagents.trans_to(src, drink_size)
+		var/fraction = 1
+		if(consumer != src)
+			drink_size = min(drink_size, to_drink.reagents.total_volume, consumer.reagents.maximum_volume - consumer.reagents.total_volume)
+			if(drink_size <= 0)
+				to_chat(user, SPAN_WARNING("The linked receiver cannot accept any more drink."))
+				return FALSE
+			fraction = drink_size / to_drink.reagents.total_volume
+			add_attack_logs(user, consumer, "Bluespace-fed [to_drink] through [src]. Reagents: [to_drink.reagents.log_list()]", to_drink.reagents.harmless_helper() ? ATKLOG_ALMOSTALL : null)
+		consumer.taste(to_drink.reagents)
+		to_drink.reagents.reaction(consumer, REAGENT_INGEST, fraction)
+		to_drink.reagents.trans_to(consumer, drink_size)
+		if(consumer != src)
+			if(length(consumer.viruses))
+				to_drink.AddComponent(/datum/component/viral_contamination, consumer.viruses)
+			SEND_SIGNAL(to_drink, COMSIG_MOB_REAGENT_EXCHANGE, consumer)
+			consumer.gs13_receiving_feedback()
 
 	SSticker.score.score_food_eaten++
 	return TRUE
@@ -1303,7 +1334,7 @@ GLOBAL_LIST_INIT(ventcrawl_machinery, list(/obj/machinery/atmospherics/unary/ven
 /*TO DO - If/when stomach organs are introduced, override this at the human level sending the item to the stomach
 so that different stomachs can handle things in different ways VB*/
 /mob/living/carbon/proc/consume(obj/item/food/to_eat, bitesize_override)
-	var/this_bite = bitesize_override || to_eat.bitesize
+	var/this_bite = bitesize_override ? bitesize_override : to_eat.bitesize
 	if(!to_eat.reagents)
 		return
 	if(satiety > -200)

@@ -1720,3 +1720,218 @@
 	var/list/cached = subject.overlays_standing[GS13_WEIGHT_BODY_LAYER]
 	subject.regenerate_icons()
 	TEST_ASSERT_EQUAL(length(subject.overlays_standing[GS13_WEIGHT_BODY_LAYER]), length(cached), "Native icon regeneration preserves exactly one set of body panels")
+
+/// The collars use real native inventory slots; fixture placement is explicit.
+/datum/game_test/room_test/proc/gs13_link_test_collars(mob/living/carbon/human/sender, mob/living/carbon/human/recipient)
+	recipient.forceMove(get_turf(sender))
+	recipient.gs13_preferences["master_wg_pref"] = TRUE
+	recipient.gs13_preferences["weight_gain_items"] = TRUE
+	var/obj/item/clothing/neck/human_petcollar/locked/bluespace_collar_transmitter/transmitter = allocate(/obj/item/clothing/neck/human_petcollar/locked/bluespace_collar_transmitter)
+	var/obj/item/clothing/neck/human_petcollar/locked/bluespace_collar_receiver/receiver = allocate(/obj/item/clothing/neck/human_petcollar/locked/bluespace_collar_receiver)
+	sender.put_in_active_hand(transmitter)
+	recipient.equip_to_slot_if_possible(receiver, ITEM_SLOT_NECK)
+	receiver.item_interaction(sender, transmitter, list())
+	sender.equip_to_slot_if_possible(transmitter, ITEM_SLOT_NECK)
+	return list(transmitter, receiver)
+
+/datum/game_test/room_test/gs13_calorite_collar/Run()
+	var/mob/living/carbon/human/subject = allocate(/mob/living/carbon/human)
+	var/obj/item/clothing/neck/human_petcollar/calorite/collar = allocate(/obj/item/clothing/neck/human_petcollar/calorite)
+	subject.gs13_preferences["master_wg_pref"] = TRUE
+	subject.gs13_preferences["weight_gain_items"] = TRUE
+	subject.put_in_active_hand(collar)
+	TEST_ASSERT_EQUAL(subject.get_weight_gain_rate(), 0.5, "Held collars do not modify the gain rate")
+	subject.equip_to_slot_if_possible(collar, ITEM_SLOT_NECK)
+	TEST_ASSERT_EQUAL(subject.get_weight_gain_rate(), 1, "A worn calorite collar adds 0.5 to the configured rate")
+	TEST_ASSERT_EQUAL(subject.adjust_fatness(10), 10, "The modifier affects actual weight adjustments")
+	subject.gs13_preferences["weight_gain_items"] = FALSE
+	TEST_ASSERT_EQUAL(subject.get_weight_gain_rate(), 0.5, "Revoking item effects takes effect immediately")
+	subject.gs13_preferences["weight_gain_items"] = TRUE
+	subject.gs13_preferences["master_wg_pref"] = FALSE
+	TEST_ASSERT_EQUAL(subject.get_weight_gain_rate(), 0.5, "The master switch also disables the collar")
+	subject.gs13_preferences["master_wg_pref"] = TRUE
+	subject.flip_gain_rate = TRUE
+	TEST_ASSERT_EQUAL(subject.get_weight_gain_rate(), -1, "Rate inversion still applies after the collar modifier")
+	subject.flip_gain_rate = FALSE
+	TEST_ASSERT(subject.drop_item_to_ground(collar), "An ordinary collar is removable")
+	TEST_ASSERT_EQUAL(subject.get_weight_gain_rate(), 0.5, "Unequipping removes the modifier")
+	subject.equip_to_slot_if_possible(collar, ITEM_SLOT_NECK)
+	subject.status_flags |= GODMODE
+	TEST_ASSERT_EQUAL(subject.get_weight_gain_rate(), 0.5, "Godmode blocks the equipment effect")
+	subject.status_flags &= ~GODMODE
+	qdel(collar)
+	TEST_ASSERT_EQUAL(subject.get_weight_gain_rate(), 0.5, "Deleting a worn collar cannot leave a stale modifier")
+	TEST_ASSERT_EQUAL(length(subject.weight_gain_modifiers), 0, "Equipment never accumulates equip-time modifier entries")
+
+/datum/game_test/room_test/gs13_collar_lock/Run()
+	var/mob/living/carbon/human/user = allocate(/mob/living/carbon/human)
+	var/obj/item/clothing/neck/human_petcollar/locked/calorite/collar = allocate(/obj/item/clothing/neck/human_petcollar/locked/calorite)
+	var/obj/item/key/collar/key = locate() in collar.pocket
+	TEST_ASSERT_NOTNULL(key, "A locking collar includes its key in native internal storage")
+	TEST_ASSERT(collar.pocket.remove_from_storage(key, get_turf(user)), "The supplied key can be retrieved")
+	user.put_in_active_hand(key)
+	user.equip_to_slot_if_possible(collar, ITEM_SLOT_NECK)
+	collar.item_interaction(user, key, list())
+	TEST_ASSERT(collar.locked, "Applying the held key locks the collar")
+	TEST_ASSERT_NOT(user.drop_item_to_ground(collar), "Native removal cannot bypass the lock")
+	TEST_ASSERT_NOT(collar.canStrip(user, user), "Native stripping also respects the lock")
+	TEST_ASSERT_EQUAL(user.neck, collar, "Blocked removal preserves the equipment slot")
+	collar.item_interaction(user, key, list())
+	TEST_ASSERT(user.drop_item_to_ground(collar), "The same key unlocks the collar")
+	user.drop_item_to_ground(key)
+	collar.item_interaction(user, key, list())
+	TEST_ASSERT_NOT(collar.locked, "A key on the floor cannot be used as a held key")
+	user.equip_to_slot_if_possible(collar, ITEM_SLOT_NECK)
+	collar.locked = TRUE
+	TEST_ASSERT(user.drop_item_to_ground(collar, force = TRUE), "Administrative forced removal remains possible")
+	user.put_in_active_hand(collar)
+	TEST_ASSERT(user.drop_item_to_ground(collar), "A locked collar cannot become stuck to a hand")
+
+/datum/game_test/room_test/gs13_bluespace_collar_links/Run()
+	var/mob/living/carbon/human/sender = allocate(/mob/living/carbon/human)
+	var/mob/living/carbon/human/recipient = allocate(/mob/living/carbon/human)
+	var/list/collars = gs13_link_test_collars(sender, recipient)
+	var/obj/item/clothing/neck/human_petcollar/locked/bluespace_collar_transmitter/transmitter = collars[1]
+	var/obj/item/clothing/neck/human_petcollar/locked/bluespace_collar_receiver/receiver = collars[2]
+	TEST_ASSERT_EQUAL(transmitter.get_receiver(), receiver, "Applying the transmitter links it to the receiver")
+	TEST_ASSERT_EQUAL(sender.get_gs13_food_recipient(), recipient, "A worn linked receiver resolves its current wearer")
+	recipient.gs13_preferences["weight_gain_items"] = FALSE
+	TEST_ASSERT_EQUAL(sender.get_gs13_food_recipient(), sender, "Revoking recipient item effects restores normal eating")
+	recipient.gs13_preferences["weight_gain_items"] = TRUE
+	recipient.status_flags |= GODMODE
+	TEST_ASSERT_EQUAL(sender.get_gs13_food_recipient(), sender, "Godmode cannot receive remote food")
+	recipient.status_flags &= ~GODMODE
+	recipient.drop_item_to_ground(receiver)
+	TEST_ASSERT_EQUAL(sender.get_gs13_food_recipient(), sender, "Removing the receiver clears its wearer immediately")
+	sender.put_in_active_hand(receiver)
+	transmitter.AltClick(sender)
+	TEST_ASSERT_NULL(transmitter.get_receiver(), "Alt-click unlinks a worn transmitter")
+	transmitter.item_interaction(sender, receiver, list())
+	TEST_ASSERT_EQUAL(transmitter.get_receiver(), receiver, "Linking also works when the receiver is the held item")
+	sender.drop_item_to_ground(receiver)
+	recipient.equip_to_slot_if_possible(receiver, ITEM_SLOT_NECK)
+	var/turf/start = get_turf(sender)
+	recipient.forceMove(locate(start.x + 4, start.y, start.z))
+	TEST_ASSERT_EQUAL(sender.get_gs13_food_recipient(), recipient, "An existing bluespace link can transfer across distance")
+	TEST_ASSERT_NOT(transmitter.link_receiver(receiver, sender), "Creating a link still requires a held collar and physical reach")
+	qdel(receiver)
+	TEST_ASSERT_NULL(transmitter.get_receiver(), "Deleted receiver UIDs are no longer usable")
+	TEST_ASSERT_EQUAL(sender.get_gs13_food_recipient(), sender, "Deleting a receiver restores normal eating")
+
+/datum/game_test/room_test/gs13_bluespace_collar_food/Run()
+	var/mob/living/carbon/human/sender = allocate(/mob/living/carbon/human)
+	var/mob/living/carbon/human/recipient = allocate(/mob/living/carbon/human)
+	gs13_link_test_collars(sender, recipient)
+	var/obj/item/food/glass_sandwich/food = allocate(/obj/item/food/glass_sandwich)
+	food.reagents.clear_reagents()
+	food.reagents.add_reagent("nutriment", 8)
+	food.bitesize = 3
+	food.junkiness = 4
+	sender.put_in_active_hand(food)
+	food.interact_with_atom(sender, sender, list())
+	TEST_ASSERT_EQUAL(recipient.reagents.get_reagent_amount("nutriment"), 3, "Native food interaction routes the actual bite to the receiver")
+	TEST_ASSERT_EQUAL(sender.reagents.total_volume, 0, "The original eater does not receive a duplicate dose")
+	TEST_ASSERT_EQUAL(food.bitecount, 1, "Routed bites advance the native food counter once")
+	TEST_ASSERT(abs(recipient.getBruteLoss() - food.bite_damage) < 0.001, "The food's native On_Consume effect follows the receiver")
+	TEST_ASSERT_EQUAL(sender.getBruteLoss(), 0, "Food callbacks do not affect the transmitter wearer")
+	TEST_ASSERT_EQUAL(recipient.satiety, -4, "Junkiness follows the actual consumer")
+	recipient.reagents.maximum_volume = 3
+	food.reagents.chem_temp = 400
+	food.interact_with_atom(sender, sender, list())
+	TEST_ASSERT_EQUAL(food.reagents.total_volume, 5, "A full receiver leaves the rest of the food intact")
+	TEST_ASSERT_EQUAL(food.bitecount, 1, "An untransferred bite cannot trigger food callbacks")
+	TEST_ASSERT_EQUAL(recipient.getFireLoss(), 0, "An untransferred hot bite cannot react on the receiver")
+
+/datum/game_test/room_test/gs13_bluespace_collar_food_completion/Run()
+	var/mob/living/carbon/human/sender = allocate(/mob/living/carbon/human)
+	var/mob/living/carbon/human/recipient = allocate(/mob/living/carbon/human)
+	gs13_link_test_collars(sender, recipient)
+	var/obj/item/food/food = allocate(/obj/item/food)
+	food.reagents.add_reagent("nutriment", 2)
+	food.trash = /obj/item/trash/plate
+	sender.put_in_active_hand(food)
+	food.interact_with_atom(sender, sender, list())
+	TEST_ASSERT(QDELETED(food), "Finishing routed food uses native deletion")
+	TEST_ASSERT(locate(/obj/item/trash/plate) in sender, "The plate remains with the person physically holding the food")
+	TEST_ASSERT_EQUAL(recipient.reagents.total_volume, 2, "The final bite is delivered before food cleanup")
+	sender.drop_item_to_ground(sender.get_active_hand())
+	var/obj/item/kitchen/utensil/fork/fork = allocate(/obj/item/kitchen/utensil/fork)
+	var/obj/item/food/glass_sandwich/spoonful = allocate(/obj/item/food/glass_sandwich)
+	spoonful.reagents.clear_reagents()
+	spoonful.reagents.add_reagent("nutriment", 4)
+	spoonful.forceMove(fork)
+	sender.put_in_active_hand(fork)
+	fork.interact_with_atom(sender, sender, list())
+	TEST_ASSERT(abs(recipient.getBruteLoss() - spoonful.bite_damage) < 0.001, "Utensil callbacks also follow the routed consumer")
+	TEST_ASSERT_EQUAL(sender.getBruteLoss(), 0, "Utensil effects cannot leak onto the original eater")
+
+/datum/game_test/room_test/gs13_bluespace_collar_drink/Run()
+	var/mob/living/carbon/human/sender = allocate(/mob/living/carbon/human)
+	var/mob/living/carbon/human/recipient = allocate(/mob/living/carbon/human)
+	gs13_link_test_collars(sender, recipient)
+	var/obj/item/reagent_containers/drinks/drink = allocate(/obj/item/reagent_containers/drinks)
+	drink.reagents.add_reagent("milk", 20)
+	sender.put_in_active_hand(drink)
+	recipient.reagents.maximum_volume = 2
+	drink.mob_act(sender, sender)
+	TEST_ASSERT_EQUAL(recipient.reagents.get_reagent_amount("milk"), 2, "Remote drinks are limited to available receiver capacity")
+	TEST_ASSERT_EQUAL(drink.reagents.total_volume, 18, "The rest of the drink stays in its container")
+	TEST_ASSERT_EQUAL(sender.reagents.total_volume, 0, "Routed drinks do not also fill the sender")
+	drink.reagents.chem_temp = 400
+	TEST_ASSERT_NOT(sender.drink(drink, sender, 25), "Chugging cannot bypass receiver capacity")
+	TEST_ASSERT_EQUAL(recipient.getFireLoss(), 0, "A full receiver cannot react to an untransferred hot drink")
+	drink.reagents.chem_temp = T20C
+	recipient.reagents.clear_reagents()
+	var/obj/item/clothing/mask/gas/mask = allocate(/obj/item/clothing/mask/gas)
+	sender.equip_to_slot_if_possible(mask, ITEM_SLOT_MASK)
+	TEST_ASSERT_NOT(sender.drink(drink, sender), "Routing cannot bypass the transmitter wearer's covered mouth")
+	sender.drop_item_to_ground(mask)
+	recipient.gs13_preferences["master_wg_pref"] = FALSE
+	sender.drink(drink, sender)
+	TEST_ASSERT(sender.reagents.total_volume > 0, "An inactive receiver restores native local drinking")
+	TEST_ASSERT_EQUAL(recipient.reagents.total_volume, 0, "Master opt-out prevents remote ingestion")
+
+/datum/game_test/room_test/gs13_bluespace_collar_machine/Run()
+	var/mob/living/carbon/human/sender = allocate(/mob/living/carbon/human)
+	var/mob/living/carbon/human/recipient = allocate(/mob/living/carbon/human)
+	var/list/collars = gs13_link_test_collars(sender, recipient)
+	var/obj/item/clothing/neck/human_petcollar/locked/bluespace_collar_receiver/receiver = collars[2]
+	var/obj/machinery/iv_drip/feeding_tube/tube = allocate(/obj/machinery/iv_drip/feeding_tube)
+	tube.forceMove(get_turf(sender))
+	var/datum/reagents/supply = tube.get_reagents()
+	supply.add_reagent("fermi_fat", 30)
+	TEST_ASSERT(tube.attach_iv(sender, sender), "The feeding tube connects physically to the transmitter wearer")
+	recipient.reagents.maximum_volume = 4
+	tube.process(2)
+	TEST_ASSERT_EQUAL(recipient.reagents.total_volume, 4, "Machine flow uses remote receiver capacity")
+	TEST_ASSERT_EQUAL(supply.total_volume, 26, "Undelivered machine supply is conserved")
+	TEST_ASSERT_EQUAL(sender.reagents.total_volume, 0, "Machine routing cannot feed both ends")
+	TEST_ASSERT_EQUAL(tube.connected_target, sender, "The physical tube connection stays on the original wearer")
+	recipient.reagents.metabolize(recipient)
+	TEST_ASSERT_EQUAL(recipient.fatness_real, 0, "Remote ingestion cannot bypass chemical preferences")
+	recipient.gs13_preferences["weight_gain_chems"] = TRUE
+	recipient.reagents.metabolize(recipient)
+	TEST_ASSERT(recipient.fatness_real > 0, "Remote food uses native metabolism once enabled")
+	recipient.drop_item_to_ground(receiver)
+	tube.process(2)
+	TEST_ASSERT_EQUAL(sender.reagents.total_volume, 10, "Removing the receiver restores feeding through the physical tube")
+	var/turf/start = get_turf(sender)
+	sender.forceMove(locate(start.x + 3, start.y, start.z))
+	TEST_ASSERT_NULL(tube.connected_target, "Bluespace routing does not bypass physical tube distance")
+
+/datum/game_test/room_test/gs13_collar_assets_and_designs/Run()
+	var/mob/living/carbon/human/subject = allocate(/mob/living/carbon/human)
+	for(var/collar_type in list(/obj/item/clothing/neck/human_petcollar, /obj/item/clothing/neck/human_petcollar/calorite))
+		var/obj/item/clothing/neck/human_petcollar/collar = allocate(collar_type)
+		TEST_ASSERT("" in icon_states(collar.icon), "The assembled collar has its native object state")
+		TEST_ASSERT("" in icon_states(collar.worn_icon), "The assembled collar has its native worn state")
+		subject.equip_to_slot_if_possible(collar, ITEM_SLOT_NECK)
+		TEST_ASSERT_NOTNULL(subject.overlays_standing[NECK_LAYER], "The collar uses Paradise's native neck overlay")
+		gs13_render_weight_preview(subject, collar.calorite_style ? "collar_calorite" : "collar_pet")
+		subject.drop_item_to_ground(collar)
+	for(var/design_type in list(/datum/design/calorite_collar, /datum/design/bluespace_collar_receiver, /datum/design/bluespace_collar_transmitter))
+		var/datum/design/design = new design_type
+		var/obj/item/clothing/neck/human_petcollar/product = allocate(design.build_path)
+		TEST_ASSERT(design.build_type & PROTOLATHE, "Collar research uses the native protolathe")
+		TEST_ASSERT_EQUAL(product.materials[MAT_CALORITE], design.materials[MAT_CALORITE], "Build and recycling calorite costs match")
+		qdel(design)

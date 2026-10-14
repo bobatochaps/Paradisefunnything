@@ -1,6 +1,6 @@
 /// returns the total value of all WG modifiers
 /mob/living/carbon/proc/get_weight_gain_modifiers()
-	var/total_modifier = 0
+	var/total_modifier = gs13_equipment_gain_modifier()
 	for (var/key in weight_gain_modifiers)
 		total_modifier += clamp(weight_gain_modifiers[key], WEIGHT_RATE_MODIFIER_MIN_VALUE, WEIGHT_RATE_MODIFIER_MAX_VALUE)
 

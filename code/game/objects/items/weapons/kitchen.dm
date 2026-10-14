@@ -58,8 +58,9 @@
 	if(length(contents))
 		var/obj/item/food/toEat = contents[1]
 		if(istype(toEat))
-			if(feed_target.eat(toEat, user))
-				toEat.On_Consume(feed_target, user)
+			var/mob/living/carbon/consumer = feed_target.eat(toEat, user)
+			if(consumer)
+				toEat.On_Consume(consumer, user)
 				overlays.Cut()
 			return ITEM_INTERACT_COMPLETE
 
