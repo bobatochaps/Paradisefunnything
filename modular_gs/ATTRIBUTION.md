@@ -13,3 +13,5 @@ The exoskeleton suit is adapted from GS13 `modular_gs/code/modules/mod/mod_exosk
 Gain, its teaching book, and the Wand of Gluttony are adapted from GS13 `modular_gs/code/modules/spells/spells_type/touch/add_weight.dm`, `modular_gs/code/game/objects/granters/magic/add_weight.dm`, and `modular_gs/code/modules/weapons/magic/wand.dm`. Original `magic.dmi`, `spell_items.dmi`, and `spellbooks.dmi` sheets are copied unchanged at their source paths. The touch spell uses Paradise's existing directional magic-hand animation; food models use native Paradise equivalents.
 
 Fattening and belch traps, their conjuration spells, and their tomes are adapted from GS13 `modular_gs/code/mechanics/fattening_trap.dm`, `modular_gs/code/modules/spells/spells_type/conjure/traps.dm`, and `modular_gs/code/game/objects/granters/magic/traps.dm`, using Paradise's existing trap and conjuration foundations. The original `modular_gs/icons/obj/structure/traps.dmi` sheet is copied unchanged.
+
+The five added necropolis chest rewards follow GS13 `code/game/objects/effects/spawners/random/mining_loot.dm`, retaining the native Paradise rewards and adapting the whip/book paths.

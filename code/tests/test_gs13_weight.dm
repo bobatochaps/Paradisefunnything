@@ -2548,11 +2548,11 @@
 	subject.status_flags |= GODMODE
 	gs13_cross_trap(subject, trap)
 	TEST_ASSERT_EQUAL(subject.fatness_real, 150, "Godmode prevents trap weight gain")
-	var/mob/living/carbon/monkey/monkey = allocate(/mob/living/carbon/monkey)
-	monkey.gs13_preferences["master_wg_pref"] = TRUE
-	monkey.gs13_preferences["weight_gain_magic"] = TRUE
-	gs13_cross_trap(monkey, trap)
-	TEST_ASSERT_EQUAL(monkey.fatness_real, 0, "The source fattening trap affects only human bodies")
+	var/mob/living/carbon/alien/humanoid/hunter/nonhuman = allocate(/mob/living/carbon/alien/humanoid/hunter)
+	nonhuman.gs13_preferences["master_wg_pref"] = TRUE
+	nonhuman.gs13_preferences["weight_gain_magic"] = TRUE
+	gs13_cross_trap(nonhuman, trap)
+	TEST_ASSERT_EQUAL(nonhuman.fatness_real, 0, "The source fattening trap affects only human bodies")
 
 /datum/game_test/room_test/gs13_trap_lifecycle/Run()
 	var/obj/projectile/magic/food/projectile = allocate(/obj/projectile/magic/food)
