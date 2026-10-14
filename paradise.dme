@@ -3806,6 +3806,7 @@
 #include "code\modules\gs13\adipoelectric.dm"
 #include "code\modules\gs13\caloray.dm"
 #include "code\modules\gs13\collars.dm"
+#include "code\modules\gs13\nutritech_implants.dm"
 #include "code\modules\gs13\fattening_component.dm"
 #include "code\modules\gs13\calorite.dm"
 #include "code\modules\gs13\fat_stun.dm"

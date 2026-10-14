@@ -624,6 +624,8 @@
 	var/synthesizing = 0
 	var/poison_amount = 5
 	var/disabled_by_emp = FALSE
+	/// The GS13 turbo pump runs often enough that its ordinary hunger message is noisy.
+	var/send_messages = TRUE
 	slot = "stomach"
 	origin_tech = "materials=2;powerstorage=2;biotech=2"
 	materials = list(MAT_METAL = 500, MAT_GLASS = 500, MAT_GOLD = 500)
@@ -647,7 +649,8 @@
 		return FALSE
 	if(owner.nutrition <= hunger_threshold)
 		synthesizing = TRUE
-		to_chat(owner, SPAN_NOTICE("You feel less hungry..."))
+		if(send_messages)
+			to_chat(owner, SPAN_NOTICE("You feel less hungry..."))
 		owner.adjust_nutrition(50)
 		addtimer(CALLBACK(src, PROC_REF(synth_cool)), 50)
 
