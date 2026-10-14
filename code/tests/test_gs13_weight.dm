@@ -2351,3 +2351,170 @@
 	TEST_ASSERT(design.build_type & MECHFAB, "The complete prefab is available through native MOD research")
 	TEST_ASSERT_EQUAL(product.materials[MAT_PLASMA], design.materials[MAT_PLASMA], "Prefab material costs match its design")
 	qdel(design)
+
+/datum/game_test/room_test/proc/gs13_grant_gain(mob/living/carbon/human/caster)
+	caster.mind_initialize()
+	var/datum/spell/touch/fatten_up/spell = allocate(/datum/spell/touch/fatten_up)
+	caster.mind.AddSpell(spell)
+	spell.charge_hand(caster)
+	return spell
+
+/datum/game_test/room_test/gs13_gain_touch/Run()
+	var/mob/living/carbon/human/caster = allocate(/mob/living/carbon/human)
+	var/mob/living/carbon/human/victim = allocate(/mob/living/carbon/human)
+	victim.forceMove(get_turf(caster))
+	victim.gs13_preferences["master_wg_pref"] = TRUE
+	victim.gs13_preferences["weight_gain_magic"] = TRUE
+	var/datum/spell/touch/fatten_up/spell = gs13_grant_gain(caster)
+	var/obj/item/melee/touch_attack/fatten_up/hand = spell.attached_hand
+	TEST_ASSERT(istype(hand), "The native spell action creates the Gain hand")
+	TEST_ASSERT_EQUAL(hand.loc, caster, "The native touch spell equips its caster's hand")
+	TEST_ASSERT(spell.can_cast(caster), "Gain does not require wizard clothing")
+	hand.after_attack(victim, caster, TRUE, null)
+	TEST_ASSERT_EQUAL(victim.fatness_real, 50, "Gain applies the source's 100 weight request through the target's multiplier")
+	TEST_ASSERT(QDELETED(hand), "A successful touch consumes its charged hand")
+	TEST_ASSERT_NULL(spell.attached_hand, "Native touch cleanup clears the spell's reference")
+	TEST_ASSERT(spell.cooldown_handler.is_on_cooldown(), "A successful hit starts the native spell cooldown")
+	TEST_ASSERT_EQUAL(spell.cooldown_handler.recharge_duration, 30 SECONDS, "The initial cooldown is thirty seconds")
+	for(var/level in 1 to 4)
+		spell.spell_level = level
+		spell.on_purchase_upgrade()
+		TEST_ASSERT_EQUAL(spell.cooldown_handler.recharge_duration, max((30 - 10 * level) SECONDS, 0.25 SECONDS), "Native upgrades preserve the source's reduction and nonzero floor")
+
+/datum/game_test/room_test/gs13_gain_preferences_and_range/Run()
+	var/mob/living/carbon/human/caster = allocate(/mob/living/carbon/human)
+	var/mob/living/carbon/human/victim = allocate(/mob/living/carbon/human)
+	victim.forceMove(get_turf(caster))
+	var/datum/spell/touch/fatten_up/spell = gs13_grant_gain(caster)
+	spell.attached_hand.after_attack(victim, caster, FALSE, null)
+	TEST_ASSERT_NOTNULL(spell.attached_hand, "Out-of-reach clicks retain the spell hand")
+	ADD_TRAIT(caster, TRAIT_HANDS_BLOCKED, "test")
+	spell.attached_hand.after_attack(victim, caster, TRUE, null)
+	TEST_ASSERT_NOTNULL(spell.attached_hand, "Blocked hands cannot deliver a touch spell")
+	REMOVE_TRAIT(caster, TRAIT_HANDS_BLOCKED, "test")
+	spell.attached_hand.after_attack(victim, caster, TRUE, null)
+	TEST_ASSERT_EQUAL(victim.fatness_real, 0, "The target's master opt-out blocks Gain")
+	victim.gs13_preferences["master_wg_pref"] = TRUE
+	spell.charge_hand(caster)
+	spell.attached_hand.after_attack(victim, caster, TRUE, null)
+	TEST_ASSERT_EQUAL(victim.fatness_real, 0, "Gain independently requires the magic preference")
+	victim.gs13_preferences["weight_gain_magic"] = TRUE
+	victim.max_weight = 26
+	spell.charge_hand(caster)
+	spell.attached_hand.after_attack(victim, caster, TRUE, null)
+	TEST_ASSERT_EQUAL(victim.fatness_real, 25, "Gain respects the configured body-weight cap")
+	victim.status_flags |= GODMODE
+	victim.max_weight = 0
+	spell.charge_hand(caster)
+	spell.attached_hand.after_attack(victim, caster, TRUE, null)
+	TEST_ASSERT_EQUAL(victim.fatness_real, 25, "Gain cannot alter a godmode target")
+
+/datum/game_test/room_test/gs13_gain_antimagic_and_cleanup/Run()
+	var/mob/living/carbon/human/caster = allocate(/mob/living/carbon/human)
+	var/mob/living/carbon/human/victim = allocate(/mob/living/carbon/human)
+	victim.forceMove(get_turf(caster))
+	victim.gs13_preferences["master_wg_pref"] = TRUE
+	victim.gs13_preferences["weight_gain_magic"] = TRUE
+	ADD_TRAIT(victim, TRAIT_ANTIMAGIC, "test")
+	var/datum/spell/touch/fatten_up/spell = gs13_grant_gain(caster)
+	var/obj/item/melee/touch_attack/blocked_hand = spell.attached_hand
+	blocked_hand.after_attack(victim, caster, TRUE, null)
+	TEST_ASSERT_EQUAL(victim.fatness_real, 0, "Native antimagic blocks Gain")
+	TEST_ASSERT(QDELETED(blocked_hand), "Native antimagic consumes the charged hand")
+	TEST_ASSERT_EQUAL(spell.cooldown_handler.recharge_time, world.time + 15 SECONDS, "Antimagic uses the native half-cooldown refund")
+	spell.charge_hand(caster)
+	var/obj/item/melee/touch_attack/transferred_hand = spell.attached_hand
+	TEST_ASSERT(spell.on_mind_transfer(victim), "The learned spell can follow a mind transfer")
+	TEST_ASSERT(QDELETED(transferred_hand), "A mind transfer cannot leave a usable hand on the old body")
+	spell.charge_hand(caster)
+	var/obj/item/melee/touch_attack/deleted_hand = spell.attached_hand
+	qdel(spell)
+	TEST_ASSERT(QDELETED(deleted_hand), "Deleting the spell removes its active hand before deleting its action")
+
+/datum/game_test/room_test/gs13_gain_book/Run()
+	var/mob/living/carbon/human/reader = allocate(/mob/living/carbon/human)
+	reader.mind_initialize()
+	var/obj/item/book/granter/spell/gain/book = allocate(/obj/item/book/granter/action/spell/gain)
+	TEST_ASSERT(istype(book), "The source book path aliases the native spell granter")
+	book.reading_time = 0
+	book.pages_to_mastery = 0
+	reader.put_in_active_hand(book)
+	book.activate_self(reader)
+	TEST_ASSERT(locate(/datum/spell/touch/fatten_up) in reader.mind.spell_list, "Reading teaches Gain through the native mind/action API")
+	TEST_ASSERT_EQUAL(book.uses, 0, "The native reading flow consumes the book's one lesson")
+	TEST_ASSERT_NOT(book.can_learn(reader), "Readers cannot learn duplicate copies of Gain")
+	reader.drop_item_to_ground(book)
+	var/mob/living/carbon/human/next_reader = allocate(/mob/living/carbon/human)
+	next_reader.mind_initialize()
+	next_reader.gs13_preferences["master_wg_pref"] = TRUE
+	next_reader.gs13_preferences["weight_gain_magic"] = TRUE
+	next_reader.put_in_active_hand(book)
+	book.activate_self(next_reader)
+	TEST_ASSERT(QDELETED(book), "Attempting to read a spent tome triggers its source recoil")
+	TEST_ASSERT_EQUAL(next_reader.fatness_real, 50, "Book recoil uses the magic source and the reader's multiplier")
+	TEST_ASSERT_EQUAL(length(next_reader.mind.spell_list), 0, "A spent book does not teach a second reader")
+
+/datum/game_test/room_test/gs13_food_magic_variety/Run()
+	var/obj/projectile/magic/food/bolt = allocate(/obj/projectile/magic/food)
+	var/list/foods = bolt.spawnable_foods.Copy()
+	var/turf/floor = get_turf(bolt)
+	for(var/food_type in foods)
+		bolt.spawnable_foods = list(food_type)
+		TEST_ASSERT(bolt.on_hit(floor), "Magic creates food on a native turf impact")
+		var/obj/item/food/meal = locate(food_type) in floor
+		TEST_ASSERT_NOTNULL(meal, "Each source food has a native Paradise counterpart")
+		TEST_ASSERT_EQUAL(meal.reagents.get_reagent_amount("lipoifier"), 5, "Every ordinary conjured meal receives the full five-unit dose")
+		qdel(meal)
+	var/obj/projectile/magic/food/strong/strong = allocate(/obj/projectile/magic/food/strong)
+	strong.spawnable_foods = list(/obj/item/food/sliceable/pizza/meatpizza)
+	strong.on_hit(floor)
+	var/obj/item/food/meal = locate(/obj/item/food/sliceable/pizza/meatpizza) in floor
+	TEST_ASSERT_EQUAL(meal.reagents.get_reagent_amount("lipoifier"), 20, "A strong bolt adds the full twenty-unit dose even to a nearly full meal")
+	var/mob/living/carbon/human/eater = allocate(/mob/living/carbon/human)
+	eater.gs13_preferences["master_wg_pref"] = TRUE
+	meal.reagents.trans_to(eater, meal.reagents.total_volume)
+	eater.reagents.metabolize(eater)
+	TEST_ASSERT_EQUAL(eater.fatness_real, 0, "Conjured lipoifier cannot bypass the chemical preference")
+	eater.gs13_preferences["weight_gain_chems"] = TRUE
+	eater.reagents.metabolize(eater)
+	TEST_ASSERT(eater.fatness_real > 0, "Conjured reagents use ordinary native metabolism once enabled")
+
+/datum/game_test/room_test/gs13_food_wand/Run()
+	var/mob/living/carbon/human/caster = allocate(/mob/living/carbon/human)
+	var/mob/living/carbon/human/target = allocate(/mob/living/carbon/human)
+	target.forceMove(get_turf(caster))
+	var/obj/item/gun/magic/wand/food/wand = allocate(/obj/item/gun/magic/wand/food)
+	wand.forceMove(caster)
+	var/charges_before = wand.charges
+	wand.process_fire(target, caster, FALSE, zone_override = "chest")
+	TEST_ASSERT_EQUAL(wand.charges, charges_before - 1, "Firing through the native gun pipeline consumes one charge")
+	var/obj/item/food/meal = locate() in get_turf(target)
+	TEST_ASSERT_NOTNULL(meal, "A native projectile hit creates a meal at the target's feet")
+	TEST_ASSERT_EQUAL(meal.reagents.get_reagent_amount("lipoifier"), 5, "The native wand delivers its configured payload")
+	TEST_ASSERT_EQUAL(target.getBruteLoss() + target.getFireLoss() + target.getOxyLoss(), 0, "Food bolts are harmless impacts")
+	qdel(meal)
+	wand.charges = 1
+	TEST_ASSERT(wand.zap_self(caster), "Self-use conjures food through the same projectile type")
+	TEST_ASSERT_EQUAL(wand.charges, 0, "Self-use consumes the last charge once")
+	TEST_ASSERT_EQUAL(wand.icon_state, "food_wand-drained", "The empty wand displays the original drained sprite")
+	TEST_ASSERT(wand.icon_state in icon_states(wand.icon), "The source drained artwork is present")
+	TEST_ASSERT_NOT(wand.zap_self(caster), "An empty wand cannot create another free meal")
+	var/obj/item/gun/magic/wand/food/overpowered/strong = allocate(/obj/item/gun/magic/wand/food/overpowered)
+	TEST_ASSERT(istype(strong.chambered.BB, /obj/projectile/magic/food/strong), "The stronger wand uses the stronger native projectile")
+	TEST_ASSERT_NOT(wand.can_charge, "Food wands retain the source's finite, non-regenerating charge supply")
+
+/datum/game_test/room_test/gs13_food_magic_blocking/Run()
+	var/mob/living/carbon/human/target = allocate(/mob/living/carbon/human)
+	var/obj/projectile/magic/food/bolt = allocate(/obj/projectile/magic/food)
+	var/turf/floor = get_turf(target)
+	ADD_TRAIT(target, TRAIT_ANTIMAGIC, "test")
+	TEST_ASSERT_NOT(bolt.on_hit(target), "Native antimagic blocks conjuration on a living target")
+	TEST_ASSERT_NOT(locate(/obj/item/food) in floor, "Blocked magic cannot leave food behind")
+	REMOVE_TRAIT(target, TRAIT_ANTIMAGIC, "test")
+	TEST_ASSERT_NOT(bolt.on_hit(target, INFINITY), "Complete projectile immunity also blocks conjuration")
+	TEST_ASSERT_NOT(bolt.on_hit(null), "A lost impact target cannot create food or cause a runtime")
+	var/turf/wall = locate(bottom_left.x, bottom_left.y, bottom_left.z)
+	var/original_turf_type = wall.type
+	wall = wall.ChangeTurf(/turf/simulated/wall)
+	TEST_ASSERT_NOT(bolt.on_hit(wall), "Food cannot be conjured inside a wall")
+	wall.ChangeTurf(original_turf_type)
