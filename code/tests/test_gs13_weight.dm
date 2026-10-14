@@ -1670,6 +1670,10 @@
 	subject.gs13_preferences["master_wg_pref"] = TRUE
 	subject.adjust_fatness(FATNESS_LEVEL_OBESE, FATTENING_TYPE_ALMIGHTY, TRUE)
 	var/obj/item/organ/external/leg = subject.get_organ(BODY_ZONE_L_LEG)
+	leg.status |= ORGAN_ROBOT
+	subject.update_body(TRUE)
+	TEST_ASSERT_EQUAL(length(gs13_weight_panel_states(subject)), 1, "Hip panels cannot paint flesh over a prosthetic leg")
+	leg.status &= ~ORGAN_ROBOT
 	leg.droplimb(clean = TRUE, nodamage = TRUE)
 	subject.update_body(TRUE)
 	var/list/states = gs13_weight_panel_states(subject)

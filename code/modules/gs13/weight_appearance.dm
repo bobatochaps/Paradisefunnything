@@ -32,9 +32,11 @@
 	var/list/standing = list()
 	var/obj/item/organ/external/chest = get_organ(BODY_ZONE_CHEST)
 	var/obj/item/organ/external/groin = get_organ(BODY_ZONE_PRECISE_GROIN)
+	var/obj/item/organ/external/left_leg = get_organ(BODY_ZONE_L_LEG)
+	var/obj/item/organ/external/right_leg = get_organ(BODY_ZONE_R_LEG)
 	var/has_belly = chest && !chest.is_robotic()
 	// The source hip sprite includes both thighs. Do not draw phantom limbs.
-	var/has_hips = groin && !groin.is_robotic() && get_organ(BODY_ZONE_L_LEG) && get_organ(BODY_ZONE_R_LEG)
+	var/has_hips = groin && !groin.is_robotic() && left_leg && !left_leg.is_robotic() && right_leg && !right_leg.is_robotic()
 	var/chest_covered = (w_uniform?.body_parts_covered & UPPER_TORSO) || (wear_suit?.body_parts_covered & UPPER_TORSO)
 	var/hips_covered = (w_uniform?.body_parts_covered & (LOWER_TORSO | LEGS)) || (wear_suit?.body_parts_covered & (LOWER_TORSO | LEGS))
 	if(has_belly && stage && !chest_covered)
