@@ -1868,6 +1868,7 @@
 	TEST_ASSERT(abs(recipient.getBruteLoss() - spoonful.bite_damage) < 0.001, "Utensil callbacks also follow the routed consumer")
 	TEST_ASSERT_EQUAL(sender.getBruteLoss(), 0, "Utensil effects cannot leak onto the original eater")
 	TEST_ASSERT_EQUAL(spoonful.reagents.total_volume, 3, "A partial remote spoonful leaves the remainder on the utensil")
+	COMPILE_OVERLAYS(fork)
 	TEST_ASSERT(length(fork.overlays), "A partially consumed utensil keeps its loaded-food appearance")
 
 /datum/game_test/room_test/gs13_bluespace_collar_drink/Run()
