@@ -17,6 +17,7 @@
 	var/list/blend_items = list (
 		// Sheets
 		/obj/item/stack/sheet/mineral/calorite = list("lipoifier" = 2, "micro_calorite" = 1),
+		/obj/item/stack/sheet/calorite_glass = list("silicon" = 20, "lipoifier" = 2),
 		/obj/item/stack/sheet/mineral/plasma = list("plasma_dust" = 20),
 		/obj/item/stack/sheet/metal = list("iron" = 20),
 		/obj/item/stack/rods = list("iron" = 10),

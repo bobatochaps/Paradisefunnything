@@ -12,6 +12,7 @@
 /obj/structure/reflector/examine()
 	. = ..()
 	. += SPAN_NOTICE("Use <b>5</b> sheets of <b>glass</b> to create a 1 way reflector.")
+	. += SPAN_NOTICE("Use <b>5</b> sheets of <b>calorite glass</b> to create a calorite reflector.")
 	. += SPAN_NOTICE("Use <b>10</b> sheets of <b>reinforced glass</b> to create a 2 way reflector.")
 	. += SPAN_NOTICE("Use <b>1 diamond</b> to create a reflector cube.")
 
@@ -52,6 +53,15 @@
 		if(finished)
 			return
 		var/obj/item/stack/sheet/S = W
+		if(istype(S, /obj/item/stack/sheet/calorite_glass))
+			if(S.get_amount() < 5)
+				to_chat(user, SPAN_WARNING("You need five sheets of calorite glass to create a reflector!"))
+				return
+			S.use(5)
+			var/obj/structure/reflector/single/calorite/reflector = new(loc)
+			reflector.setDir(dir)
+			qdel(src)
+			return
 		if(istype(W, /obj/item/stack/sheet/glass))
 			if(S.get_amount() < 5)
 				to_chat(user, SPAN_WARNING("You need five sheets of glass to create a reflector!"))

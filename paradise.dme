@@ -3815,6 +3815,7 @@
 #include "code\modules\gs13\calorite.dm"
 #include "code\modules\gs13\fat_stun.dm"
 #include "code\modules\gs13\calorite_construction.dm"
+#include "code\modules\gs13\calorite_glass.dm"
 #include "code\modules\gs13\equipment.dm"
 #include "code\modules\gs13\preferences.dm"
 #include "code\modules\gs13\weight.dm"
