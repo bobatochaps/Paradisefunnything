@@ -1199,6 +1199,7 @@ GLOBAL_LIST_INIT(ventcrawl_machinery, list(/obj/machinery/atmospherics/unary/ven
 /mob/living/carbon/proc/can_eat(flags = 255)
 	return TRUE
 
+/// Returns the actual consumer on success, or FALSE when no bite was taken.
 /mob/living/carbon/proc/eat(obj/item/food/to_eat, mob/user, bitesize_override)
 	if(!istype(to_eat))
 		return FALSE

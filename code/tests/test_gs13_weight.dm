@@ -1859,11 +1859,16 @@
 	var/obj/item/food/glass_sandwich/spoonful = allocate(/obj/item/food/glass_sandwich)
 	spoonful.reagents.clear_reagents()
 	spoonful.reagents.add_reagent("nutriment", 4)
+	spoonful.bitesize = 4
 	spoonful.forceMove(fork)
+	fork.add_overlay("loadedfood")
+	recipient.reagents.maximum_volume = 3
 	sender.put_in_active_hand(fork)
 	fork.interact_with_atom(sender, sender, list())
 	TEST_ASSERT(abs(recipient.getBruteLoss() - spoonful.bite_damage) < 0.001, "Utensil callbacks also follow the routed consumer")
 	TEST_ASSERT_EQUAL(sender.getBruteLoss(), 0, "Utensil effects cannot leak onto the original eater")
+	TEST_ASSERT_EQUAL(spoonful.reagents.total_volume, 3, "A partial remote spoonful leaves the remainder on the utensil")
+	TEST_ASSERT(length(fork.overlays), "A partially consumed utensil keeps its loaded-food appearance")
 
 /datum/game_test/room_test/gs13_bluespace_collar_drink/Run()
 	var/mob/living/carbon/human/sender = allocate(/mob/living/carbon/human)

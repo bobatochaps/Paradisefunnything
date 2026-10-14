@@ -61,7 +61,9 @@
 			var/mob/living/carbon/consumer = feed_target.eat(toEat, user)
 			if(consumer)
 				toEat.On_Consume(consumer, user)
-				overlays.Cut()
+				// A receiver may only have room for part of this spoonful.
+				if(QDELETED(toEat) || toEat.loc != src)
+					overlays.Cut()
 			return ITEM_INTERACT_COMPLETE
 
 	return ..()
