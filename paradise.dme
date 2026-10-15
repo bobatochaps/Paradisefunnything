@@ -3791,6 +3791,7 @@
 #include "interface\skin.dmf"
 #include "code\modules\gs13\alerts.dm"
 #include "code\modules\gs13\chemistry.dm"
+#include "code\modules\gs13\hydroponics.dm"
 #include "code\modules\gs13\quirks.dm"
 #include "code\modules\gs13\fullness.dm"
 #include "code\modules\gs13\virology.dm"

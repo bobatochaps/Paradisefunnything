@@ -14,7 +14,8 @@
 	icon_dead = "cannabis-dead" // Same for the dead icon
 	genes = list(/datum/plant_gene/trait/repeated_harvest)
 	mutatelist = list(/obj/item/seeds/cannabis/rainbow,
-						/obj/item/seeds/cannabis/white)
+						/obj/item/seeds/cannabis/white,
+						/obj/item/seeds/cannabis/munchies)
 	reagents_add = list("thc" = 0.15, "cbd" = 0.15)
 
 

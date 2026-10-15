@@ -494,6 +494,7 @@
 	"Bioluminescence" = /datum/plant_gene/trait/glow,
 	"Shadow Emission" = /datum/plant_gene/trait/glow/shadow,
 	"Red Electrical Glow" = /datum/plant_gene/trait/glow/red,
+	"Orange Bioluminescence" = /datum/plant_gene/trait/glow/orange,
 	"Strong Bioluminescence" = /datum/plant_gene/trait/glow/berry,
 	"Bluespace Activity" = /datum/plant_gene/trait/teleport,
 	"Densified Chemicals" = /datum/plant_gene/trait/maxchem,
