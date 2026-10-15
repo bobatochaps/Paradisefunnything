@@ -58,6 +58,15 @@
 /obj/item/stack/sheet/mineral/calorite/fifty
 	amount = 50
 
+/datum/design/calorite
+	name = "Calorite"
+	id = "calorite"
+	build_type = AUTOLATHE
+	materials = list(MAT_CALORITE = MINERAL_MATERIAL_AMOUNT)
+	build_path = /obj/item/stack/sheet/mineral/calorite
+	category = list("initial", "Construction")
+	maxstack = MAX_STACK_SIZE
+
 /// Apply after native armor checks; permanent-disabled targets receive ordinary weight.
 /mob/living/carbon/proc/apply_gs13_weight_damage(amount, damage_type, armor = 0)
 	if((status_flags & GODMODE) || !isnum(amount) || !GS13_IS_FINITE(amount) || amount <= 0 || armor == INFINITY)

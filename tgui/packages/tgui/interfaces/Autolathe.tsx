@@ -7,17 +7,11 @@ import { createSearch, toTitleCase } from 'tgui-core/string';
 import { useBackend, useSharedState } from '../backend';
 import { Window } from '../layouts';
 
-const canBeMade = (recipe: Recipe, mavail: number, gavail: number, multi: number) => {
+const canBeMade = (recipe: Recipe, available: Record<string, number>, multi: number) => {
   if (recipe.requirements === null) {
     return true;
   }
-  if (recipe.requirements['metal'] * multi > mavail) {
-    return false;
-  }
-  if (recipe.requirements['glass'] * multi > gavail) {
-    return false;
-  }
-  return true;
+  return Object.entries(recipe.requirements).every(([material, amount]) => amount * multi <= (available[material] ?? 0));
 };
 
 type QueuedItem = [string, number];
@@ -35,8 +29,7 @@ type Recipe = {
 type AutolatheData = {
   total_amount: number;
   max_amount: number;
-  metal_amount: number;
-  glass_amount: number;
+  material_amounts: Record<string, number>;
   busyname: string;
   busyamt: number;
   showhacked: BooleanLike;
@@ -52,8 +45,7 @@ export const Autolathe = (props) => {
   const {
     total_amount,
     max_amount,
-    metal_amount,
-    glass_amount,
+    material_amounts,
     busyname,
     busyamt,
     showhacked,
@@ -66,8 +58,6 @@ export const Autolathe = (props) => {
 
   let [category, setCategory] = useSharedState('category', 'Tools');
 
-  let metalReadable = metal_amount.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,'); // add thousands seperator
-  let glassReadable = glass_amount.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,');
   let totalReadable = total_amount.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,');
 
   const [searchText, setSearchText] = useSharedState('searchText', '');
@@ -153,7 +143,7 @@ export const Autolathe = (props) => {
                     mr={1}
                     icon="hammer"
                     selected={busyname === recipe.name && busyamt === 1}
-                    disabled={!canBeMade(recipe, metal_amount, glass_amount, 1)}
+                    disabled={!canBeMade(recipe, material_amounts, 1)}
                     onClick={() =>
                       act('make', {
                         make: recipe.uid,
@@ -168,7 +158,7 @@ export const Autolathe = (props) => {
                       mr={1}
                       icon="hammer"
                       selected={busyname === recipe.name && busyamt === 10}
-                      disabled={!canBeMade(recipe, metal_amount, glass_amount, 10)}
+                      disabled={!canBeMade(recipe, material_amounts, 10)}
                       onClick={() =>
                         act('make', {
                           make: recipe.uid,
@@ -184,7 +174,7 @@ export const Autolathe = (props) => {
                       mr={1}
                       icon="hammer"
                       selected={busyname === recipe.name && busyamt === 25}
-                      disabled={!canBeMade(recipe, metal_amount, glass_amount, 25)}
+                      disabled={!canBeMade(recipe, material_amounts, 25)}
                       onClick={() =>
                         act('make', {
                           make: recipe.uid,
@@ -200,7 +190,7 @@ export const Autolathe = (props) => {
                       mr={1}
                       icon="hammer"
                       selected={busyname === recipe.name && busyamt === recipe.max_multiplier}
-                      disabled={!canBeMade(recipe, metal_amount, glass_amount, recipe.max_multiplier)}
+                      disabled={!canBeMade(recipe, material_amounts, recipe.max_multiplier)}
                       onClick={() =>
                         act('make', {
                           make: recipe.uid,
@@ -222,8 +212,11 @@ export const Autolathe = (props) => {
           <Stack.Item width="30%">
             <Section title="Materials">
               <LabeledList>
-                <LabeledList.Item label="Metal">{metalReadable}</LabeledList.Item>
-                <LabeledList.Item label="Glass">{glassReadable}</LabeledList.Item>
+                {Object.entries(material_amounts).map(([material, amount]) => (
+                  <LabeledList.Item key={material} label={toTitleCase(material)}>
+                    {amount.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')}
+                  </LabeledList.Item>
+                ))}
                 <LabeledList.Item label="Total">{totalReadable}</LabeledList.Item>
                 <LabeledList.Item label="Storage">{fill_percent}% Full</LabeledList.Item>
               </LabeledList>

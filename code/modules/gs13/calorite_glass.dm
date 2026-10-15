@@ -56,10 +56,11 @@ GLOBAL_LIST_INIT(calorite_glass_recipes, list(
 	name = "Calorite Glass"
 	desc = "Calorite infused glass for windows and optical reflectors."
 	id = "calorite_glass"
-	build_type = SMELTER | PROTOLATHE
+	build_type = AUTOLATHE | SMELTER | PROTOLATHE
 	materials = list(MAT_CALORITE = MINERAL_MATERIAL_AMOUNT, MAT_GLASS = MINERAL_MATERIAL_AMOUNT / 2)
 	build_path = /obj/item/stack/sheet/calorite_glass
-	category = list("initial", "Stock Parts")
+	category = list("initial", "Construction", "Stock Parts")
+	maxstack = MAX_STACK_SIZE
 
 /obj/structure/window/calorite
 	name = "calorite window"

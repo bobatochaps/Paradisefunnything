@@ -80,10 +80,10 @@
 		return
 	var/material_amount = get_item_material_amount(I)
 	if(!material_amount)
-		to_chat(user, SPAN_WARNING("[I] does not contain sufficient amounts of metal or glass to be accepted by [parent]."))
+		to_chat(user, SPAN_WARNING("[I] does not contain enough usable material to be accepted by [parent]."))
 		return
 	if(!has_space(material_amount))
-		to_chat(user, SPAN_WARNING("[parent] is full. Please remove metal or glass from [parent] in order to insert more."))
+		to_chat(user, SPAN_WARNING("[parent] is full. Please remove materials from [parent] in order to insert more."))
 		return
 	user_insert(I, user)
 

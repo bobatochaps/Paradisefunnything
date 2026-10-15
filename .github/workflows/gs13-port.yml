@@ -9,6 +9,32 @@ permissions:
   contents: read
 
 jobs:
+  tgui-build:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v7.0.0
+      - uses: actions/setup-node@v7.0.0
+        with:
+          node-version: 22
+      - name: Install UI dependencies
+        working-directory: tgui
+        run: node .yarn/releases/yarn-4.18.0.cjs install --immutable
+      - name: Check UI types and autolathe lint
+        working-directory: tgui
+        run: |
+          node .yarn/releases/yarn-4.18.0.cjs tgui:tsc
+          node .yarn/releases/yarn-4.18.0.cjs eslint packages/tgui/interfaces/Autolathe.tsx
+      - name: Build production UI
+        working-directory: tgui
+        run: node .yarn/releases/yarn-4.18.0.cjs tgui:build
+      - name: Upload production UI
+        uses: actions/upload-artifact@v4
+        with:
+          name: gs13-tgui-production
+          path: tgui/public/
+          if-no-files-found: error
+
   weight-tests:
     runs-on: ubuntu-22.04
     timeout-minutes: 30

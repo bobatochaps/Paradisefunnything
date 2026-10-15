@@ -209,7 +209,7 @@ research holder datum.
 		return FALSE
 
 	for(var/mat in design.materials)
-		if(mat != MAT_METAL && mat != MAT_GLASS)
+		if(mat != MAT_METAL && mat != MAT_GLASS && mat != MAT_CALORITE)
 			return FALSE
 
 	return ..()
