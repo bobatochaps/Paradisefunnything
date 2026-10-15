@@ -81,3 +81,45 @@
 	color = "#F7F0D0"
 	alcohol_perc = 0.2
 	taste_description = "a sweet milky flavor with notes of toasted sugar"
+
+/obj/item/seeds/watermelon/milkmelon
+	name = "milkmelon seed pack"
+	desc = "These seeds grow into milkmelon plants."
+	species = "milkmelon"
+	plantname = "Milk Melon Vines"
+	product = /obj/item/food/grown/milkmelon
+	mutatelist = list()
+	reagents_add = list("milk" = 0.2)
+	rarity = 20
+	icon = 'modular_gs/icons/obj/hydroponics/seeds.dmi'
+	icon_state = "seed-milkmelon"
+	growing_icon = 'modular_gs/icons/obj/hydroponics/growing.dmi'
+	icon_grow = "milkmelon-grow"
+	icon_dead = "milkmelon-dead"
+	icon_harvest = "milkmelon-harvest"
+
+/obj/item/food/grown/milkmelon
+	seed = /obj/item/seeds/watermelon/milkmelon
+	name = "milkmelon"
+	desc = "Those are some BIG honkers. A real set of badonkers."
+	icon = 'modular_gs/icons/obj/hydroponics/harvest.dmi'
+	icon_state = "milkmelon"
+	inhand_icon_state = "watermelon"
+	wine_power = 0
+	wine_flavor = "milkmelon"
+	bitesize_mod = 2
+	w_class = WEIGHT_CLASS_NORMAL
+	dried_type = null
+	slices_num = 5
+	slice_path = /obj/item/food/milkmelonslice
+	clear_slice_reagents = TRUE
+
+/obj/item/food/milkmelonslice
+	parent_type = /obj/item/food/sliced
+	name = "milkmelon slice"
+	desc = "A slice of milky goodness."
+	icon = 'modular_gs/icons/obj/hydroponics/harvest.dmi'
+	icon_state = "milkmelon_slice"
+	list_reagents = list("milk" = 2)
+	tastes = list("milkmelon" = 1)
+	w_class = WEIGHT_CLASS_SMALL

@@ -10,6 +10,8 @@
 	var/obj/item/seeds/seed = null
 	/// The unsorted seed of this plant, if any. Used by the seed extractor.
 	var/obj/item/unsorted_seeds/unsorted_seed = null
+	/// Clear standalone slice contents when the crop supplies all reagents.
+	var/clear_slice_reagents = FALSE
 	var/plantname = ""
 	var/bitesize_mod = 0 	// If set, bitesize = 1 + round(reagents.total_volume / bitesize_mod)
 	var/splat_type = /obj/effect/decal/cleanable/plant_smudge
@@ -93,7 +95,7 @@
 
 			var/reagents_per_slice = reagents.total_volume/slices_num
 			for(var/i = 1 to (slices_num - slices_lost))
-				var/obj/slice = new slice_path (loc)
+				var/obj/slice = new slice_path(loc, clear_slice_reagents)
 				reagents.trans_to(slice, reagents_per_slice)
 				slice.scatter_atom()
 			qdel(src)

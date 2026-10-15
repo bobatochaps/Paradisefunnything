@@ -61,6 +61,8 @@
 	)
 
 	var/list/juice_items = list (
+		/obj/item/food/grown/milkmelon = list("milk" = 0),
+		/obj/item/food/milkmelonslice = list("milk" = 0),
 		// Juicer Stuff
 		/obj/item/food/grown/soybeans = list("soymilk" = 0),
 		/obj/item/food/grown/corn = list("corn_starch" = 0),
