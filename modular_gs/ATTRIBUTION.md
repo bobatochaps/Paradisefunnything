@@ -19,3 +19,5 @@ The five added necropolis chest rewards follow GS13 `code/game/objects/effects/s
 Calorite glass, shards, windows, and reflectors are adapted from GS13 `modular_gs/code/mechanics/calorite_glass.dm` and `modular_gs/code/game/objects/structures/{calorite_window,calorite_reflector}.dm`. The original `debris.dmi`, structure/window sheets, and left/right melee in-hand sheets are copied unchanged at their source paths.
 
 Adipolipus/lipofruit and munchies weed are adapted from GS13 `modular_gs/code/modules/hydroponics/{lipoplant,munchies_weed}.dm`. The three original hydroponics icon sheets are copied unchanged under `modular_gs/icons/obj/hydroponics/`. Lipofruit’s coconut liqueur follows the inherited `code/modules/reagents/chemistry/reagents/drinks/alcohol_reagents.dm`, with native Paradise alcohol strength.
+
+`icons/obj/drinks.dmi` is copied unchanged from the pinned GS13 source for cocktail glass artwork.

@@ -213,3 +213,53 @@
 	result = "extilphite"
 	required_reagents = list("sugar" = 1, "hydrogen" = 2, "carbon" = 2)
 	result_amount = 5
+
+/datum/reagent/consumable/ethanol/blobby_mary
+	name = "Blobby Mary"
+	id = "blobby_mary"
+	description = "A bloody mary that may make you immobile. Still wondering if it is blood or tomato juice?"
+	color = "#C2707E"
+	alcohol_perc = 0.55
+	taste_description = "tomatoes and an anvil on your stomach"
+	drink_icon_file = 'modular_gs/icons/obj/drinks.dmi'
+	drink_icon = "blobby_mary"
+	drink_name = "blobby mary"
+	drink_desc = "For the morbidly obese ladies and gentlemen."
+
+/datum/reagent/consumable/ethanol/blobby_mary/on_mob_life(mob/living/subject)
+	if(iscarbon(subject))
+		var/mob/living/carbon/carbon = subject
+		carbon.adjust_nutrition(carbon.check_weight_prefs(FATTENING_TYPE_FOOD) ? 25 * REAGENTS_METABOLISM : 1)
+	return ..()
+
+/datum/chemical_reaction/gs13_blobby_mary
+	name = "Blobby Mary"
+	id = "gs13_blobby_mary"
+	result = "blobby_mary"
+	required_reagents = list("tomatojuice" = 1, "vodka" = 1, "lipoifier" = 1)
+	result_amount = 3
+
+/datum/reagent/consumable/ethanol/beltbuster_mead
+	name = "Beltbuster Mead"
+	id = "beltbuster_mead"
+	description = "Kiss sobriety and clothes goodbye."
+	color = "#664300"
+	alcohol_perc = 0.85
+	taste_description = "honey, alcohol and immobility"
+	drink_icon_file = 'modular_gs/icons/obj/drinks.dmi'
+	drink_icon = "beltbuster_mead"
+	drink_name = "beltbuster mead"
+	drink_desc = "The ambrosia of the blubbery gods."
+
+/datum/reagent/consumable/ethanol/beltbuster_mead/on_mob_life(mob/living/subject)
+	if(iscarbon(subject))
+		var/mob/living/carbon/carbon = subject
+		carbon.adjust_nutrition(carbon.check_weight_prefs(FATTENING_TYPE_FOOD) ? 30 * REAGENTS_METABOLISM : 1)
+	return ..()
+
+/datum/chemical_reaction/gs13_beltbuster_mead
+	name = "Beltbuster Mead"
+	id = "gs13_beltbuster_mead"
+	result = "beltbuster_mead"
+	required_reagents = list("mead" = 1, "ethanol" = 1, "cream" = 1, "lipoifier" = 1)
+	result_amount = 4

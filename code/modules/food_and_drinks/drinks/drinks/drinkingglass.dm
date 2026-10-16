@@ -50,6 +50,8 @@
 
 /obj/item/reagent_containers/drinks/drinkingglass/on_reagent_change()
 	overlays.Cut()
+	icon = initial(icon)
+	icon_state = initial(icon_state)
 	if(!length(reagents.reagent_list))
 		force = initial(force)
 		attack_verb = initial(attack_verb)
@@ -64,6 +66,8 @@
 	force = (istype(main_reagent, /datum/reagent/consumable/drink/salt_and_battery) && reagents.total_volume) ? 10 : initial(force)
 	attack_verb = (istype(main_reagent, /datum/reagent/consumable/drink/salt_and_battery) && reagents.total_volume) ? list("assaulted", "battered") : initial(attack_verb)
 	if(main_reagent.drink_icon)
+		if(main_reagent.drink_icon_file)
+			icon = main_reagent.drink_icon_file
 		icon_state = main_reagent.drink_icon
 		if((main_reagent.id == "bubbletea" || main_reagent.id == "bubblemilktea") && length(reagents.reagent_list) > 1)
 			customize_bubble_tea()

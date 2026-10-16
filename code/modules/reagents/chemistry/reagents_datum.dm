@@ -31,6 +31,8 @@
 	/// If this variable is true, chemicals will continue to process in mobs when overdosed.
 	var/allowed_overdose_process = FALSE
 	var/current_cycle = 1
+	/// Optional sprite sheet for drinks with artwork outside the native glass sheet.
+	var/drink_icon_file = null
 	var/drink_icon = null
 	var/drink_name = "Glass of ..what?"
 	var/drink_desc = "You can't really tell what this is."
