@@ -263,3 +263,47 @@
 	result = "beltbuster_mead"
 	required_reagents = list("mead" = 1, "ethanol" = 1, "cream" = 1, "lipoifier" = 1)
 	result_amount = 4
+
+/datum/reagent/consumable/snakebite
+	name = "Snakebite"
+	id = "snakebite"
+	description = "Guaranteed to stop 100% of all moving."
+	color = "#00CC33"
+	taste_description = "bitter immobility"
+	nutriment_factor = 0
+	drink_icon_file = 'modular_gs/icons/obj/drinks.dmi'
+	drink_icon = "snakebite"
+	drink_name = "snakebite"
+	drink_desc = "Won't hurt like a real bite, but you'll still regret drinking this."
+
+/datum/reagent/consumable/snakebite/on_mob_life(mob/living/subject)
+	if(iscarbon(subject))
+		var/mob/living/carbon/carbon = subject
+		carbon.adjust_nutrition(carbon.check_weight_prefs(FATTENING_TYPE_FOOD) ? 25 * REAGENTS_METABOLISM : 1)
+	return ..()
+
+/datum/chemical_reaction/gs13_snakebite
+	name = "Snakebite"
+	id = "gs13_snakebite"
+	result = "snakebite"
+	required_reagents = list("toxin" = 1, "limejuice" = 1, "lipoifier" = 1)
+	result_amount = 3
+
+/datum/reagent/consumable/milkshake_chocolate
+	name = "Chocolate Milkshake"
+	id = "milkshake_chocolate"
+	description = "It's like chocolate milk, but for even cooler kids."
+	color = "#7D4E29"
+	taste_description = "creamy chocolate"
+	nutriment_factor = 8 * REAGENTS_METABOLISM
+	drink_icon_file = 'modular_gs/icons/obj/drinks.dmi'
+	drink_icon = "milkshake_chocolate"
+	drink_name = "chocolate milkshake"
+	drink_desc = "Nothing better than cream AND cocoa!"
+
+/datum/chemical_reaction/gs13_milkshake_chocolate
+	name = "Chocolate Milkshake"
+	id = "gs13_milkshake_chocolate"
+	result = "milkshake_chocolate"
+	required_reagents = list("chocolate_milk" = 1, "cream" = 1, "cocoa" = 1)
+	result_amount = 3

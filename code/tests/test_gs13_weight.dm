@@ -3179,7 +3179,7 @@
 	TEST_ASSERT(seed.icon_harvest in growing_states, "Milkmelon has harvest artwork")
 
 /datum/game_test/room_test/gs13_cocktail_recipes/Run()
-	for(var/recipe_path in list(/datum/chemical_reaction/gs13_blobby_mary, /datum/chemical_reaction/gs13_beltbuster_mead))
+	for(var/recipe_path in list(/datum/chemical_reaction/gs13_blobby_mary, /datum/chemical_reaction/gs13_beltbuster_mead, /datum/chemical_reaction/gs13_snakebite, /datum/chemical_reaction/gs13_milkshake_chocolate))
 		var/datum/chemical_reaction/recipe = allocate(recipe_path)
 		var/obj/item/reagent_containers/glass/beaker/beaker = allocate(/obj/item/reagent_containers/glass/beaker)
 		for(var/ingredient in recipe.required_reagents)
@@ -3189,7 +3189,7 @@
 		TEST_ASSERT_EQUAL(beaker.reagents.total_volume, recipe.result_amount * 2, "The cocktail consumes all recipe ingredients")
 
 /datum/game_test/room_test/gs13_cocktail_preferences/Run()
-	var/list/factors = list("blobby_mary" = 25, "beltbuster_mead" = 30)
+	var/list/factors = list("blobby_mary" = 25, "beltbuster_mead" = 30, "snakebite" = 25)
 	for(var/drink_id in factors)
 		var/mob/living/carbon/human/subject = allocate(/mob/living/carbon/human)
 		subject.nutrition = 100
@@ -3206,7 +3206,7 @@
 
 /datum/game_test/room_test/gs13_cocktail_glasses/Run()
 	var/obj/item/reagent_containers/drinks/drinkingglass/glass = allocate(/obj/item/reagent_containers/drinks/drinkingglass)
-	for(var/drink_id in list("blobby_mary", "beltbuster_mead"))
+	for(var/drink_id in list("blobby_mary", "beltbuster_mead", "snakebite", "milkshake_chocolate"))
 		glass.reagents.add_reagent(drink_id, 10)
 		TEST_ASSERT_EQUAL(glass.icon, 'modular_gs/icons/obj/drinks.dmi', "Native glasses select the source sprite sheet")
 		TEST_ASSERT_EQUAL(glass.icon_state, drink_id, "Each cocktail selects its source state")
@@ -3222,3 +3222,15 @@
 	glass.reagents.add_reagent("blobby_mary", 5)
 	glass.reagents.add_reagent("lipoifier", 20)
 	TEST_ASSERT_EQUAL(glass.icon_state, "glass_empty", "Generic drinks do not retain the previous cocktail state")
+
+/datum/game_test/room_test/gs13_chocolate_milkshake/Run()
+	var/mob/living/carbon/human/subject = allocate(/mob/living/carbon/human)
+	subject.nutrition = 100
+	subject.reagents.add_reagent("milkshake_chocolate", 10)
+	subject.reagents.metabolize(subject)
+	TEST_ASSERT(abs(subject.nutrition - (100 + 8 * REAGENTS_METABOLISM)) < 0.001, "Milkshake supplies ordinary source nutrition with weight preferences disabled")
+	subject.gs13_preferences["master_wg_pref"] = TRUE
+	subject.gs13_preferences["weight_gain_food"] = TRUE
+	subject.reagents.metabolize(subject)
+	TEST_ASSERT(abs(subject.nutrition - (100 + 16 * REAGENTS_METABOLISM)) < 0.001, "Weight preferences do not multiply the milkshake's ordinary nutrition")
+	TEST_ASSERT(subject.reagents.get_reagent_amount("milkshake_chocolate") < 10, "Milkshake metabolizes through native consumable chemistry")
