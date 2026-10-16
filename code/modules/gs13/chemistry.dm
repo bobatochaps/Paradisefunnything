@@ -270,7 +270,6 @@
 	description = "Guaranteed to stop 100% of all moving."
 	color = "#00CC33"
 	taste_description = "bitter immobility"
-	nutriment_factor = 0
 	drink_icon_file = 'modular_gs/icons/obj/drinks.dmi'
 	drink_icon = "snakebite"
 	drink_name = "snakebite"

@@ -3191,17 +3191,18 @@
 /datum/game_test/room_test/gs13_cocktail_preferences/Run()
 	var/list/factors = list("blobby_mary" = 25, "beltbuster_mead" = 30, "snakebite" = 25)
 	for(var/drink_id in factors)
+		var/base_nutrition = drink_id == "snakebite" ? REAGENTS_METABOLISM : 0
 		var/mob/living/carbon/human/subject = allocate(/mob/living/carbon/human)
 		subject.nutrition = 100
 		subject.reagents.add_reagent(drink_id, 10)
 		subject.reagents.metabolize(subject)
-		TEST_ASSERT_EQUAL(subject.nutrition, 101, "Master opt-out retains only ordinary source nutrition")
+		TEST_ASSERT(abs(subject.nutrition - (101 + base_nutrition)) < 0.001, "Master opt-out retains ordinary nutrition")
 		subject.gs13_preferences["master_wg_pref"] = TRUE
 		subject.reagents.metabolize(subject)
-		TEST_ASSERT_EQUAL(subject.nutrition, 102, "Food preference independently gates extra nutrition")
+		TEST_ASSERT(abs(subject.nutrition - (102 + 2 * base_nutrition)) < 0.001, "Food preference independently gates extra nutrition")
 		subject.gs13_preferences["weight_gain_food"] = TRUE
 		subject.reagents.metabolize(subject)
-		TEST_ASSERT_EQUAL(subject.nutrition, 102 + factors[drink_id] * REAGENTS_METABOLISM, "Opt-in enables source cocktail nutrition")
+		TEST_ASSERT(abs(subject.nutrition - (102 + 3 * base_nutrition + factors[drink_id] * REAGENTS_METABOLISM)) < 0.001, "Opt-in enables source cocktail nutrition")
 		TEST_ASSERT(subject.reagents.get_reagent_amount(drink_id) < 10, "Cocktails metabolize even with preferences disabled")
 
 /datum/game_test/room_test/gs13_cocktail_glasses/Run()
