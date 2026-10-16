@@ -3175,4 +3175,5 @@
 	var/list/growing_states = icon_states(seed.growing_icon)
 	for(var/stage in 1 to seed.growthstages)
 		TEST_ASSERT("[seed.icon_grow][stage]" in growing_states, "Milkmelon has artwork for every native growth stage")
-	TEST_ASSERT(seed.icon_dead in growing_states && seed.icon_harvest in growing_states, "Milkmelon has dead and harvest artwork")
+	TEST_ASSERT(seed.icon_dead in growing_states, "Milkmelon has dead plant artwork")
+	TEST_ASSERT(seed.icon_harvest in growing_states, "Milkmelon has harvest artwork")
