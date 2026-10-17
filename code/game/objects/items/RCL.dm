@@ -211,7 +211,7 @@
 	is_empty(user)
 
 /obj/item/stack/cable_coil/rcl/empty/Initialize(mapload)
-	..()
+	. = ..()
 	use(RCL_MAX_SPOOL_SIZE, FALSE)
 	refresh_icon()
 
@@ -232,7 +232,7 @@
 // update_icon() refuses to add the cable overlay on Initialize(), I'm convinced it's an issue with energy stacks.
 // Energy stacks cannot be avoided because the icon of a stack refuses to render otherwise for reasons beyond my comprehension.
 /obj/item/stack/cable_coil/rcl/robot/Initialize(mapload)
-	..()
+	. = ..()
 	var/image/cable_overlay = image('icons/obj/rcl.dmi', icon_state = "rcl_full")
 	cable_overlay.color = spool_color
 	overlays += cable_overlay

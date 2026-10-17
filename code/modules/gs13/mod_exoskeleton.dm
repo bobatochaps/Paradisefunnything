@@ -1,6 +1,7 @@
 // Adapted from GS13 modular_gs/code/modules/mod/mod_exoskeleton.dm.
 /obj/item/mod/construction/plating/exoskeleton
 	icon = 'modular_gs/icons/obj/clothing/modsuit/mod_construction.dmi'
+	icon_state = "GS13_exo-plating"
 	theme = /datum/mod_theme/exoskeleton
 
 /obj/item/mod/construction/plating/exoskeleton/Initialize(mapload)
