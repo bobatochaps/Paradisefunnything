@@ -1,0 +1,245 @@
+#!/usr/bin/env python3
+"""Rebuild the GS13 scope inventory from a pinned, separate source checkout.
+
+This is a lexical discovery aid, not a DM parser or a feature-parity test.
+Run from the Paradise root: python3 tools/gs13/audit_source.py ../gs13-source
+"""
+
+import argparse
+import hashlib
+import json
+import re
+import subprocess
+from collections import Counter, defaultdict
+from pathlib import Path
+
+SOURCE_REV = "ec3ad13bd34b64451813004e32892d49de745404"
+ORIGINAL_BASE = "7084a06407db70b41389045dd38f54ae3eb2d1f1"
+TARGET_REV = "4657875a140bf9b49416a154fe4bc4cd364ce925"
+SOURCE_MERGE_BASE = "2968992d556348d5ac3815c034614e441faa8261"
+SOURCE_URL = f"https://github.com/sheepishgoat/GS13-Blubberstation/blob/{SOURCE_REV}/"
+
+# Explicitly identified adapters. This means partial implementation, not parity.
+# File names are source-relative after modular_gs/; target files are native adapters.
+ADAPTERS = {
+    "code/mechanics/fatness.dm": ["weight", "preferences"],
+    "code/mechanics/muscle.dm": ["weight"],
+    "code/mechanics/fullness.dm": ["fullness"],
+    "code/mechanics/fatness/weight_gain_rate.dm": ["weight_rates"],
+    "code/mechanics/fatness/fatness_hiders.dm": ["weight_hiders"],
+    "code/mechanics/effective_fatness.dm": ["weight"],
+    "code/mechanics/calorite.dm": ["calorite", "calorite_construction"],
+    "code/mechanics/calorite_glass.dm": ["calorite_glass"],
+    "code/mechanics/fattening_trap.dm": ["magic_traps"],
+    "code/obj/weapons/energy_guns.dm": ["weapons"],
+    "code/obj/weapons/ammo_casings.dm": ["weapons"],
+    "code/obj/weapons/melee.dm": ["melee"],
+    "code/obj/weapons/caloray.dm": ["caloray"],
+    "code/obj/weapons/feeder_ebow.dm": ["weapon_consumables"],
+    "code/obj/items/bluespace_belt.dm": ["equipment", "weight_hiders"],
+    "code/obj/items/memento_calori.dm": ["memento_calori"],
+    "code/obj/items/portable_blender.dm": ["portable_blender"],
+    "code/machinery/feeding_tube.dm": ["feeding_machine"],
+    "code/machinery/adipoelectric_generator.dm": ["adipoelectric"],
+    "code/machinery/adipoelectric_transformer.dm": ["adipoelectric"],
+    "code/datums/diseases/advance/symptoms/weight_gain.dm": ["virology"],
+    "code/datums/status_effects/fatstun.dm": ["fat_stun"],
+    "code/datums/components/fattening.dm": ["fattening_component"],
+    "code/datums/components/fattening_door.dm": ["calorite_construction"],
+    "code/datums/components/weight_scale.dm": ["equipment"],
+    "code/clothing/calorite_collar.dm": ["collars"],
+    "code/clothing/bluespace_collar.dm": ["collars"],
+    "code/modules/borg/feeding_tools.dm": ["cyborg_feeding"],
+    "code/modules/hydroponics/lipoplant.dm": ["hydroponics"],
+    "code/modules/hydroponics/munchies_weed.dm": ["hydroponics"],
+    "code/modules/hydroponics/grown/milkmelon.dm": ["hydroponics"],
+    "code/modules/mod/mod_exoskeleton.dm": ["mod_exoskeleton"],
+    "code/modules/mod/modules/modules_fat.dm": ["mod_modules"],
+    "code/modules/surgery/organs/augments.dm": ["nutritech_implants"],
+    "code/modules/reagents/chemistry/reagents/fermi_fat.dm": ["chemistry"],
+    "code/modules/reagents/chemistry/reagents/fatty_drinks.dm": ["chemistry"],
+    "code/modules/reagents/chemistry/recipes/fatdrinks.dm": ["chemistry"],
+    "code/modules/reagents/chemistry/recipes/fatchem.dm": ["chemistry"],
+    "code/modules/reagents/chemistry/reagents/food_reagents.dm": ["chemistry"],
+    "code/modules/reagents/chemistry/reagents/consumable_reagents.dm": ["chemistry"],
+    "code/modules/spells/spells_type/touch/add_weight.dm": ["magic"],
+    "code/modules/spells/spells_type/conjure/traps.dm": ["magic_traps"],
+    "code/modules/weapons/grenades.dm": ["weapon_consumables"],
+    "code/modules/weapons/magic/wand.dm": ["magic"],
+    "code/modules/client/preferences/fatness_preferences.dm": ["preferences"],
+    "code/modules/client/preferences/wg_source_preferences.dm": ["preferences"],
+    "code/modules/hud/BFI.dm": ["weight_hud"],
+    "code/modules/hud/alert.dm": ["alerts"],
+    "code/modules/mob/living/carbon/examine.dm": ["examine"],
+    "code/modules/mob/living/carbon/calorite_poisoning.dm": ["calorite"],
+    "code/modules/projectiles/projectiles.dm": ["weapons"],
+    "code/modules/projectiles/projectile.dm": ["weapons"],
+    "code/modules/uplink/uplink_items/adipowarfare.dm": ["weapon_distribution"],
+}
+
+RULES = [
+    ("body-and-appearance", r"customization|taur|clothing|sprite_accessories|genital|fatrousal|effective_fatness"),
+    ("preferences-and-core", r"preferences|__DEFINES|__HELPERS|_globalvars|mechanics/(fatness|muscle|fullness|persistent_fat)|mob/living/(carbon|species|fullness)|weighing|hud"),
+    ("helplessness-and-transformations", r"helplessness|stuckage|bursting|berry|blueberry|starshine|water_sponge|chair_brekage|xwg|burpslurring|transformation"),
+    ("chemistry-food-botany", r"reagents|food_and_drinks|hydroponics|incense|candy"),
+    ("atmosphere-and-materials", r"atmospherics|fattening_gasses|calorite|ores_coins|sheets|tiles"),
+    ("equipment-and-abilities", r"weapons|projectile|spells|fattening_trap|mod/|borg|memento|bluespace|portable_blender|fattening\.dm"),
+    ("species-medical-and-quirks", r"quirks|mutations|diseases|surgery|mobs/|nanites|nifs|vore/"),
+    ("machinery-and-power", r"machinery|power|gym|plumbing|feeding_tube"),
+    ("distribution-and-research", r"cargo|research|uplink|vending|loadout|xenoarch|outfits"),
+    ("world-and-round", r"mapping|ruins|condos|storyteller|jobs|events|voting|shuttle|holiday|bitrunning|configuration"),
+]
+
+
+def git(root, *args):
+    return subprocess.check_output(["git", "-C", str(root), *args])
+
+
+def strip_comments(text):
+    # Preserve strings and line numbers; nested DM block comments are handled.
+    out, i, depth = [], 0, 0
+    while i < len(text):
+        if depth:
+            if text.startswith("/*", i):
+                depth += 1
+                i += 2
+            elif text.startswith("*/", i):
+                depth -= 1
+                i += 2
+            else:
+                out.append("\n" if text[i] == "\n" else " ")
+                i += 1
+        elif text.startswith("/*", i):
+            depth, i = 1, i + 2
+        elif text.startswith("//", i):
+            end = text.find("\n", i)
+            i = len(text) if end < 0 else end
+        elif text[i] in "\"'":
+            quote = text[i]
+            out.append(quote)
+            i += 1
+            while i < len(text):
+                ch = text[i]
+                out.append(ch)
+                i += 1
+                if ch == "\\" and i < len(text):
+                    out.append(text[i])
+                    i += 1
+                elif ch == quote:
+                    break
+        else:
+            out.append(text[i])
+            i += 1
+    return "".join(out)
+
+
+def domain(path):
+    for name, pattern in RULES:
+        if re.search(pattern, path):
+            return name
+    return "world-content-and-misc"
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("source", type=Path)
+    args = parser.parse_args()
+    source = args.source.resolve()
+    root = Path(__file__).resolve().parents[2]
+    if git(source, "rev-parse", "HEAD").decode().strip() != SOURCE_REV:
+        parser.error(f"Source checkout must be exactly {SOURCE_REV}")
+    tracked = sorted(p.decode() for p in git(source, "ls-files", "-z").split(b"\0") if p)
+    dm_files = [p for p in tracked if p.endswith(".dm")]
+    modular = [p for p in dm_files if p.startswith("modular_gs/")]
+    includes = set(p.replace("\\", "/") for p in re.findall(r'^#include\s+"([^"]+)"', (source / "tgstation.dme").read_text(), re.M))
+    clean, definitions, providers = {}, {}, defaultdict(set)
+    for path in dm_files:
+        text = strip_comments((source / path).read_text(errors="replace"))
+        clean[path] = text
+        declarations = sorted(set(re.findall(r"^(/[\w/]+)", text, re.M)))
+        definitions[path] = declarations
+        for declaration in declarations:
+            providers[declaration].add(path)
+    entries = []
+    for path in modular:
+        text = clean[path]
+        dependencies = set()
+        references = set(re.findall(r"/(?:datum|obj|mob|turf|area|atom|client)(?:/[\w]+)+", text))
+        # Type declarations also depend on their parent types.
+        references |= {d.rsplit("/", 1)[0] for d in definitions[path] if "/" in d[1:]}
+        for reference in references:
+            while reference:
+                matches = providers.get(reference, set()) - {path}
+                if matches:
+                    dependencies.update(matches)
+                    break
+                reference = reference.rsplit("/", 1)[0]
+        adapters = [f"code/modules/gs13/{name}.dm" for name in ADAPTERS.get(path.removeprefix("modular_gs/"), [])]
+        for adapter in adapters:
+            if not (root / adapter).exists():
+                raise ValueError(f"Missing declared adapter: {adapter}")
+        assets = sorted(set(re.findall(r"'([^'\n]+\.(?:dmi|ogg|png|wav|dmm|json))'", text)))
+        entries.append({
+            "source": path,
+            "sha256": hashlib.sha256((source / path).read_bytes()).hexdigest(),
+            "domain": domain(path),
+            "root_dme_entry": path in includes,
+            "status": "partial-adapter" if adapters else "needs-semantic-audit",
+            "target_adapters": adapters,
+            "declarations": definitions[path],
+            "direct_type_provider_candidates": sorted(dependencies),
+            "asset_literals": assets,
+            "remaining_gate": "Audit behavior, dependencies, assets, acquisition, preferences, lifecycle, and native integration tests.",
+        })
+    hooks = []
+    marker = re.compile(r"GS13|modular_gs|Blubberstation|Gain Station", re.I)
+    extensions = {".dm", ".dme", ".ts", ".tsx", ".js", ".json", ".txt", ".toml", ".yml", ".yaml", ".dmm"}
+    for path in tracked:
+        if path.startswith("modular_gs/") or Path(path).suffix not in extensions:
+            continue
+        lines = (source / path).read_text(errors="replace").splitlines()
+        hits = [i for i, line in enumerate(lines, 1) if marker.search(line)]
+        if hits:
+            hooks.append({"source": path, "marker_lines": hits, "status": "needs-semantic-audit"})
+    candidates = sorted({p for e in entries for p in e["direct_type_provider_candidates"] if p.startswith(("modular_skyrat/", "modular_zubbers/"))})
+    delta = []
+    for row in git(source, "diff", "--name-status", "--no-renames", SOURCE_MERGE_BASE, SOURCE_REV).decode().splitlines():
+        change, path = row.split("\t")
+        delta.append({"source": path, "change": change, "status": "needs-semantic-audit"})
+    outside_delta = [row for row in delta if not row["source"].startswith("modular_gs/")]
+    upstream_changes = git(root, "diff", "--name-status", ORIGINAL_BASE, TARGET_REV).decode().splitlines()
+    result = {
+        "schema": 1, "source_revision": SOURCE_REV, "source_parent": "Bubberstation/Bubberstation",
+        "original_paradise_base": ORIGINAL_BASE, "audited_paradise_master": TARGET_REV,
+        "source_bubber_merge_base": SOURCE_MERGE_BASE,
+        "limitations": ["Lexical discovery is not a compiler dependency graph.", "Root DME membership does not evaluate conditional compilation.", "Provider candidates include overrides and require human review.", "The historical branch delta includes additions, changes, and deletions; each needs a semantic disposition, not automatic copying.", "An adapter and passing focused tests do not establish complete feature parity."],
+        "entries": entries, "outside_module_marker_candidates": hooks,
+        "inherited_provider_candidates": candidates, "source_branch_delta": delta,
+        "paradise_upstream_changes": upstream_changes,
+    }
+    out = root / "docs/gs13"
+    out.mkdir(parents=True, exist_ok=True)
+    (out / "source_inventory.json").write_text(json.dumps(result, indent=2) + "\n")
+    counts = Counter(e["domain"] for e in entries)
+    lines = ["# GS13 source inventory", "", f"Source: `{SOURCE_REV}`. Audited Paradise master: `{TARGET_REV}`.", "",
+             f"{len(entries)} modular DM files; {sum(e['root_dme_entry'] for e in entries)} listed in the root DME. {len(hooks)} outside-module files contain attribution/integration markers. {len(candidates)} inherited provider files are lexical dependency candidates.", "",
+             f"Historical Bubber merge base: `{SOURCE_MERGE_BASE}`. The exact source branch delta contains {len(delta)} file changes, including {len(outside_delta)} outside `modular_gs`; this also captures unmarked changes and deletions.", "",
+             "These are discovery counts, not a completion percentage. No file is marked complete until its semantic and gameplay gates are checked. `partial-adapter` means an existing adapter was identified; `needs-semantic-audit` does not assert that every declaration is missing.", "",
+             "Regenerate with `python3 tools/gs13/audit_source.py ../gs13-source`. Detailed declarations, provider candidates, asset literals, hashes, marker lines, and upstream changes are in [source_inventory.json](source_inventory.json). See [completion_plan.md](completion_plan.md) for the dependency order and release gates.", "",
+             "| Domain | Source files |", "|---|---:|"]
+    lines += [f"| {name} | {count} |" for name, count in sorted(counts.items())]
+    lines += ["", "## File checklist", "", "| Source | Status | Identified native adapters |", "|---|---|---|"]
+    for e in entries:
+        adapters = ", ".join(f"`{p}`" for p in e["target_adapters"]) or "Audit required"
+        lines.append(f"| [{e['source']}]({SOURCE_URL}{e['source']}) | {e['status']} | {adapters} |")
+    lines += ["", "## Outside-module markers", "", "These are candidates, including comments and configuration references. The historical delta below also covers unmarked changes.", "", "| File | Marker lines |", "|---|---|"]
+    for h in hooks:
+        lines.append(f"| [{h['source']}]({SOURCE_URL}{h['source']}) | {', '.join(map(str, h['marker_lines'][:12]))}{' …' if len(h['marker_lines']) > 12 else ''} |")
+    lines += ["", "## Historical changes outside modular_gs", "", "A/M/D mean added/modified/deleted relative to the historical Bubber merge base. All require semantic review; inherited systems may also be required when unchanged in this delta.", "", "| Change | File |", "|---|---|"]
+    lines += [f"| {row['change']} | `{row['source']}` |" for row in outside_delta]
+    (out / "source_inventory.md").write_text("\n".join(lines) + "\n")
+    print(json.dumps({"modular_files": len(entries), "partial_adapters": sum(bool(e['target_adapters']) for e in entries), "outside_marker_files": len(hooks), "inherited_provider_candidates": len(candidates), "source_branch_changes": len(delta), "outside_source_changes": len(outside_delta), "upstream_changed_files": len(upstream_changes), "json_bytes": (out / 'source_inventory.json').stat().st_size}))
+
+
+if __name__ == "__main__":
+    main()

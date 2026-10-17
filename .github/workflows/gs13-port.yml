@@ -62,3 +62,42 @@ jobs:
         with:
           name: gs13-game-test-logs
           path: data/logs/
+
+  paradise-game-tests:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v7.0.0
+      - name: Install BYOND dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libc6-i386 lib32stdc++6 lib32z1
+      - uses: ./.github/actions/restore_or_install_byond
+      - name: Stop runner MySQL
+        run: sudo service mysql stop
+      - name: Set up MariaDB
+        uses: getong/mariadb-action@v1.11
+        with:
+          mariadb version: '12.3.2'
+          mysql root password: 'root'
+      - name: Validate migrations and install schema
+        run: |
+          python3 tools/ci/generate_sql_scripts.py
+          tools/ci/validate_sql.sh
+      - name: Compile and run all native game tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          bash tools/ci/install_byond.sh STABLE
+          export PATH="$HOME/BYOND/byond/bin:$PATH"
+          export LD_LIBRARY_PATH="$HOME/BYOND/byond/bin:${LD_LIBRARY_PATH:-}"
+          DreamMaker -DGAME_TESTS -DTEST_CONFIG_OVERRIDE=\"unit_tests\" -DMULTIINSTANCE -DCIBUILDING paradise.dme
+          mkdir -p data tmp
+          echo '/datum/map/test_tiny' > data/next_map.txt
+          tools/ci/run_server.sh
+      - name: Upload full game test logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: gs13-paradise-game-test-logs
+          path: data/logs/

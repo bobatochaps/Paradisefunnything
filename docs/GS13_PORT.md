@@ -3,7 +3,10 @@
 **Work in progress. This is not a complete GS13 port.**
 
 Source: `sheepishgoat/GS13-Blubberstation@ec3ad13bd34b64451813004e32892d49de745404`.
-Base: `ParadiseSS13/Paradise@7084a06407db70b41389045dd38f54ae3eb2d1f1`.
+Original base: `ParadiseSS13/Paradise@7084a06407db70b41389045dd38f54ae3eb2d1f1`.
+Current integration target: `ParadiseSS13/Paradise@4657875a140bf9b49416a154fe4bc4cd364ce925` (master inspected 2026-10-17; validation in progress).
+
+The [completion plan](gs13/completion_plan.md) and [source inventory](gs13/source_inventory.md) now track the complete modular file set, historical source delta, inherited dependency candidates, and completion gates. Their discovery counts are not a completion percentage.
 
 ## Implemented foundation
 
