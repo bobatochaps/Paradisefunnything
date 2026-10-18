@@ -67,6 +67,17 @@
 #define COMSIG_GS13_BLENDER_CONTAINER_CHANGED "gs13_blender_container_changed"
 #define COMSIG_GS13_BODY_SIZE_CHANGED "gs13_body_size_changed"
 #define GS13_WEIGHT_TRAIT "gs13_weight"
+#define HELPLESSNESS_TRAIT "gs13_helplessness"
+#define TRAIT_NO_HELPLESSNESS "no_helplessness"
+#define TRAIT_GS13_HIDDEN_FACE "gs13_hidden_face"
+#define TRAIT_GS13_LISP "gs13_lisp"
+#define TRAIT_HELPLESS_IMMOBILITY "immobile_helpless"
+#define TRAIT_HELPLESS_CLUMSY "clumsy_helpless"
+#define TRAIT_HELPLESS_BIG_CHEEKS "big_cheeks"
+#define TRAIT_HELPLESS_NEARSIGHTED "nearsighted_from_weight_helpless"
+#define TRAIT_HELPLESS_MUTE "mute_helpless"
+#define TRAIT_HELPLESS_IMMOBILE_ARMS "immobile_arms_helpless"
+#define TRAIT_HELPLESS_LISP "lisp_helpless"
 #define FULLNESS_MAX 2000
 #define FULLNESS_LEVEL_BLOATED 750
 #define FULLNESS_LEVEL_BEEG 1050

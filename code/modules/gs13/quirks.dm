@@ -22,3 +22,28 @@
 	name = "Macerinic Tolerance"
 	desc = "Macerinic solution removes weight less effectively and cannot increase your weight-loss rate."
 	trait_to_apply = TRAIT_MACERINIC_TOLERANCE
+
+// Source quirk costs are scaled to Paradise's existing -1 to -4 range.
+/datum/quirk/gs13_helplessness_immobile
+	name = "Very Weak Legs"
+	desc = "At 2950 effective BFI you cannot move, or 2100 with Weak Legs. Overrides your immobility threshold preference."
+	cost = -4
+	trait_to_apply = TRAIT_HELPLESS_IMMOBILITY
+
+/datum/quirk/gs13_helplessness_clumsy
+	name = "Sausage Fingers"
+	desc = "At 2100 effective BFI you cannot use ordinary weapon triggers. Overrides your clumsy fingers threshold preference."
+	cost = -3
+	trait_to_apply = TRAIT_HELPLESS_CLUMSY
+
+/datum/quirk/gs13_helplessness_mute
+	name = "Many Chins"
+	desc = "At 4430 effective BFI you become mute. Overrides your muteness threshold preference."
+	cost = -1
+	trait_to_apply = TRAIT_HELPLESS_MUTE
+
+/datum/quirk/gs13_helplessness_arms
+	name = "Weak Arms"
+	desc = "At 4430 effective BFI you cannot use your hands. Overrides your immobile arms threshold preference."
+	cost = -3
+	trait_to_apply = TRAIT_HELPLESS_IMMOBILE_ARMS

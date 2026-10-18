@@ -146,6 +146,9 @@ GLOBAL_LIST_INIT(soapy_words, list(
 		if(HAS_TRAIT(src, TRAIT_MUTE))
 			S.message = ""
 
+		if(HAS_TRAIT(src, TRAIT_GS13_LISP))
+			S.message = replacetext(replacetext(S.message, "s", "th"), "x", "th")
+
 		if(istype(wear_mask, /obj/item/clothing/mask/horsehead))
 			var/obj/item/clothing/mask/horsehead/hoers = wear_mask
 			if(hoers.voicechange)

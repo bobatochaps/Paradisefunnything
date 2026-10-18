@@ -52,6 +52,8 @@ GLOBAL_DATUM_INIT(configuration, /datum/server_configuration, new())
 	var/datum/configuration_section/asset_cache_configuration/asset_cache
 	/// Holder for the tgui configuration datum
 	var/datum/configuration_section/tgui_configuration/tgui
+	/// GS13 integration settings, disabled by default.
+	var/datum/configuration_section/gs13_configuration/gs13
 	/// Raw data. Stored here to avoid passing data between procs constantly
 	var/list/raw_data = list()
 
@@ -101,6 +103,7 @@ GLOBAL_DATUM_INIT(configuration, /datum/server_configuration, new())
 	vote = new()
 	asset_cache = new()
 	tgui = new()
+	gs13 = new()
 
 	// Load our stuff up
 	var/config_file = "config/config.toml"
@@ -141,6 +144,7 @@ GLOBAL_DATUM_INIT(configuration, /datum/server_configuration, new())
 	safe_load(vote, "voting_configuration")
 	safe_load(asset_cache, "asset_cache_configuration")
 	safe_load(tgui, "tgui_configuration")
+	safe_load(gs13, "gs13_configuration")
 
 // Proc to load up instance-specific overrides
 /datum/server_configuration/proc/load_overrides(override_file)

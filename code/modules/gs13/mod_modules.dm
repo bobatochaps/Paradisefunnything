@@ -62,6 +62,7 @@
 		supported_wearer = mod.wearer
 		RegisterSignal(supported_wearer, COMSIG_PARENT_QDELETING, PROC_REF(on_wearer_deletion))
 	supported_wearer.add_fat_delay_modifier(UID(), amount)
+	ADD_TRAIT(supported_wearer, TRAIT_NO_HELPLESSNESS, UID())
 	supported_wearer.handle_weight_gain(0)
 
 /obj/item/mod/module/hydraulic_movement/proc/clear_support()
@@ -71,6 +72,7 @@
 	supported_wearer = null
 	UnregisterSignal(former_wearer, COMSIG_PARENT_QDELETING)
 	former_wearer.remove_fat_delay_modifier(UID())
+	REMOVE_TRAIT(former_wearer, TRAIT_NO_HELPLESSNESS, UID())
 	if(!QDELETED(former_wearer))
 		former_wearer.handle_weight_gain(0)
 

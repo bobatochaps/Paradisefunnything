@@ -64,6 +64,7 @@
 	xwg_resize()
 	SEND_SIGNAL(src, COMSIG_FATNESS_CHANGED, fatness)
 	update_gs13_weight_appearance()
+	handle_gs13_helplessness()
 
 /mob/living/carbon/proc/fully_heal_fatness(remove_perma = FALSE, custom_remove_text = "You feel much lighter.", custom_perma_remove_text = "Your permanent weight vanishes.")
 	fatness_real = 0
@@ -89,6 +90,7 @@
 		amount *= amount > 0 ? muscle_gain_rate : muscle_loss_rate
 	muscle_real = max(0, muscle_real + amount)
 	muscle = muscle_real
+	handle_gs13_helplessness()
 	return muscle_real - before
 
 /mob/living/carbon/proc/work_out(intensity, custom_stamina_cost = null)
@@ -102,8 +104,8 @@
 
 /// Paradise supplies the life tick duration in seconds.
 /mob/living/carbon/proc/handle_weight_gain(seconds = 2)
-	calculate_fatness()
 	muscle = muscle_real
+	calculate_fatness()
 	gs13_movement_delay = 0
 	if(gs13_preferences["master_wg_pref"] || HAS_TRAIT(src, TRAIT_UNIVERSAL_GAINER))
 		if(stat != DEAD && !HAS_TRAIT(src, TRAIT_NOHUNGER) && nutrition > NUTRITION_LEVEL_FULL && check_weight_prefs(FATTENING_TYPE_FOOD))

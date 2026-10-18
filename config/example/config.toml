@@ -928,3 +928,16 @@ asset_simple_preload = true
 # asset_cdn_url = "http://localhost:58715/"
 
 # Congratulations. You reached the end. heres a cookie.
+
+# GS13 helplessness thresholds in effective BFI (apparent fat minus muscle).
+# Zero disables forcing. Nonzero values apply outside dorms/maintenance/afterlife
+# equivalents even if a character threshold is disabled. Hydraulic MOD support
+# grants immunity. These settings do not enable weight gain itself.
+[gs13_configuration.forced_helplessness]
+no_movement = 0
+clumsy = 0
+nearsighted = 0
+hidden_face = 0
+mute = 0
+immobile_arms = 0
+lisp = 0
