@@ -1,0 +1,141 @@
+/datum/game_test/room_test/gs13_body_size_preferences/Run()
+	var/list/settings = gs13_sanitize_preferences(list("body_size" = -10))
+	TEST_ASSERT_EQUAL(settings["body_size"], 0.8, "Body size has the source's lower bound")
+	settings = gs13_sanitize_preferences(list("body_size" = 99))
+	TEST_ASSERT_EQUAL(settings["body_size"], 2, "Body size has the GS13 upper bound")
+	for(var/invalid in list(null, "large", INFINITY, -INFINITY))
+		settings = gs13_sanitize_preferences(list("body_size" = invalid))
+		TEST_ASSERT_EQUAL(settings["body_size"], 1, "Invalid sizes safely use the ordinary body scale")
+	settings = gs13_sanitize_preferences(json_encode(list("body_size" = 1.234)))
+	TEST_ASSERT(abs(settings["body_size"] - 1.23) < 0.0001, "Character saves preserve hundredth-size increments")
+	var/datum/character_save/character = allocate(/datum/character_save)
+	character.gs13_preferences = settings
+	var/mob/living/carbon/human/subject = allocate(/mob/living/carbon/human)
+	character.apply_gs13_preferences(subject)
+	TEST_ASSERT(abs(subject.starting_size - 1.23) < 0.0001, "Body size applies even with weight gain disabled")
+	character.gs13_preferences["body_size"] = 2
+	character.apply_gs13_preferences(subject, FALSE)
+	TEST_ASSERT(abs(subject.starting_size - 1.23) < 0.0001, "In-round preference edits cannot change existing physical size")
+	TEST_ASSERT(abs(subject.dna.gs13_body_size - 1.23) < 0.0001, "DNA stores the body's actual size rather than the next spawn's preference")
+	var/mob/living/carbon/human/next_body = allocate(/mob/living/carbon/human)
+	character.apply_gs13_preferences(next_body)
+	TEST_ASSERT_EQUAL(next_body.starting_size, 2, "The next spawn uses the changed setting")
+	character.gs13_preferences["body_size"] = 1
+	TEST_ASSERT_EQUAL(next_body.gs13_preferences["body_size"], 2, "Bodies retain an independent preference snapshot")
+
+/datum/game_test/room_test/gs13_body_size_measurements/Run()
+	var/mob/living/carbon/human/subject = allocate(/mob/living/carbon/human)
+	subject.adjust_fatness(128, FATTENING_TYPE_ALMIGHTY, TRUE)
+	subject.adjust_perma(32, FATTENING_TYPE_ALMIGHTY, TRUE)
+	subject.muscle_real = 64
+	subject.handle_weight_gain(0)
+	TEST_ASSERT_EQUAL(subject.calculate_weight_in_pounds(), 183, "Base, apparent fat, and muscle all contribute to mass")
+	var/ordinary_bmi = subject.calculate_bmi()
+	subject.set_gs13_body_size(2)
+	TEST_ASSERT_EQUAL(subject.calculate_weight_in_pounds(), 732, "Doubling starting size quadruples all mass contributions")
+	TEST_ASSERT_EQUAL(subject.calculate_bmi(), ordinary_bmi, "Size scales BMI's height and mass consistently")
+	TEST_ASSERT_EQUAL(subject.calculate_adjusted_total_weight_in_bfi(), 1152, "Size-adjusted BFI preserves the source's muscle conversion")
+	TEST_ASSERT_EQUAL(subject.calculate_effective_fatness(), 96, "Effective fatness remains independent of body size")
+	TEST_ASSERT_EQUAL(subject.calculate_effective_fatness(list(EW_SKIP_MUSCLE)), 160, "Threshold callers can omit the muscle offset")
+	var/obj/item/bluespace_belt/belt = allocate(/obj/item/bluespace_belt)
+	belt.forceMove(subject)
+	belt.equipped(subject, ITEM_SLOT_BELT)
+	TEST_ASSERT_EQUAL(subject.calculate_weight_in_pounds(), 668, "Scaled measurements respect concealment while retaining permanent fat")
+	belt.dropped(subject)
+	TEST_ASSERT_EQUAL(subject.calculate_weight_in_pounds(), 732, "Removing concealment restores measured mass")
+	subject.set_gs13_body_size(1)
+	subject.fully_heal_fatness(TRUE, null, null)
+	subject.adjust_fatness(7, FATTENING_TYPE_ALMIGHTY, TRUE)
+	subject.muscle = 3
+	TEST_ASSERT_EQUAL(subject.calculate_weight_in_pounds(), 147, "Source rounds fat and muscle contributions separately before adding base mass")
+
+/datum/game_test/room_test/gs13_body_size_transform_composition/Run()
+	var/mob/living/carbon/human/subject = allocate(/mob/living/carbon/human)
+	// Native Tiny/dwarf-style visual scaling must coexist with character size.
+	subject.resize = 0.8
+	subject.update_transform()
+	sleep(3)
+	subject.set_gs13_body_size(1.5)
+	sleep(3)
+	var/matrix/appearance_transform = subject.transform
+	TEST_ASSERT(abs(appearance_transform.a - 1.2) < 0.0001, "Body size composes with an existing native scale")
+	var/physical_weight = subject.calculate_weight_in_pounds()
+	subject.set_gs13_body_size(1.5)
+	sleep(3)
+	appearance_transform = subject.transform
+	TEST_ASSERT(abs(appearance_transform.a - 1.2) < 0.0001, "Reapplying appearance does not compound the size")
+	subject.resize = 1.25
+	subject.update_transform()
+	sleep(3)
+	TEST_ASSERT_EQUAL(subject.calculate_weight_in_pounds(), physical_weight, "Temporary render changes cannot feed back into physical mass")
+	subject.set_gs13_body_size(1)
+	sleep(3)
+	appearance_transform = subject.transform
+	TEST_ASSERT(abs(appearance_transform.a - 1) < 0.0001, "Replacing body size preserves other active scale factors")
+	subject.resize = 1.5
+	subject.set_gs13_body_size(2)
+	sleep(3)
+	appearance_transform = subject.transform
+	TEST_ASSERT(abs(appearance_transform.a - 3) < 0.0001, "A pending native resize is consumed together with the body-size update")
+	TEST_ASSERT_EQUAL(subject.calculate_weight_in_pounds(), 588, "Only starting size affects the mass of the resized body")
+
+/datum/game_test/room_test/gs13_body_size_identity/Run()
+	var/mob/living/carbon/human/source_body = allocate(/mob/living/carbon/human)
+	var/mob/living/carbon/human/recipient = allocate(/mob/living/carbon/human)
+	source_body.set_gs13_body_size(1.75)
+	source_body.update_dna()
+	var/datum/dna/snapshot = source_body.dna.Clone()
+	allocated += snapshot
+	source_body.set_gs13_body_size(1)
+	recipient.set_gs13_body_size(0.8)
+	recipient.change_dna(snapshot)
+	TEST_ASSERT_EQUAL(recipient.starting_size, 1.75, "Changing DNA restores the captured physical size")
+	TEST_ASSERT_EQUAL(snapshot.gs13_body_size, 1.75, "Changing the original body does not alter its DNA snapshot")
+	recipient.set_species(/datum/species/grey)
+	TEST_ASSERT_EQUAL(recipient.starting_size, 1.75, "Species changes preserve physical size")
+	TEST_ASSERT_EQUAL(recipient.calculate_weight_in_pounds(), 450.1875, "Restored size is used for mass after a species change")
+	var/list/serialized = snapshot.serialize()
+	var/datum/dna/restored = allocate(/datum/dna)
+	restored.deserialize(serialized)
+	TEST_ASSERT_EQUAL(restored.gs13_body_size, 1.75, "DNA serialization includes physical scale")
+	serialized -= "gs13_body_size"
+	restored.deserialize(serialized)
+	TEST_ASSERT_EQUAL(restored.gs13_body_size, 1, "Older serialized DNA retains ordinary body size")
+
+/datum/game_test/room_test/gs13_body_size_cloning/Run()
+	var/mob/living/carbon/human/subject = allocate(/mob/living/carbon/human)
+	var/datum/mind/patient_mind = allocate(/datum/mind)
+	patient_mind.transfer_to(subject)
+	subject.set_gs13_body_size(1.5)
+	var/obj/machinery/clonescanner/scanner = allocate(/obj/machinery/clonescanner)
+	var/datum/cloning_data/scan = scanner.scan(subject)
+	subject.set_gs13_body_size(1)
+	var/obj/machinery/clonepod/pod = allocate(/obj/machinery/clonepod)
+	pod.patient_data = scan
+	pod.desired_data = scan
+	pod.create_clone()
+	TEST_ASSERT_NOTNULL(pod.clone, "The native clone factory creates the scanned body")
+	allocated += pod.clone
+	TEST_ASSERT_EQUAL(pod.clone.starting_size, 1.5, "Cloning restores scan-time size without a connected client or character preferences")
+	TEST_ASSERT_EQUAL(pod.clone.calculate_weight_in_pounds(), 330.75, "The cloned body uses its restored scale for mass")
+
+/datum/game_test/room_test/gs13_body_size_weighing/Run()
+	var/datum/test_puppeteer/player = new(src, /mob/living/carbon/human, pick(get_available_turfs()))
+	var/datum/test_puppeteer/target = player.spawn_puppet_nearby()
+	var/mob/living/carbon/human/subject = target.puppet
+	subject.gs13_preferences = gs13_default_preferences()
+	subject.gs13_preferences["master_wg_pref"] = TRUE
+	subject.set_gs13_body_size(2)
+	subject.adjust_fatness(160, FATTENING_TYPE_ALMIGHTY, TRUE)
+	subject.muscle_real = 64
+	subject.handle_weight_gain(0)
+	player.spawn_obj_in_hand(/obj/item/portable_weight_scanner)
+	player.click_on(target)
+	TEST_ASSERT_LAST_CHATLOG(player, "732 lb")
+	TEST_ASSERT_LAST_CHATLOG(player, "Body size: 2; BMI:")
+	var/obj/structure/scale/scale = player.spawn_obj_nearby(/obj/structure/scale)
+	// Force a real turf entry so the scale's connect_loc signal produces the reading.
+	subject.forceMove(get_turf(player.puppet))
+	subject.forceMove(get_turf(scale))
+	TEST_ASSERT_LAST_CHATLOG(target, "732 lb")
+	TEST_ASSERT(istype(subject.alerts["gs13_fatness"], /atom/movable/screen/alert/gs13/fat), "HUD stages remain based on BFI, independently of measured pounds")

@@ -3,6 +3,7 @@
 	return list(
 		"master_wg_pref" = FALSE,
 		"weight_body_sprites" = TRUE,
+		"body_size" = RESIZE_DEFAULT_SIZE,
 		"starting_fatness" = 0,
 		"weight_gain_rate" = 0.5,
 		"weight_loss_rate" = 0.5,
@@ -26,6 +27,7 @@
 	return list(
 		"master_wg_pref" = "Enable weight gain",
 		"weight_body_sprites" = "Show weight body sprites (human body and modular uniforms)",
+		"body_size" = "Starting body size (0.8 to 2; 1 = normal)",
 		"starting_fatness" = "Starting body fat index",
 		"weight_gain_rate" = "Weight gain multiplier",
 		"weight_loss_rate" = "Weight loss multiplier",
@@ -59,6 +61,8 @@
 		if(!isnum(value) || !GS13_IS_FINITE(value))
 			continue
 		switch(pref)
+			if("body_size")
+				result[pref] = gs13_sanitize_body_size(value)
 			if("starting_fatness")
 				result[pref] = clamp(value, 0, FATNESS_LEVEL_BLOB)
 			if("weight_gain_rate", "weight_loss_rate")
@@ -77,6 +81,9 @@
 	character.weight_loss_rate = gs13_preferences["weight_loss_rate"]
 	character.max_weight = gs13_preferences["max_weight"]
 	if(initialize_weight)
+		if(ishuman(character))
+			var/mob/living/carbon/human/human_character = character
+			human_character.set_gs13_body_size(gs13_preferences["body_size"])
 		character.fatness_real = gs13_preferences["master_wg_pref"] ? gs13_preferences["starting_fatness"] : 0
 	character.calculate_fatness()
 	character.handle_weight_gain(0)
@@ -84,10 +91,10 @@
 /datum/character_save/proc/show_gs13_preferences(mob/user)
 	gs13_preferences = gs13_sanitize_preferences(gs13_preferences)
 	var/list/labels = gs13_preference_labels()
-	var/list/html = list("<h2>GS13 weight preferences</h2>", "<p>Enable weight gain and choose its allowed sources. Starting weight applies on your next spawn. Save your character to keep these settings.</p>")
+	var/list/html = list("<h2>GS13 weight preferences</h2>", "<p>Enable weight gain and choose its allowed sources. Starting weight and body size apply on your next spawn. Body size also works with weight gain disabled. Save your character to keep these settings.</p>")
 	for(var/pref in labels)
 		var/value = gs13_preferences[pref]
-		if(!(pref in list("starting_fatness", "weight_gain_rate", "weight_loss_rate", "max_weight")))
+		if(!(pref in list("body_size", "starting_fatness", "weight_gain_rate", "weight_loss_rate", "max_weight")))
 			value = value ? "Enabled" : "Disabled"
 		html += "[labels[pref]]: <a href='byond://?_src_=prefs;preference=gs13;setting=[pref]'>[value]</a><br>"
 	var/datum/browser/popup = new(user, "gs13_preferences", "GS13 preferences", 520, 640)
@@ -100,13 +107,17 @@
 	var/list/labels = gs13_preference_labels()
 	if(setting in labels)
 		var/value = character.gs13_preferences[setting]
-		if(setting in list("starting_fatness", "weight_gain_rate", "weight_loss_rate", "max_weight"))
+		if(setting in list("body_size", "starting_fatness", "weight_gain_rate", "weight_loss_rate", "max_weight"))
+			var/minimum = 0
 			var/maximum = SHORT_REAL_LIMIT
-			if(setting == "starting_fatness")
+			if(setting == "body_size")
+				minimum = GS13_BODY_SIZE_MIN
+				maximum = GS13_BODY_SIZE_MAX
+			else if(setting == "starting_fatness")
 				maximum = FATNESS_LEVEL_BLOB
 			else if(setting != "max_weight")
 				maximum = 2
-			value = tgui_input_number(user, labels[setting], "GS13 preferences", value, maximum, 0, round_value = FALSE)
+			value = tgui_input_number(user, labels[setting], "GS13 preferences", value, maximum, minimum, round_value = FALSE)
 			if(isnull(value) || character != active_character)
 				return
 		else

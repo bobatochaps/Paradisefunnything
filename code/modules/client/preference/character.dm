@@ -1726,6 +1726,8 @@
 	character.change_gender(gender)
 	character.physique = physique
 	character.height = height
+	gs13_preferences = gs13_sanitize_preferences(gs13_preferences)
+	character.set_gs13_body_size(gs13_preferences["body_size"])
 
 	var/obj/item/organ/external/head/head_organ = character.get_organ("head")
 

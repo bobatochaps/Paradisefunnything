@@ -3819,6 +3819,7 @@
 #include "code\modules\gs13\calorite_glass.dm"
 #include "code\modules\gs13\equipment.dm"
 #include "code\modules\gs13\preferences.dm"
+#include "code\modules\gs13\body_size.dm"
 #include "code\modules\gs13\weight.dm"
 #include "code\modules\gs13\weight_hiders.dm"
 #include "code\modules\gs13\weight_hud.dm"

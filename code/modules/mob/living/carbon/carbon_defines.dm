@@ -1,5 +1,7 @@
 /mob/living/carbon
 	// GS13 body composition and per-body preference snapshot.
+	/// Character body scale for mass and height; temporary sprite resizing does not change it.
+	var/starting_size = RESIZE_DEFAULT_SIZE
 	var/fatness = 0
 	var/fatness_real = 0
 	var/fatness_perma = 0

@@ -1,6 +1,7 @@
 /mob/living/carbon/proc/gs13_weight_report()
 	calculate_fatness()
-	return "[html_encode(name)]: [calculate_weight_in_pounds()] lb ([round(calculate_weight_in_pounds() * LB_TO_KG, 0.1)] kg).<br>Body fat index: [round(fatness, 0.1)] ([get_fatness_level_name(fatness)]).<br>Regular fat: [round(fatness_real, 0.1)]; permanent fat: [round(fatness_perma, 0.1)]; concealed/other: [round(fatness - fatness_real - fatness_perma, 0.1)].<br>Muscle index: [round(muscle, 0.1)].<br>Gain multiplier: [get_weight_gain_rate()]; loss multiplier: [get_weight_loss_rate()]."
+	var/weight = calculate_weight_in_pounds()
+	return "[html_encode(name)]: [weight] lb ([round(weight * LB_TO_KG, 0.1)] kg).<br>Body size: [starting_size]; BMI: [calculate_bmi_from_weight(weight)].<br>Body fat index: [round(fatness, 0.1)] ([get_fatness_level_name(fatness)]).<br>Regular fat: [round(fatness_real, 0.1)]; permanent fat: [round(fatness_perma, 0.1)]; concealed/other: [round(fatness - fatness_real - fatness_perma, 0.1)].<br>Muscle index: [round(muscle, 0.1)].<br>Gain multiplier: [get_weight_gain_rate()]; loss multiplier: [get_weight_loss_rate()]."
 
 /obj/item/portable_weight_scanner
 	name = "weight analyzer"

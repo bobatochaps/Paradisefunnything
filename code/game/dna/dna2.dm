@@ -56,6 +56,8 @@ GLOBAL_LIST_EMPTY(bad_blocks)
 	var/flavor_text
 	/// The chat color to load for when a character is cloned, a changeling transforms, or when a character is created
 	var/chat_color
+	/// Physical starting scale, independent of temporary rendering effects.
+	var/gs13_body_size = RESIZE_DEFAULT_SIZE
 
 // Make a copy of this strand.
 // USE THIS WHEN COPYING STUFF OR YOU'LL GET CORRUPTION!
@@ -69,6 +71,7 @@ GLOBAL_LIST_EMPTY(bad_blocks)
 	new_dna.species = new species.type
 	new_dna.flavor_text = flavor_text
 	new_dna.chat_color = chat_color
+	new_dna.gs13_body_size = gs13_body_size
 
 	for(var/b = 1; b <= DNA_SE_LENGTH; b++)
 		new_dna.SE[b]=SE[b]
@@ -97,6 +100,7 @@ GLOBAL_LIST_EMPTY(bad_blocks)
 		UpdateUI()
 
 /datum/dna/proc/ResetUIFrom(mob/living/carbon/human/character)
+	gs13_body_size = character.starting_size
 	// INITIALIZE!
 	ResetUI(TRUE)
 	// Hair
@@ -451,6 +455,7 @@ GLOBAL_LIST_EMPTY(bad_blocks)
 	data["blood_type"] = blood_type
 	data["real_name"] = real_name
 	data["flavor_text"] = flavor_text
+	data["gs13_body_size"] = gs13_body_size
 	return data
 
 /datum/dna/deserialize(data)
@@ -465,6 +470,7 @@ GLOBAL_LIST_EMPTY(bad_blocks)
 	blood_type = data["blood_type"]
 	real_name = data["real_name"]
 	flavor_text = data["flavor_text"]
+	gs13_body_size = gs13_sanitize_body_size(data["gs13_body_size"])
 
 /datum/dna/proc/transfer_identity(mob/living/carbon/human/destination)
 	if(!istype(destination))

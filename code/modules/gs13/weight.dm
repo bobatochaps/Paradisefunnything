@@ -149,22 +149,22 @@
 	return clamp(fatness_delay, 0, delay_cap)
 
 /mob/living/carbon/proc/calculate_fatness_weight_in_pounds(amount)
-	return round(amount * FATNESS_TO_WEIGHT_RATIO, 0.1)
+	return round(amount * FATNESS_TO_WEIGHT_RATIO * calculate_weight_scale())
 
 /mob/living/carbon/proc/calculate_total_fatness_weight_in_pounds()
 	return calculate_fatness_weight_in_pounds(fatness)
 
 /mob/living/carbon/proc/calculate_muscle_weight_in_pounds(amount)
-	return round(amount * MUSCLE_TO_WEIGHT_RATIO, 0.1)
+	return round(amount * MUSCLE_TO_WEIGHT_RATIO * calculate_weight_scale())
 
 /mob/living/carbon/proc/calculate_total_muscle_weight_in_pounds()
 	return calculate_muscle_weight_in_pounds(muscle)
 
 /mob/living/carbon/proc/calculate_weight_in_pounds()
-	return BASE_WEIGHT_VALUE + calculate_total_fatness_weight_in_pounds() + calculate_total_muscle_weight_in_pounds()
+	return BASE_WEIGHT_VALUE * calculate_weight_scale() + calculate_total_fatness_weight_in_pounds() + calculate_total_muscle_weight_in_pounds()
 
 /mob/living/carbon/proc/calculate_bmi_from_weight(weight)
-	return round(weight * LB_TO_KG / ((BASE_HEIGHT * FEET_TO_METER) ** 2), 0.1)
+	return round(weight * LB_TO_KG / ((BASE_HEIGHT * starting_size * FEET_TO_METER) ** 2), 0.1)
 
 /mob/living/carbon/proc/calculate_bmi()
 	return calculate_bmi_from_weight(calculate_weight_in_pounds())
