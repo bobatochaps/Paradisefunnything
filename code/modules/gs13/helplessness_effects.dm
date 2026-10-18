@@ -1,6 +1,6 @@
 // Native adapters for GS13 helplessness. Equipment, FOV, and waddling follow separately.
-/datum/helplessness/immobile/get_trigger_weight(mob/living/carbon/human/subject)
-	if(HAS_TRAIT(subject, override_quirk) && HAS_TRAIT(subject, TRAIT_WEAKLEGS))
+/datum/helplessness/immobile/get_trigger_weight(mob/living/carbon/human/subject, removing_trait)
+	if(removing_trait != override_quirk && removing_trait != TRAIT_WEAKLEGS && HAS_TRAIT(subject, override_quirk) && HAS_TRAIT(subject, TRAIT_WEAKLEGS))
 		return FATNESS_LEVEL_BARELYMOBILE
 	return ..()
 

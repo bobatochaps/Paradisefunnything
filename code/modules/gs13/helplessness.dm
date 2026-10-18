@@ -17,15 +17,15 @@
 	var/gain_message
 	var/lose_message
 
-/datum/helplessness/proc/get_trigger_weight(mob/living/carbon/human/subject)
-	if(HAS_TRAIT(subject, override_quirk))
+/datum/helplessness/proc/get_trigger_weight(mob/living/carbon/human/subject, removing_trait)
+	if(removing_trait != override_quirk && HAS_TRAIT(subject, override_quirk))
 		return default_trigger_weight
 	return subject.gs13_preferences[preference]
 
-/datum/helplessness/proc/handle_helplessness(mob/living/carbon/human/subject)
-	if(subject.stat == DEAD || HAS_TRAIT(subject, TRAIT_NO_HELPLESSNESS))
+/datum/helplessness/proc/handle_helplessness(mob/living/carbon/human/subject, removing_trait)
+	if(subject.stat == DEAD || (removing_trait != TRAIT_NO_HELPLESSNESS && HAS_TRAIT(subject, TRAIT_NO_HELPLESSNESS)))
 		return disable_helplessness(subject)
-	var/threshold = get_trigger_weight(subject)
+	var/threshold = get_trigger_weight(subject, removing_trait)
 	var/effective_weight = subject.calculate_effective_fatness()
 	var/forced_weight = GLOB.configuration.gs13?.forced_helplessness[preference]
 	if(forced_weight > 0 && effective_weight >= forced_weight && !is_type_in_list(get_area(subject), gs13_size_allowed_areas()))
@@ -66,12 +66,16 @@
 		return COMPONENT_INCOMPATIBLE
 
 /datum/component/gs13_helplessness/RegisterWithParent()
-	watched_signals = list(COMSIG_MOB_DEATH, COMSIG_LIVING_REVIVE, COMSIG_MOB_LOGIN, SIGNAL_ADDTRAIT(TRAIT_NO_HELPLESSNESS), SIGNAL_REMOVETRAIT(TRAIT_NO_HELPLESSNESS), SIGNAL_ADDTRAIT(TRAIT_WEAKLEGS), SIGNAL_REMOVETRAIT(TRAIT_WEAKLEGS))
+	watched_signals = list(COMSIG_MOB_DEATH, COMSIG_LIVING_REVIVE, COMSIG_MOB_LOGIN, SIGNAL_ADDTRAIT(TRAIT_NO_HELPLESSNESS), SIGNAL_ADDTRAIT(TRAIT_WEAKLEGS))
+	var/list/removal_signals = list(SIGNAL_REMOVETRAIT(TRAIT_NO_HELPLESSNESS), SIGNAL_REMOVETRAIT(TRAIT_WEAKLEGS))
 	var/list/rules = gs13_helplessness_rules()
 	for(var/key in rules)
 		var/datum/helplessness/rule = rules[key]
-		watched_signals |= list(SIGNAL_ADDTRAIT(rule.override_quirk), SIGNAL_REMOVETRAIT(rule.override_quirk))
+		watched_signals |= SIGNAL_ADDTRAIT(rule.override_quirk)
+		removal_signals |= SIGNAL_REMOVETRAIT(rule.override_quirk)
 	RegisterSignal(parent, watched_signals, PROC_REF(on_changed))
+	RegisterSignal(parent, removal_signals, PROC_REF(on_trait_removed))
+	watched_signals |= removal_signals
 	RegisterSignal(parent, COMSIG_MOVABLE_MOVED, PROC_REF(on_moved))
 
 /datum/component/gs13_helplessness/UnregisterFromParent()
@@ -93,12 +97,19 @@
 	SIGNAL_HANDLER
 	refresh()
 
+/datum/component/gs13_helplessness/proc/on_trait_removed(datum/source, removing_trait)
+	SIGNAL_HANDLER
+	// REMOVE_TRAIT signals before deleting the final source. Evaluate that trait
+	// as absent without changing the native trait list inside its removal loop.
+	// Bulk removal signals after deletion, and may omit the trait argument.
+	refresh(removing_trait)
+
 /datum/component/gs13_helplessness/proc/on_moved(datum/source)
 	SIGNAL_HANDLER
 	if(get_area(parent) != last_area)
 		refresh()
 
-/datum/component/gs13_helplessness/proc/refresh()
+/datum/component/gs13_helplessness/proc/refresh(removing_trait)
 	if(refreshing || !parent || QDELETED(parent))
 		return
 	refreshing = TRUE
@@ -106,7 +117,7 @@
 	var/list/rules = gs13_helplessness_rules()
 	for(var/key in rules)
 		var/datum/helplessness/rule = rules[key]
-		rule.handle_helplessness(parent)
+		rule.handle_helplessness(parent, removing_trait)
 	refreshing = FALSE
 
 /// Server thresholds default off; omitted override keys preserve loaded values.
