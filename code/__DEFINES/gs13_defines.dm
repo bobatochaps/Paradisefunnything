@@ -45,6 +45,8 @@
 #define BASE_HEIGHT 6
 #define GS13_BODY_SIZE_MIN 0.8
 #define GS13_BODY_SIZE_MAX 2
+#define GS13_RESIZE_BIG 2
+#define GS13_RESIZE_MACRO 6
 #define LB_TO_KG 0.453592
 #define FEET_TO_METER 0.3048
 #define INTENSITY_TO_STAMINA_RATIO 7.5
@@ -63,6 +65,7 @@
 #define COMSIG_FATNESS_PERMA_CHANGED "fatness_perma_changed"
 #define COMSIG_FATNESS_CHANGED "fatness_changed"
 #define COMSIG_GS13_BLENDER_CONTAINER_CHANGED "gs13_blender_container_changed"
+#define COMSIG_GS13_BODY_SIZE_CHANGED "gs13_body_size_changed"
 #define GS13_WEIGHT_TRAIT "gs13_weight"
 #define FULLNESS_MAX 2000
 #define FULLNESS_LEVEL_BLOATED 750
