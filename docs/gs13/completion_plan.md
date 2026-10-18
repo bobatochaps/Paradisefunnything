@@ -19,8 +19,8 @@ The [generated inventory](source_inventory.md) lists all 302 modular DM files. T
 | Milestone | Current evidence | Work required before closure |
 |---|---|---|
 | A. Source scope | Full modular file enumeration and historical delta recorded; 53 source files have explicitly identified partial adapters | Review each row, identify behavior-level dependencies, attach destination paths and tests, record justified exclusions such as source-disabled code |
-| B. Paradise baseline | 134 upstream file changes; trial merge has fabricator and generated-bundle conflicts | Preserve calorite and upstream iridium in the fabricator, validate merged native code, rebuild and save UI from merged sources, record the new target pin |
-| C. Body model and measurements | Regular/permanent/apparent weight, rates, fullness, exercise, and initial human appearance work | Body size scaling, taur/body-shape anatomy, all affected measurements, supported species and body changes |
+| B. Paradise baseline | Complete for the recorded target: merged, both calorite and iridium preserved, rebuilt UI saved, full native and live SQL checks pass | Recheck when updating the target pin |
+| C. Body model and measurements | Weight/fullness/exercise, physical size/mass/BMI, DNA/cloning, optional weight-driven growth, and initial human appearance pass native tests | Taur/body-shape anatomy, remaining measurements, supported species, previews and body changes |
 | D. Helplessness | Native weight movement penalties and fat stun exist; source threshold system absent | Threshold preferences and quirks, source-scoped cleanup, movement/hand/speech/equipment/buckle rules, immunity integration, vision adapters, door stuckage and server configuration |
 | E. Transformations | Blueberry and bursting systems absent | Stage/state model, appearance restoration, exposure and preference gates, pressure/bursting rules, recovery/death cleanup, blueberry disease/crops/collars, Starshine and dependent cyborg palette |
 | F. Appearance and clothing | Nine human stages and initial modular uniforms; MOD exoskeleton adapts to them | Species/body-shape/digitigrade/taur fits, all source clothing families, accessories and layers, previews and missing/prosthetic parts |
@@ -29,14 +29,14 @@ The [generated inventory](source_inventory.md) lists all 302 modular DM files. T
 | I. Equipment and power | Initial weapons, spells, MOD modules, feeding tools, generator and transformer exist | Remaining weapon/tool families, abilities, powerator/SMES/persistence, gym and other machinery, construction and cleanup |
 | J. Chemistry and food | Initial reagents, three crops, and four mixed drinks exist | Remaining drinks/foods/recipes/containers, exposure effects, processing, distribution, source nutrient/timing conversions |
 | K. World and distribution | Selected cargo/uplink/research/mining integrations exist | Vendors, remaining research/loadout/crafting, xenoarch, maps/shuttles/jobs/events/ghost roles, configuration, acquisition for every feature |
-| L. Interfaces and persistence | Weight editor/SQL column and feeding/autolathe interfaces exist | All required preference/UI contracts, live SQL migration, save/load/body-transfer coverage, permission checks and production bundles |
-| M. Release verification | Focused CI available; no manual client or live SQL validation | All scoped rows resolved; native and relevant ordinary Paradise tests; representative maps/rounds; client gameplay checks; runtime/performance review; reproducible install and known limitations |
+| L. Interfaces and persistence | Weight editor/SQL column and feeding/autolathe interfaces exist; live migrations/fresh schema pass; merged UI saved | Remaining preference/UI contracts, real player save/load/body-transfer coverage, permission checks and updated bundles |
+| M. Release verification | Focused/full native CI, UI and live SQL checks pass; no manual client gameplay test | All scoped rows resolved; native and relevant ordinary Paradise tests; representative maps/rounds; client gameplay checks; runtime/performance review; reproducible install and known limitations |
 
-No milestone is currently marked complete. Inventory discovery is complete for the enumerated paths; semantic feature review is ongoing.
+Milestone B is complete for the recorded Paradise target; all other milestones remain open. Inventory discovery is complete for the enumerated paths; semantic feature review is ongoing.
 
 ## Dependency order
 
-1. Finish baseline integration and keep the tested commit reproducible.
+1. Keep the validated baseline reproducible; update the target pin deliberately.
 2. Audit and complete the body-size/effective-weight contract shared by measurement, movement, appearance, and thresholds.
 3. Implement the helplessness framework as one feature group: saved thresholds, effects, immunity, and cleanup. Then integrate equipment, speech, buckling, and door checks.
 4. Implement transformation state and appearance restoration before blueberry chemistry, diseases, crops, and the remaining cyborg choices.
@@ -57,6 +57,10 @@ No milestone is currently marked complete. Inventory discovery is complete for t
 
 ## Baseline integration checkpoint
 
-The isolated candidate preserves both `MAT_CALORITE` and the new upstream `MAT_IRIDIUM` in the exosuit fabricator. Automatic merges in the human life loop, MOD themes, research disks, AI core, and test includes were reviewed. The production UI must be rebuilt from the merged source; selecting either prebuilt bundle does not resolve the source combination. Native and UI CI validation is pending.
+The validated merge preserves both `MAT_CALORITE` and the new upstream `MAT_IRIDIUM` in the exosuit fabricator. Automatic merges in the human life loop, MOD themes, research disks, AI core, and test includes were reviewed. The production UI was rebuilt from the merged source and saved at `f6528aea67b020fcc382fda4ad1cbfad30d69fbd`; full native, UI, and live SQL validation passed.
 
 Unrelated local changes in the user's original working checkout are outside this candidate and are not published with it.
+
+## Latest saved checkpoint
+
+`9904bab58563e17b21b24376f50359eeb079a560` passed 131 focused and 186 full game tests, zero compiler errors/warnings and no runtime errors, plus UI and live SQL checks in [run 39100815918](https://github.com/bobatochaps/Paradisefunnything/actions/runs/39100815918). Physical size and temporary growth are implemented; helplessness is the next integration group. See [the port record](../GS13_PORT.md#validated-body-size-and-growth-checkpoint-2026-10-18) for behavior, adaptations, and testing instructions. Generated inventory adapter mappings still need to include these new files; discovery counts are not completion percentages.
