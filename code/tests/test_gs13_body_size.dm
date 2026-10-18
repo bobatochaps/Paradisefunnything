@@ -241,6 +241,7 @@
 	sleep(3)
 	subject.AddComponent(/datum/component/temporary_size, 0.5)
 	var/datum/component/temporary_size/explicit_size = subject.GetComponent(/datum/component/temporary_size)
+	TEST_ASSERT(istype(explicit_size), "Replacement registers the component instance, not its type path")
 	TEST_ASSERT_EQUAL(explicit_size.type, /datum/component/temporary_size, "An explicit size replaces the weight component")
 	TEST_ASSERT(QDELETED(growth), "Replacement deletes the obsolete weight component")
 	explicit_size.allowed_areas = list()
