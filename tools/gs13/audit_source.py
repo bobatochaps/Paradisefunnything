@@ -54,6 +54,7 @@ ADAPTERS = {
     "code/machinery/adipoelectric_generator.dm": ["adipoelectric"],
     "code/machinery/adipoelectric_transformer.dm": ["adipoelectric"],
     "code/datums/diseases/advance/symptoms/weight_gain.dm": ["virology"],
+    "code/datums/diseases/advance/symptoms/berry.dm": ["blueberry_sources"],
     "code/datums/status_effects/fatstun.dm": ["fat_stun"],
     "code/datums/components/fattening.dm": ["fattening_component"],
     "code/datums/components/fattening_door.dm": ["calorite_construction"],
@@ -64,6 +65,11 @@ ADAPTERS = {
     "code/modules/hydroponics/lipoplant.dm": ["hydroponics"],
     "code/modules/hydroponics/munchies_weed.dm": ["hydroponics"],
     "code/modules/hydroponics/grown/milkmelon.dm": ["hydroponics"],
+    "code/modules/hydroponics/grown/berries.dm": ["blueberry_sources"],
+    "code/modules/berry/clothing/collar.dm": ["antiburst_collar", "bursting"],
+    "code/modules/mob/living/bursting.dm": ["bursting"],
+    "code/modules/mob/living/carbon/carbon_defines.dm": ["weight", "transformations", "bursting"],
+    "code/modules/mob/living/carbon/human/human_defines.dm": ["bursting"],
     "code/modules/mod/mod_exoskeleton.dm": ["mod_exoskeleton"],
     "code/modules/mod/modules/modules_fat.dm": ["mod_modules"],
     "code/modules/surgery/organs/augments.dm": ["nutritech_implants"],
@@ -73,11 +79,13 @@ ADAPTERS = {
     "code/modules/reagents/chemistry/recipes/fatchem.dm": ["chemistry"],
     "code/modules/reagents/chemistry/reagents/food_reagents.dm": ["chemistry"],
     "code/modules/reagents/chemistry/reagents/consumable_reagents.dm": ["chemistry"],
+    "code/modules/reagents/chemistry/reagents/blueberry.dm": ["blueberry", "transformations", "bursting"],
+    "code/modules/reagents/chemistry/reagents/starshine.dm": ["starshine", "transformations"],
     "code/modules/spells/spells_type/touch/add_weight.dm": ["magic"],
     "code/modules/spells/spells_type/conjure/traps.dm": ["magic_traps"],
     "code/modules/weapons/grenades.dm": ["weapon_consumables"],
     "code/modules/weapons/magic/wand.dm": ["magic"],
-    "code/modules/client/preferences/fatness_preferences.dm": ["preferences"],
+    "code/modules/client/preferences/fatness_preferences.dm": ["preferences", "bursting"],
     "code/modules/client/preferences/wg_source_preferences.dm": ["preferences"],
     "code/modules/hud/BFI.dm": ["weight_hud"],
     "code/modules/hud/alert.dm": ["alerts"],
@@ -157,12 +165,28 @@ def domain(path):
     return "world-content-and-misc"
 
 
+def read_reviewed_gates(root):
+    """Retain semantic review notes only for unchanged files at the same pin."""
+    try:
+        previous = json.loads((root / "docs/gs13/source_inventory.json").read_text())
+    except (OSError, ValueError):
+        return {}
+    if not isinstance(previous, dict) or previous.get("source_revision") != SOURCE_REV:
+        return {}
+    return {
+        (entry["source"], entry["sha256"]): entry["remaining_gate"]
+        for entry in previous.get("entries", [])
+        if isinstance(entry, dict) and all(isinstance(entry.get(key), str) for key in ("source", "sha256", "remaining_gate"))
+    }
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("source", type=Path)
     args = parser.parse_args()
     source = args.source.resolve()
     root = Path(__file__).resolve().parents[2]
+    reviewed_gates = read_reviewed_gates(root)
     if git(source, "rev-parse", "HEAD").decode().strip() != SOURCE_REV:
         parser.error(f"Source checkout must be exactly {SOURCE_REV}")
     tracked = sorted(p.decode() for p in git(source, "ls-files", "-z").split(b"\0") if p)
@@ -196,9 +220,10 @@ def main():
             if not (root / adapter).exists():
                 raise ValueError(f"Missing declared adapter: {adapter}")
         assets = sorted(set(re.findall(r"'([^'\n]+\.(?:dmi|ogg|png|wav|dmm|json))'", text)))
+        source_hash = hashlib.sha256((source / path).read_bytes()).hexdigest()
         entries.append({
             "source": path,
-            "sha256": hashlib.sha256((source / path).read_bytes()).hexdigest(),
+            "sha256": source_hash,
             "domain": domain(path),
             "root_dme_entry": path in includes,
             "status": "partial-adapter" if adapters else "needs-semantic-audit",
@@ -206,7 +231,7 @@ def main():
             "declarations": definitions[path],
             "direct_type_provider_candidates": sorted(dependencies),
             "asset_literals": assets,
-            "remaining_gate": "Audit behavior, dependencies, assets, acquisition, preferences, lifecycle, and native integration tests.",
+            "remaining_gate": reviewed_gates.get((path, source_hash), "Audit behavior, dependencies, assets, acquisition, preferences, lifecycle, and native integration tests."),
         })
     hooks = []
     marker = re.compile(r"GS13|modular_gs|Blubberstation|Gain Station", re.I)
@@ -255,7 +280,7 @@ def main():
              f"{len(entries)} modular DM files; {sum(e['root_dme_entry'] for e in entries)} listed in the root DME. {len(hooks)} outside-module files contain attribution/integration markers. {len(candidates)} inherited provider files are lexical dependency candidates.", "",
              f"Historical Bubber merge base: `{SOURCE_MERGE_BASE}`. The exact source branch delta contains {len(delta)} file changes, including {len(outside_delta)} outside `modular_gs`; this also captures unmarked changes and deletions.", "",
              "These are discovery counts, not a completion percentage. No file is marked complete until its semantic and gameplay gates are checked. `partial-adapter` means an existing adapter was identified; `needs-semantic-audit` does not assert that every declaration is missing.", "",
-             "Regenerate with `python3 tools/gs13/audit_source.py ../gs13-source`. Detailed declarations, provider candidates, asset literals, hashes, marker lines, and upstream changes are in [source_inventory.json](source_inventory.json). See [completion_plan.md](completion_plan.md) for the dependency order and release gates.", "",
+             "Regenerate with `python3 tools/gs13/audit_source.py ../gs13-source`. Existing semantic gate notes are retained only for unchanged files at the same source pin. Detailed declarations, provider candidates, asset literals, hashes, marker lines, and upstream changes are in [source_inventory.json](source_inventory.json). See [completion_plan.md](completion_plan.md) for the dependency order and release gates.", "",
              "| Domain | Source files |", "|---|---:|"]
     lines += [f"| {name} | {count} |" for name, count in sorted(counts.items())]
     lines += ["", "## File checklist", "", "| Source | Status | Identified native adapters |", "|---|---|---|"]

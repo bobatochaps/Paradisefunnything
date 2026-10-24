@@ -765,8 +765,10 @@
       "sha256": "86648518049572a580c2a8ed06958c1c6b97bb8604560fab31a6ccb9c3ba51ae",
       "domain": "helplessness-and-transformations",
       "root_dme_entry": true,
-      "status": "needs-semantic-audit",
-      "target_adapters": [],
+      "status": "partial-adapter",
+      "target_adapters": [
+        "code/modules/gs13/blueberry_sources.dm"
+      ],
       "declarations": [
         "/datum/symptom/berry",
         "/datum/symptom/berry/Activate",
@@ -797,7 +799,7 @@
         "modular_zubbers/code/modules/mob/living/carbon/human/species/ghoul.dm"
       ],
       "asset_literals": [],
-      "remaining_gate": "Audit behavior, dependencies, assets, acquisition, preferences, lifecycle, and native integration tests."
+      "remaining_gate": "Native virology, production, shared audio, collection, and drain-cure are adapted. Client gameplay and inherited liquid/audio preference behavior still require review."
     },
     {
       "source": "modular_gs/code/datums/diseases/advance/symptoms/weight_gain.dm",
@@ -1269,7 +1271,7 @@
         "modular_zubbers/code/datums/quirks/_quirk.dm"
       ],
       "asset_literals": [],
-      "remaining_gate": "Only the documented weight and helplessness quirks have adapters; audit the other negative quirks and their inherited dependencies."
+      "remaining_gate": "Documented weight/helplessness quirks and Permaberry have native adapters. Audit the remaining negative quirks and their inherited dependencies."
     },
     {
       "source": "modular_gs/code/datums/quirks/neutral/cosglow.dm",
@@ -4150,8 +4152,11 @@
       "sha256": "d6413104771f39703e7a41bd9628db6e1539db731a7e950a2b1812518d286074",
       "domain": "body-and-appearance",
       "root_dme_entry": true,
-      "status": "needs-semantic-audit",
-      "target_adapters": [],
+      "status": "partial-adapter",
+      "target_adapters": [
+        "code/modules/gs13/antiburst_collar.dm",
+        "code/modules/gs13/bursting.dm"
+      ],
       "declarations": [
         "/obj/item/clothing/neck/kink_collar/locked/antiburst",
         "/obj/item/clothing/neck/kink_collar/locked/antiburst/Initialize",
@@ -4195,7 +4200,7 @@
       "asset_literals": [
         "modular_zubbers/icons/obj/clothing/GAGS/collar.dmi"
       ],
-      "remaining_gate": "Audit behavior, dependencies, assets, acquisition, preferences, lifecycle, and native integration tests."
+      "remaining_gate": "Native locking, source-owned protection, radio, controls, sprites, and protolathe acquisition are adapted. Direct client control/rendering checks remain open."
     },
     {
       "source": "modular_gs/code/modules/bitrunning/virtual_domain/domains/calorite_temple.dm",
@@ -4526,7 +4531,8 @@
       "root_dme_entry": true,
       "status": "partial-adapter",
       "target_adapters": [
-        "code/modules/gs13/preferences.dm"
+        "code/modules/gs13/preferences.dm",
+        "code/modules/gs13/bursting.dm"
       ],
       "declarations": [
         "/datum/preference/choiced/glutton_bursting_type",
@@ -4579,7 +4585,7 @@
         "modular_gs/code/modules/client/preferences/helplessness_prefs.dm"
       ],
       "asset_literals": [],
-      "remaining_gate": "Audit behavior, dependencies, assets, acquisition, preferences, lifecycle, and native integration tests."
+      "remaining_gate": "Implemented weight/blueberry/glutton settings use native character snapshots. Real player SQL save/load, final preference/UI parity, and direct client gameplay checks remain pending."
     },
     {
       "source": "modular_gs/code/modules/client/preferences/flavor_text.dm",
@@ -4838,7 +4844,7 @@
         "code/modules/client/preferences/_preference.dm"
       ],
       "asset_literals": [],
-      "remaining_gate": "Audit behavior, dependencies, assets, acquisition, preferences, lifecycle, and native integration tests."
+      "remaining_gate": "Native weight-source preferences include the independent blueberry transformation toggle. Source-specific systems and real player save/load/client checks remain open."
     },
     {
       "source": "modular_gs/code/modules/clothing/under/bunny_suit.dm",
@@ -6012,8 +6018,10 @@
       "sha256": "8dc8d15c23269db8253bb25165c279be27000b21ef72371b028c3f6660fe1a56",
       "domain": "chemistry-food-botany",
       "root_dme_entry": true,
-      "status": "needs-semantic-audit",
-      "target_adapters": [],
+      "status": "partial-adapter",
+      "target_adapters": [
+        "code/modules/gs13/blueberry_sources.dm"
+      ],
       "declarations": [
         "/obj/item/food/grown/berries/blueberry",
         "/obj/item/food/grown/berries/blueberry/juice_typepath",
@@ -6033,7 +6041,7 @@
         "modular_gs/icons/obj/hydroponics/harvest.dmi",
         "modular_gs/icons/obj/hydroponics/seeds.dmi"
       ],
-      "remaining_gate": "Audit behavior, dependencies, assets, acquisition, preferences, lifecycle, and native integration tests."
+      "remaining_gate": "Native mutation, planting, harvest, extraction, grinding, juicing, and original sprites pass integration tests. Complete player/client gameplay checks before closure."
     },
     {
       "source": "modular_gs/code/modules/hydroponics/grown/milkmelon.dm",
@@ -6725,8 +6733,10 @@
       "sha256": "615e3c9d4e49ab8fb4661cbe5fb02b83afae242b0969f55a9eb64bc9f0d1b296",
       "domain": "helplessness-and-transformations",
       "root_dme_entry": true,
-      "status": "needs-semantic-audit",
-      "target_adapters": [],
+      "status": "partial-adapter",
+      "target_adapters": [
+        "code/modules/gs13/bursting.dm"
+      ],
       "declarations": [
         "/datum/effect_system/fluid_spread/smoke/burst_smoke",
         "/mob/living/carbon/human/handle_bursting",
@@ -6765,7 +6775,7 @@
         "modular_gs/sound/voice/gurgle2.ogg",
         "modular_gs/sound/voice/gurgle3.ogg"
       ],
-      "remaining_gate": "Audit behavior, dependencies, assets, acquisition, preferences, lifecycle, and native integration tests."
+      "remaining_gate": "Native capacity, confirmation, outcomes, timers, recovery, viewer checks, and transform cleanup are adapted. TG stomach-organ injury and direct multi-client gameplay/audio checks remain pending."
     },
     {
       "source": "modular_gs/code/modules/mob/living/carbon/calorite_poisoning.dm",
@@ -6843,8 +6853,12 @@
       "sha256": "92dd83660f10291f3c8174d87c9e04624c13d6798c3b750bb668a6d9415f008d",
       "domain": "preferences-and-core",
       "root_dme_entry": true,
-      "status": "needs-semantic-audit",
-      "target_adapters": [],
+      "status": "partial-adapter",
+      "target_adapters": [
+        "code/modules/gs13/weight.dm",
+        "code/modules/gs13/transformations.dm",
+        "code/modules/gs13/bursting.dm"
+      ],
       "declarations": [
         "/mob/living/carbon"
       ],
@@ -6873,7 +6887,7 @@
         "modular_zubbers/code/modules/mob/living/living_defines.dm"
       ],
       "asset_literals": [],
-      "remaining_gate": "Audit behavior, dependencies, assets, acquisition, preferences, lifecycle, and native integration tests."
+      "remaining_gate": "Weight and volume transformation state have native adapters. Digested-carbon accounting, modular anatomy/clothing fields, and other inherited consumers remain pending."
     },
     {
       "source": "modular_gs/code/modules/mob/living/carbon/carbon_stripping.dm",
@@ -6931,8 +6945,10 @@
       "sha256": "da9c6f08627fda3318349a2a959fbac70f69fa55453397aab389f4c24c0bd8d1",
       "domain": "preferences-and-core",
       "root_dme_entry": true,
-      "status": "needs-semantic-audit",
-      "target_adapters": [],
+      "status": "partial-adapter",
+      "target_adapters": [
+        "code/modules/gs13/bursting.dm"
+      ],
       "declarations": [
         "/mob/living/carbon/human"
       ],
@@ -6950,7 +6966,7 @@
         "modular_zubbers/code/modules/mob/living/carbon/human/species/ghoul.dm"
       ],
       "asset_literals": [],
-      "remaining_gate": "Audit behavior, dependencies, assets, acquisition, preferences, lifecycle, and native integration tests."
+      "remaining_gate": "Native bursting capacity fields are adapted. Curse state and its downstream abilities remain pending."
     },
     {
       "source": "modular_gs/code/modules/mob/living/carbon/human/species_types/mootant.dm",
@@ -7627,8 +7643,12 @@
       "sha256": "372d28d31b9d31f159ffcda1bbcb37bce5f6151dd158476070e6679a94b1f3bb",
       "domain": "helplessness-and-transformations",
       "root_dme_entry": true,
-      "status": "needs-semantic-audit",
-      "target_adapters": [],
+      "status": "partial-adapter",
+      "target_adapters": [
+        "code/modules/gs13/blueberry.dm",
+        "code/modules/gs13/transformations.dm",
+        "code/modules/gs13/bursting.dm"
+      ],
       "declarations": [
         "/datum/effect_system/fluid_spread/smoke/blueberry",
         "/datum/looping_sound/blueberry_inflation",
@@ -7715,7 +7735,7 @@
         "modular_gs/sound/voice/gurgle2.ogg",
         "modular_gs/sound/voice/gurgle3.ogg"
       ],
-      "remaining_gate": "Audit behavior, dependencies, assets, acquisition, preferences, lifecycle, and native integration tests."
+      "remaining_gate": "Native volume/color state, preference gates, capacity/leaks/bursting, original assets, and cleanup are adapted. Complete body-shape/anatomy, liquid-turf, per-channel audio, and direct client review remain pending."
     },
     {
       "source": "modular_gs/code/modules/reagents/chemistry/reagents/consumable_reagents.dm",
@@ -7905,8 +7925,11 @@
       "sha256": "a45bbaf4c5265b82efa29b6fc9538c95ca2af6e406a1aaebe95f3d121ee806bb",
       "domain": "helplessness-and-transformations",
       "root_dme_entry": true,
-      "status": "needs-semantic-audit",
-      "target_adapters": [],
+      "status": "partial-adapter",
+      "target_adapters": [
+        "code/modules/gs13/starshine.dm",
+        "code/modules/gs13/transformations.dm"
+      ],
       "declarations": [
         "/datum/addiction/starshine_blue",
         "/datum/chemical_reaction/drink/starshine",
@@ -7981,7 +8004,7 @@
         "modular_gs/icons/obj/vending.dmi",
         "modular_gs/icons/obj/vending_restock.dmi"
       ],
-      "remaining_gate": "Audit behavior, dependencies, assets, acquisition, preferences, lifecycle, and native integration tests."
+      "remaining_gate": "Native drinks, recipes, independent glow, Neutron mass/preferences, vending/board/cargo, and cyborg choices are adapted. Persistent overdose fluid-organ changes and direct client verification remain pending."
     },
     {
       "source": "modular_gs/code/modules/reagents/chemistry/recipes/fatchem.dm",
