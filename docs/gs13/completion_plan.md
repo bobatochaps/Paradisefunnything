@@ -45,6 +45,23 @@ Milestone B is complete for the recorded Paradise target; all other milestones r
 7. Close remaining equipment, medical, food, and world groups with their normal acquisition paths.
 8. Finish persistence and release gates throughout integration; perform final end-to-end testing after the complete feature set is present.
 
+## Ordered work queue (2026-10-24)
+
+Work through this queue in order. A checked implementation item requires reviewed source behavior, native lifecycle handling, acquisition where applicable, passing integration tests, and a saved checkpoint. Client-only verification stays explicit in the release gates and does not silently become an automated pass. The broader milestones above remain open until all of their gates are resolved.
+
+- [ ] 1. Transformation state and appearance restoration: track independent effects, volume-driven stages, apparent weight, tint ownership, recovery, preference edits, deletion, death/revival, species changes, and body transfers. In progress.
+- [ ] 2. Blueberry and dependent content: juice chemistry, pressure and bursting settings/actions, disease and treatment, crops, Permaberry, anti-burst collars, Starshine, and the remaining cyborg feeding choices.
+- [ ] 3. Species, anatomy, and appearance: required inherited species/organs, body shapes, digitigrade/taur fits, all clothing families and layers, missing/prosthetic parts, and previews.
+- [ ] 4. Atmosphere and calorite: native MILLA gases, organic/synthetic exposure, synthesis and canisters, material transmutation, and remaining calorite effects.
+- [ ] 5. Medical systems: remaining symptoms, mutations, quirks, nanites, treatment, surgery, and medical acquisition.
+- [ ] 6. Equipment and power: remaining weapons/tools/spells, MOD and cyborg abilities, gym and other machinery, powerator/SMES/persistence, construction, and cleanup.
+- [ ] 7. Chemistry and food: remaining reagents, drinks, food, recipes, containers, processing, timing/nutrition conversions, and normal distribution.
+- [ ] 8. World and acquisition: vendors, research, cargo, loadouts/crafting, xenoarchaeology, maps/shuttles, jobs/events/ghost roles, and configuration. Cross-check acquisition for every implemented feature.
+- [ ] 9. Interfaces and persistence: remaining UI/preference contracts, permission checks, player SQL save/load, body transfers, reconnects, and updated production bundles.
+- [ ] 10. Source closure and release: disposition every source/dependency row; run the complete native/UI/SQL suites and representative maps/rounds; perform client gameplay, rendering, and performance checks; document installation and remaining differences.
+
+Preserve unrelated workspace edits while preparing each checkpoint.
+
 ## Required record for each completed feature
 
 - Exact source behavior and active entry points; source-disabled blocks noted separately.

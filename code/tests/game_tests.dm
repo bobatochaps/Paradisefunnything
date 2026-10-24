@@ -13,6 +13,7 @@
 #include "test_gs13_door_stuckage.dm"
 #include "test_gs13_fov.dm"
 #include "test_gs13_helplessness.dm"
+#include "test_gs13_transformations.dm"
 #include "test_gs13_weight.dm"
 #endif
 

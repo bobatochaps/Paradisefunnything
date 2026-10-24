@@ -5,7 +5,7 @@
 	return
 
 /mob/living/carbon/human/update_gs13_weight_appearance(force = FALSE)
-	if(!dna || !istype(dna.species, /datum/species/human) || !gs13_weight_enabled() || !gs13_preferences["weight_body_sprites"] || notransform || HAS_TRAIT(src, TRAIT_SKELETONIZED))
+	if(!dna || !istype(dna.species, /datum/species/human) || !gs13_body_effects_enabled() || !gs13_preferences["weight_body_sprites"] || notransform || HAS_TRAIT(src, TRAIT_SKELETONIZED))
 		if(overlays_standing[GS13_WEIGHT_BODY_LAYER])
 			remove_overlay(GS13_WEIGHT_BODY_LAYER)
 		gs13_weight_appearance_key = null

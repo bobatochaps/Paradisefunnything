@@ -3,6 +3,7 @@
 	. = list(
 		"master_wg_pref" = FALSE,
 		"weight_body_sprites" = TRUE,
+		"blueberry_inflation" = FALSE,
 		"body_size" = RESIZE_DEFAULT_SIZE,
 		"weight_size_scaling" = FALSE,
 		"size_xwg" = FALSE,
@@ -31,6 +32,7 @@
 	. = list(
 		"master_wg_pref" = "Enable weight gain",
 		"weight_body_sprites" = "Show weight body sprites (human body and modular uniforms)",
+		"blueberry_inflation" = "Allow blueberry transformations (independent of ordinary weight gain)",
 		"body_size" = "Starting body size (0.8 to 2; 1 = normal)",
 		"weight_size_scaling" = "Grow in size above the blob weight stage",
 		"size_xwg" = "Allow growth up to six times normal size in supported areas",
@@ -95,6 +97,7 @@
 			var/mob/living/carbon/human/human_character = character
 			human_character.set_gs13_body_size(gs13_preferences["body_size"])
 		character.fatness_real = gs13_preferences["master_wg_pref"] ? gs13_preferences["starting_fatness"] : 0
+	character.sync_gs13_transformations()
 	character.calculate_fatness()
 	character.handle_weight_gain(0)
 

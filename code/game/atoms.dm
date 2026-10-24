@@ -1297,7 +1297,7 @@ GLOBAL_LIST_EMPTY(blood_splatter_icons)
 /atom/proc/add_atom_colour(coloration, colour_priority)
 	if(!atom_colours || !length(atom_colours))
 		atom_colours = list()
-		atom_colours.len = COLOUR_PRIORITY_AMOUNT //four priority levels currently.
+		atom_colours.len = COLOUR_PRIORITY_AMOUNT
 	if(!coloration)
 		return
 	if(colour_priority > length(atom_colours))
@@ -1311,7 +1311,7 @@ GLOBAL_LIST_EMPTY(blood_splatter_icons)
 /atom/proc/remove_atom_colour(colour_priority, coloration)
 	if(!atom_colours)
 		atom_colours = list()
-		atom_colours.len = COLOUR_PRIORITY_AMOUNT //four priority levels currently.
+		atom_colours.len = COLOUR_PRIORITY_AMOUNT
 	if(colour_priority > length(atom_colours))
 		return
 	if(coloration && atom_colours[colour_priority] != coloration)

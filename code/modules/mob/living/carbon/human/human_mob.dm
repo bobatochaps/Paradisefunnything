@@ -1575,6 +1575,7 @@
 		regenerate_icons()
 
 	SEND_SIGNAL(src, COMSIG_AFTER_SPECIES_CHANGE)
+	sync_gs13_transformations()
 	if(dna.species)
 		return TRUE
 	else

@@ -20,6 +20,7 @@
 	/// Preference snapshot belongs to this body, including while disconnected.
 	var/list/gs13_preferences = list()
 	var/gs13_character_slot = 0
+	var/gs13_syncing_transformations = FALSE
 	var/gs13_movement_delay = 0
 	/// Source-keyed additive and multiplicative modifiers to body-fat slowdown.
 	var/list/fatness_delay_modifiers = list()

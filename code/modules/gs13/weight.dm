@@ -104,10 +104,11 @@
 
 /// Paradise supplies the life tick duration in seconds.
 /mob/living/carbon/proc/handle_weight_gain(seconds = 2)
+	sync_gs13_transformations()
 	muscle = muscle_real
 	calculate_fatness()
 	gs13_movement_delay = 0
-	if(gs13_preferences["master_wg_pref"] || HAS_TRAIT(src, TRAIT_UNIVERSAL_GAINER))
+	if(gs13_body_effects_enabled())
 		if(stat != DEAD && !HAS_TRAIT(src, TRAIT_NOHUNGER) && nutrition > NUTRITION_LEVEL_FULL && check_weight_prefs(FATTENING_TYPE_FOOD))
 			var/converted = (nutrition - NUTRITION_LEVEL_FULL) * (1 - (1 - NUTRITION_CONVERSION_EFFICIENCY) ** (seconds / 2))
 			adjust_nutrition(-converted)
