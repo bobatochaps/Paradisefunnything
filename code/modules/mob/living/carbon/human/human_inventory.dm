@@ -489,6 +489,8 @@
 		)
 
 /mob/living/carbon/human/can_equip(obj/item/I, slot, disable_warning = FALSE)
+	if(!gs13_can_equip(I, slot, disable_warning))
+		return FALSE
 	return dna.species.can_equip(I, slot, disable_warning, src)
 
 /mob/living/carbon/human/proc/equipOutfit(outfit, visualsOnly = FALSE)

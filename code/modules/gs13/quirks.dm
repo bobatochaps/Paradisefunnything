@@ -47,3 +47,39 @@
 	desc = "At 4430 effective BFI you cannot use your hands. Overrides your immobile arms threshold preference."
 	cost = -3
 	trait_to_apply = TRAIT_HELPLESS_IMMOBILE_ARMS
+
+/datum/quirk/gs13_helplessness_clothing
+	name = "Tight Clothes"
+	desc = "At 2100 effective BFI ordinary suits, gloves, and shoes stop fitting; at 2950 ordinary jumpsuits stop fitting. Overrides both clothing thresholds. MOD parts and adapted modular uniforms still fit."
+	cost = -3
+	trait_to_apply = TRAIT_HELPLESS_CLOTHING
+
+/datum/quirk/gs13_helplessness_belts
+	name = "Wide Waist"
+	desc = "At 1480 effective BFI ordinary belts stop fitting. Overrides your belt fit threshold. Bluespace belts still fit."
+	cost = -2
+	trait_to_apply = TRAIT_HELPLESS_BELTS
+
+/datum/quirk/gs13_helplessness_back
+	name = "Rolls-back"
+	desc = "At 2950 effective BFI ordinary back equipment stops fitting. Overrides your back fit threshold. MOD controls still fit."
+	cost = -3
+	trait_to_apply = TRAIT_HELPLESS_BACKPACKS
+
+/datum/quirk/gs13_helplessness_buckling
+	name = "Seatbelts Destroyer"
+	desc = "At 1480 effective BFI you cannot be buckled onto furniture or vehicles. Overrides your buckling threshold."
+	cost = -1
+	trait_to_apply = TRAIT_HELPLESS_NO_BUCKLE
+
+/datum/quirk/gs13_helplessness_chairs
+	name = "Chair Destroyer"
+	desc = "Above 2100 apparent BFI chairs break when you sit on them, including when you gain weight while seated. Overrides your chair breakage threshold."
+	cost = -1
+	trait_to_apply = TRAIT_HELPLESS_CHAIR_DESTROYER
+
+/datum/quirk/gs13_helplessness_neck
+	name = "Thick Neck"
+	desc = "At 4430 effective BFI neckwear stops fitting. Overrides your neckwear fit threshold."
+	cost = -1
+	trait_to_apply = TRAIT_HELPLESS_THICK_NECK

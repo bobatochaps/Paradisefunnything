@@ -58,6 +58,7 @@
 /datum/component/gs13_helplessness
 	dupe_mode = COMPONENT_DUPE_UNIQUE
 	var/refreshing = FALSE
+	var/refresh_pending = FALSE
 	var/area/last_area
 	var/list/watched_signals
 
@@ -66,8 +67,8 @@
 		return COMPONENT_INCOMPATIBLE
 
 /datum/component/gs13_helplessness/RegisterWithParent()
-	watched_signals = list(COMSIG_MOB_DEATH, COMSIG_LIVING_REVIVE, COMSIG_MOB_LOGIN, SIGNAL_ADDTRAIT(TRAIT_NO_HELPLESSNESS), SIGNAL_ADDTRAIT(TRAIT_WEAKLEGS))
-	var/list/removal_signals = list(SIGNAL_REMOVETRAIT(TRAIT_NO_HELPLESSNESS), SIGNAL_REMOVETRAIT(TRAIT_WEAKLEGS))
+	watched_signals = list(COMSIG_MOB_DEATH, COMSIG_LIVING_REVIVE, COMSIG_MOB_LOGIN, SIGNAL_ADDTRAIT(TRAIT_NO_HELPLESSNESS), SIGNAL_ADDTRAIT(TRAIT_WEAKLEGS), SIGNAL_ADDTRAIT(TRAIT_HELPLESS_CHAIR_DESTROYER))
+	var/list/removal_signals = list(SIGNAL_REMOVETRAIT(TRAIT_NO_HELPLESSNESS), SIGNAL_REMOVETRAIT(TRAIT_WEAKLEGS), SIGNAL_REMOVETRAIT(TRAIT_HELPLESS_CHAIR_DESTROYER))
 	var/list/rules = gs13_helplessness_rules()
 	for(var/key in rules)
 		var/datum/helplessness/rule = rules[key]
@@ -110,14 +111,25 @@
 		refresh()
 
 /datum/component/gs13_helplessness/proc/refresh(removing_trait)
-	if(refreshing || !parent || QDELETED(parent))
+	if(!parent || QDELETED(parent))
+		return
+	if(refreshing)
+		refresh_pending = TRUE
 		return
 	refreshing = TRUE
 	last_area = get_area(parent)
 	var/list/rules = gs13_helplessness_rules()
-	for(var/key in rules)
-		var/datum/helplessness/rule = rules[key]
-		rule.handle_helplessness(parent, removing_trait)
+	var/mob/living/carbon/human/subject = parent
+	do
+		refresh_pending = FALSE
+		for(var/key in rules)
+			var/datum/helplessness/rule = rules[key]
+			rule.handle_helplessness(subject, removing_trait)
+		// Removing concealment can change weight again during an equipment drop.
+		// Finish that recalculation before returning, without recursively entering.
+		subject.gs13_shed_incompatible_clothing()
+		subject.gs13_check_chair(removing_trait)
+	while(refresh_pending && !QDELETED(subject))
 	refreshing = FALSE
 
 /// Server thresholds default off; omitted override keys preserve loaded values.
@@ -142,6 +154,14 @@
 		"mute" = "Muteness threshold (BFI; 0 = disabled)",
 		"immobile_arms" = "Immobile arms threshold (BFI; 0 = disabled)",
 		"lisp" = "Lisp threshold (BFI; 0 = disabled)",
+		"clothing_jumpsuit" = "Jumpsuit fit threshold (BFI; 0 = disabled)",
+		"clothing_misc" = "Suit, glove, and shoe fit threshold (BFI; 0 = disabled)",
+		"belts" = "Belt fit threshold (BFI; 0 = disabled)",
+		"clothing_back" = "Back equipment fit threshold (BFI; 0 = disabled)",
+		"no_neck" = "Neckwear fit threshold (BFI; 0 = disabled)",
+		"no_buckle" = "Unable to buckle threshold (BFI; 0 = disabled)",
+		"waddle" = "Waddling threshold (BFI; 0 = disabled)",
+		"chair_breakage" = "Chair breakage threshold (apparent BFI; 0 = disabled)",
 	)
 
 /proc/gs13_numeric_preference(setting)

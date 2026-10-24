@@ -3822,6 +3822,7 @@
 #include "code\modules\gs13\body_size.dm"
 #include "code\modules\gs13\helplessness.dm"
 #include "code\modules\gs13\helplessness_effects.dm"
+#include "code\modules\gs13\helplessness_equipment.dm"
 #include "code\modules\gs13\weight_size.dm"
 #include "code\modules\gs13\weight.dm"
 #include "code\modules\gs13\weight_hiders.dm"
