@@ -72,6 +72,19 @@
 	TEST_ASSERT_EQUAL(subject.bursting_capacity_fatness, -1, "A disabled capacity retains the source sentinel")
 	TEST_ASSERT(controller.can_burst(GS13_BURST_GLUTTON), "Fullness can trigger independently of fatness")
 
+/datum/game_test/room_test/gs13_burst_small_capacity/Run()
+	var/mob/living/carbon/human/subject = gs13_burst_subject()
+	subject.gs13_preferences["blueberry_max_before_burst"] = 1e-40
+	subject.gs13_preferences["glutton_fatness_before_burst"] = 1e-40
+	subject.gs13_preferences["glutton_fullness_before_burst"] = 1e-40
+	subject.nutrition = 1000
+	var/datum/component/gs13_bursting/controller = subject.GetComponent(/datum/component/gs13_bursting)
+	controller.calculate_capacity()
+	TEST_ASSERT(GS13_IS_FINITE(controller.blueberry_ratio), "A tiny positive juice threshold cannot produce infinite pressure")
+	TEST_ASSERT(GS13_IS_FINITE(controller.fatness_ratio), "A tiny positive BFI threshold cannot underflow its denominator")
+	TEST_ASSERT(GS13_IS_FINITE(controller.fullness_ratio), "A tiny positive fullness threshold stays finite")
+	TEST_ASSERT(controller.can_burst(GS13_BURST_BLUEBERRY), "Numerical guards retain the explicitly selected over-capacity behavior")
+
 /datum/game_test/room_test/gs13_blueberry_safe_burst/Run()
 	var/mob/living/carbon/human/subject = gs13_burst_subject()
 	subject.adjust_fatness(500, FATTENING_TYPE_ALMIGHTY, TRUE)

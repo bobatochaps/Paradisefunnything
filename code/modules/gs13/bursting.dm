@@ -142,7 +142,8 @@ GLOBAL_LIST_INIT(gs13_fat_slosh_sounds, list('modular_gs/sound/effects/inflation
 	if(subject.gs13_preferences["blueberry_inflation"] && subject.gs13_preferences["blueberry_max_before_burst"] > 0)
 		var/datum/reagent/blueberry_juice/juice = subject.reagents?.has_reagent("blueberry_juice")
 		if(juice && subject.can_gs13_transform_with(juice))
-			blueberry_ratio = juice.volume / subject.gs13_preferences["blueberry_max_before_burst"]
+			// Tiny, finite saved thresholds must not overflow capacity arithmetic.
+			blueberry_ratio = juice.volume / max(1e-20, subject.gs13_preferences["blueberry_max_before_burst"])
 	blueberry_stage = gs13_blueberry_capacity_stage(blueberry_ratio)
 	fullness_ratio = -1
 	fatness_ratio = -1
@@ -150,9 +151,9 @@ GLOBAL_LIST_INIT(gs13_fat_slosh_sounds, list('modular_gs/sound/effects/inflation
 		var/fullness_threshold = subject.gs13_preferences["glutton_fullness_before_burst"]
 		var/fatness_threshold = subject.gs13_preferences["glutton_fatness_before_burst"]
 		if(fullness_threshold > 0)
-			fullness_ratio = max(subject.get_fullness() - FULLNESS_LEVEL_BLOATED, 0) / fullness_threshold
+			fullness_ratio = max(subject.get_fullness() - FULLNESS_LEVEL_BLOATED, 0) / max(1e-20, fullness_threshold)
 		if(fatness_threshold > 0)
-			fatness_ratio = max(subject.fatness - fatness_threshold * 0.6, 0) / (fatness_threshold * 0.4)
+			fatness_ratio = max(subject.fatness - fatness_threshold * 0.6, 0) / max(1e-20, fatness_threshold * 0.4)
 		var/mob/living/carbon/human/human_subject = subject
 		human_subject.bursting_capacity_fullness = fullness_ratio
 		human_subject.bursting_capacity_fatness = fatness_ratio
