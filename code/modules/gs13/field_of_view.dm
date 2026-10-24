@@ -38,7 +38,8 @@
 	var/dy = target.y - origin.y
 	if(HAS_TRAIT(src, TRAIT_NEARSIGHT))
 		var/mob/living/carbon/human/subject = src
-		if(!ishuman(src) || !subject.glasses?.prescription)
+		var/obj/item/clothing/glasses/corrective = ishuman(src) ? subject.glasses : null
+		if(!istype(corrective) || !corrective.prescription)
 			if(abs(dx) >= 2 || abs(dy) >= 2)
 				return FALSE
 	var/angle = gs13_fov_angle()
