@@ -72,7 +72,7 @@
 #define TRAIT_VERY_LOW_FOV "gs13_very_low_fov"
 #define GS13_FOV_SCENE_PLANE -98
 #define GS13_FOV_MASK_PLANE -97
-#define GS13_FOV_OUTPUT_PLANE 24.5
+#define GS13_FOV_OUTPUT_PLANE FULLSCREEN_PLANE
 #define COMSIG_GS13_HUD_CHANGED "gs13_hud_changed"
 #define COMSIG_GS13_VIEW_CHANGED "gs13_view_changed"
 #define COMSIG_GS13_PERSPECTIVE_CHANGED "gs13_perspective_changed"

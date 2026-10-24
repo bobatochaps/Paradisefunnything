@@ -110,7 +110,7 @@
 	TEST_ASSERT_NOTNULL(controller.peripheral.get_filter("gs13_fov_blur"), "The peripheral copy uses the source blur")
 	TEST_ASSERT_NOTNULL(controller.peripheral.get_filter("gs13_fov_color"), "The peripheral copy uses the source color matrix")
 	TEST_ASSERT_NOTNULL(controller.peripheral.get_filter("gs13_fov_mask"), "The original mask selects the affected pixels")
-	TEST_ASSERT(controller.peripheral.plane > BYOND_LIGHTING_PLANE && controller.peripheral.plane < FULLSCREEN_PLANE, "Peripheral rendering stays above the world and below fullscreens and HUD")
+	TEST_ASSERT(controller.peripheral.plane == FULLSCREEN_PLANE && controller.peripheral.layer < FULLSCREEN_LAYER, "Peripheral rendering stays above the world and below fullscreen overlays and HUD")
 	var/list/owned = controller.render_objects.Copy()
 	controller.clear_rendering()
 	TEST_ASSERT_EQUAL(game.render_target, original_target, "Cleanup restores the native render target")
