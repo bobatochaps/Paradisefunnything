@@ -391,8 +391,10 @@
       "sha256": "82a7c1e70e7e4e0c50dd83580c5367eb9e4be1dd20af05b68dae06ae94dad50c",
       "domain": "helplessness-and-transformations",
       "root_dme_entry": true,
-      "status": "needs-semantic-audit",
-      "target_adapters": [],
+      "status": "partial-adapter",
+      "target_adapters": [
+        "code/modules/gs13/helplessness.dm"
+      ],
       "declarations": [
         "/datum/config_entry/number/forced_helplessness",
         "/datum/config_entry/number/forced_helplessness/back_clothing",
@@ -415,7 +417,7 @@
         "code/controllers/configuration/config_entry.dm"
       ],
       "asset_literals": [],
-      "remaining_gate": "Audit behavior, dependencies, assets, acquisition, preferences, lifecycle, and native integration tests."
+      "remaining_gate": "Directional FOV forcing and manual client gameplay remain pending; implemented thresholds have native configuration and lifecycle coverage."
     },
     {
       "source": "modular_gs/code/controllers/subsystem/mapping.dm",
@@ -473,8 +475,10 @@
       "sha256": "f648489b6c6df7cd2e15eb05cd8dbdcccf6ac45e77e3dbd458f58e01d999c96e",
       "domain": "helplessness-and-transformations",
       "root_dme_entry": true,
-      "status": "needs-semantic-audit",
-      "target_adapters": [],
+      "status": "partial-adapter",
+      "target_adapters": [
+        "code/modules/gs13/helplessness.dm"
+      ],
       "declarations": [
         "/datum/helplessness",
         "/datum/helplessness/New",
@@ -502,7 +506,7 @@
         "modular_zubbers/code/modules/client/flavor_text/flavor_text.dm"
       ],
       "asset_literals": [],
-      "remaining_gate": "Audit behavior, dependencies, assets, acquisition, preferences, lifecycle, and native integration tests."
+      "remaining_gate": "Directional FOV and remaining client behavior remain pending. Native threshold, trait-source cleanup, quirk, and lifecycle tests cover the implemented effects."
     },
     {
       "source": "modular_gs/code/datums/_id_trim.dm",
@@ -826,8 +830,12 @@
       "sha256": "cbc059a807e2d204f2453b509087523aebdcf53c4c3d7c61c1a6531eaf21350a",
       "domain": "helplessness-and-transformations",
       "root_dme_entry": true,
-      "status": "needs-semantic-audit",
-      "target_adapters": [],
+      "status": "partial-adapter",
+      "target_adapters": [
+        "code/modules/gs13/helplessness.dm",
+        "code/modules/gs13/helplessness_effects.dm",
+        "code/modules/gs13/helplessness_equipment.dm"
+      ],
       "declarations": [
         "/datum/helplessness/back_clothing",
         "/datum/helplessness/back_clothing/apply_helplessness",
@@ -900,7 +908,7 @@
         "modular_zubbers/code/modules/greyscale/component_style.dm"
       ],
       "asset_literals": [],
-      "remaining_gate": "Audit behavior, dependencies, assets, acquisition, preferences, lifecycle, and native integration tests."
+      "remaining_gate": "Directional FOV remains pending. Weak-lung code is commented out in the pinned source. Complete manual client gameplay validation before closure."
     },
     {
       "source": "modular_gs/code/datums/interaction_datum.dm",
@@ -1231,8 +1239,10 @@
       "sha256": "a0869226a531792dd93030f2f70aefdb9e579671d55b73b26beb9720d4f79bc8",
       "domain": "species-medical-and-quirks",
       "root_dme_entry": true,
-      "status": "needs-semantic-audit",
-      "target_adapters": [],
+      "status": "partial-adapter",
+      "target_adapters": [
+        "code/modules/gs13/quirks.dm"
+      ],
       "declarations": [
         "/datum/quirk/helplessness",
         "/datum/quirk/helplessness/belts",
@@ -1258,7 +1268,7 @@
         "modular_zubbers/code/datums/quirks/_quirk.dm"
       ],
       "asset_literals": [],
-      "remaining_gate": "Audit behavior, dependencies, assets, acquisition, preferences, lifecycle, and native integration tests."
+      "remaining_gate": "Only the documented weight and helplessness quirks have adapters; audit the other negative quirks and their inherited dependencies."
     },
     {
       "source": "modular_gs/code/datums/quirks/neutral/cosglow.dm",
@@ -3399,8 +3409,10 @@
       "sha256": "4dbfb32a733c533f333d3de6c478bb3c131e3e6f602d9d845df48745c09cb2da",
       "domain": "helplessness-and-transformations",
       "root_dme_entry": true,
-      "status": "needs-semantic-audit",
-      "target_adapters": [],
+      "status": "partial-adapter",
+      "target_adapters": [
+        "code/modules/gs13/helplessness_equipment.dm"
+      ],
       "declarations": [
         "/datum/species/can_equip",
         "/datum/species/proc/mod_check",
@@ -3436,7 +3448,7 @@
         "sound/effects/snap.ogg",
         "sound/effects/woodhit.ogg"
       ],
-      "remaining_gate": "Audit behavior, dependencies, assets, acquisition, preferences, lifecycle, and native integration tests."
+      "remaining_gate": "Chair pre-collapse creaking feedback, the primitive bluespace belt variant, and manual client gameplay remain pending. Adapted modular uniforms use consistent equip and shedding checks."
     },
     {
       "source": "modular_gs/code/mechanics/effective_fatness.dm",
@@ -3774,8 +3786,10 @@
       "sha256": "c4b0089ae93da30d7cd20fac08e08913553b41ee6df8024eaec813422e410a70",
       "domain": "helplessness-and-transformations",
       "root_dme_entry": true,
-      "status": "needs-semantic-audit",
-      "target_adapters": [],
+      "status": "partial-adapter",
+      "target_adapters": [
+        "code/modules/gs13/door_stuckage.dm"
+      ],
       "declarations": [
         "/obj/machinery/door/proc/check_door_stuckage",
         "/obj/structure/mineral_door/Initialize",
@@ -3795,7 +3809,7 @@
         "modular_zubbers/code/modules/mob/living/carbon/human/species/ghoul.dm"
       ],
       "asset_literals": [],
-      "remaining_gate": "Audit behavior, dependencies, assets, acquisition, preferences, lifecycle, and native integration tests."
+      "remaining_gate": "Six native doorway integration tests pass in the 155-focused/210-full checkpoint. Nonblocking source brushing/squeeze feedback and manual client gameplay remain pending; open-frame and border-direction guards are intentional adaptations."
     },
     {
       "source": "modular_gs/code/mechanics/transformation/new_tf_item.dm",
@@ -3909,8 +3923,10 @@
       "sha256": "c273381df5ba2121d4b4383a62388b9b732a36ab21240e04dbeff59791aa91cc",
       "domain": "helplessness-and-transformations",
       "root_dme_entry": true,
-      "status": "needs-semantic-audit",
-      "target_adapters": [],
+      "status": "partial-adapter",
+      "target_adapters": [
+        "code/modules/gs13/weight_size.dm"
+      ],
       "declarations": [
         "/datum/component/temporary_size/xwg",
         "/datum/component/temporary_size/xwg/Destroy",
@@ -3943,7 +3959,7 @@
         "modular_zubbers/code/modules/mob/living/carbon/human/species/ghoul.dm"
       ],
       "asset_literals": [],
-      "remaining_gate": "Audit behavior, dependencies, assets, acquisition, preferences, lifecycle, and native integration tests."
+      "remaining_gate": "Native growth tests pass. Source-specific hotel, condo, and xenoarchaeology areas and client preview validation remain pending."
     },
     {
       "source": "modular_gs/code/mobs/chocoslime.dm",
@@ -4688,8 +4704,11 @@
       "sha256": "d5b6672e82a53f405be49ebfb1b894f0a7335f9566eca89d6ea2e1546f827cce",
       "domain": "preferences-and-core",
       "root_dme_entry": true,
-      "status": "needs-semantic-audit",
-      "target_adapters": [],
+      "status": "partial-adapter",
+      "target_adapters": [
+        "code/modules/gs13/preferences.dm",
+        "code/modules/gs13/helplessness.dm"
+      ],
       "declarations": [
         "/datum/preference/numeric/helplessness",
         "/datum/preference/numeric/helplessness/apply_to_human",
@@ -4717,7 +4736,7 @@
         "code/modules/client/preferences/_preference.dm"
       ],
       "asset_literals": [],
-      "remaining_gate": "Audit behavior, dependencies, assets, acquisition, preferences, lifecycle, and native integration tests."
+      "remaining_gate": "Directional FOV preference and manual client validation remain pending. Implemented thresholds use the native per-character JSON/SQL snapshots."
     },
     {
       "source": "modular_gs/code/modules/client/preferences/noise_preferences.dm",
@@ -6969,8 +6988,11 @@
       "sha256": "0c8b57a6f660e89e21173ddc0f72dbb458450f612882107582232a2dd2541e84",
       "domain": "preferences-and-core",
       "root_dme_entry": true,
-      "status": "needs-semantic-audit",
-      "target_adapters": [],
+      "status": "partial-adapter",
+      "target_adapters": [
+        "code/modules/gs13/weight.dm",
+        "code/modules/gs13/body_size.dm"
+      ],
       "declarations": [
         "/mob/living/carbon/proc/calculate_adjusted_total_weight_in_bfi",
         "/mob/living/carbon/proc/calculate_bmi",
@@ -6992,7 +7014,7 @@
         "modular_zubbers/code/modules/mob/living/carbon/human/species/ghoul.dm"
       ],
       "asset_literals": [],
-      "remaining_gate": "Audit behavior, dependencies, assets, acquisition, preferences, lifecycle, and native integration tests."
+      "remaining_gate": "Native size/mass/BMI tests pass. Taur anatomy and associated mass/measurement integration remain pending."
     },
     {
       "source": "modular_gs/code/modules/mob/living/emote.dm",

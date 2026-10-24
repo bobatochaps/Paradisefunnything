@@ -22,6 +22,15 @@ SOURCE_URL = f"https://github.com/sheepishgoat/GS13-Blubberstation/blob/{SOURCE_
 # Explicitly identified adapters. This means partial implementation, not parity.
 # File names are source-relative after modular_gs/; target files are native adapters.
 ADAPTERS = {
+    "code/controllers/configuration/entries/helplessness.dm": ["helplessness"],
+    "code/datums/_helplessness.dm": ["helplessness"],
+    "code/datums/helplessness/helplessness.dm": ["helplessness", "helplessness_effects", "helplessness_equipment"],
+    "code/datums/quirks/negative/negative_quirks.dm": ["quirks"],
+    "code/mechanics/chair_brekage.dm": ["helplessness_equipment"],
+    "code/mechanics/stuckage.dm": ["door_stuckage"],
+    "code/mechanics/xwg.dm": ["weight_size"],
+    "code/modules/client/preferences/helplessness_prefs.dm": ["preferences", "helplessness"],
+    "code/modules/mob/living/carbon/weight_helpers.dm": ["weight", "body_size"],
     "code/mechanics/fatness.dm": ["weight", "preferences"],
     "code/mechanics/muscle.dm": ["weight"],
     "code/mechanics/fullness.dm": ["fullness"],
