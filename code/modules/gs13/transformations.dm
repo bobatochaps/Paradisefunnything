@@ -36,6 +36,7 @@
 /mob/living/carbon/on_reagent_change()
 	. = ..()
 	sync_gs13_transformations()
+	SEND_SIGNAL(src, COMSIG_GS13_REAGENTS_CHANGED)
 
 /mob/living/carbon/proc/sync_gs13_transformations()
 	if(QDELETED(src) || gs13_syncing_transformations)

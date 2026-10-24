@@ -95,3 +95,39 @@
 	desc = "At 4430 effective BFI your face becomes unrecognizable and your peripheral view dims and blurs; at 8860 the clear forward view narrows further. Overrides your face and field-of-view thresholds."
 	cost = -2
 	trait_to_apply = TRAIT_HELPLESS_BIG_CHEEKS
+
+/datum/quirk/gs13_permaberry
+	name = "Permaberry"
+	desc = "Your body produces blueberry juice, slowly accelerating over time. Requires blueberry transformations to be enabled."
+	processes = TRUE
+	species_flags = QUIRK_MACHINE_INCOMPATIBLE
+	var/production_seconds = 0
+	var/pending_juice = 0
+
+/datum/quirk/gs13_permaberry/process(wait)
+	if(QDELETED(owner))
+		return PROCESS_KILL
+	// Paradise processing subsystems supply deciseconds; the source uses seconds.
+	produce_juice((isnum(wait) ? wait : SSobj.wait) / 10)
+
+/datum/quirk/gs13_permaberry/proc/produce_juice(seconds)
+	if(!isnum(seconds) || !GS13_IS_FINITE(seconds) || seconds <= 0 || QDELETED(owner))
+		return 0
+	var/amount = (0.01 + min(0.49, production_seconds / 14693)) * seconds
+	production_seconds += seconds
+	if(!owner.gs13_preferences["blueberry_inflation"] || !owner.can_metabolize(GLOB.chemical_reagents_list["blueberry_juice"]))
+		pending_juice = 0
+		return 0
+	// Native holders discard new doses below 0.09 units. Accumulate fractional
+	// production until it can survive that boundary, without changing its rate.
+	pending_juice += amount
+	if(pending_juice < 0.1 && !owner.reagents.has_reagent("blueberry_juice"))
+		return 0
+	var/before = owner.reagents.get_reagent_amount("blueberry_juice")
+	owner.reagents.add_reagent("blueberry_juice", pending_juice)
+	pending_juice = 0
+	return owner.reagents.get_reagent_amount("blueberry_juice") - before
+
+/datum/quirk/gs13_permaberry/remove_quirk_effects()
+	STOP_PROCESSING(SSobj, src)
+	return ..()

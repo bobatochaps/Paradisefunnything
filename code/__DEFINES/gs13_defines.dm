@@ -76,6 +76,7 @@
 #define COMSIG_GS13_HUD_CHANGED "gs13_hud_changed"
 #define COMSIG_GS13_VIEW_CHANGED "gs13_view_changed"
 #define COMSIG_GS13_PERSPECTIVE_CHANGED "gs13_perspective_changed"
+#define COMSIG_GS13_REAGENTS_CHANGED "gs13_reagents_changed"
 #define TRAIT_NO_HELPLESSNESS "no_helplessness"
 #define TRAIT_GS13_HIDDEN_FACE "gs13_hidden_face"
 #define TRAIT_GS13_LISP "gs13_lisp"

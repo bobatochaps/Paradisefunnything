@@ -3792,6 +3792,7 @@
 #include "code\modules\gs13\alerts.dm"
 #include "code\modules\gs13\chemistry.dm"
 #include "code\modules\gs13\blueberry.dm"
+#include "code\modules\gs13\blueberry_sources.dm"
 #include "code\modules\gs13\transformations.dm"
 #include "code\modules\gs13\hydroponics.dm"
 #include "code\modules\gs13\quirks.dm"

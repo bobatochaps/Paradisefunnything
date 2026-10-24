@@ -21,6 +21,7 @@
 
 /obj/item/reagent_containers/glass/examine(mob/user)
 	. = ..()
+	. += SPAN_NOTICE("Use on a blueberry in grab intent to collect juice into this container.")
 	if(get_dist(user, src) <= 2 && !is_open_container())
 		. += SPAN_NOTICE("Airtight lid seals it completely.")
 
@@ -29,6 +30,9 @@
 /obj/item/reagent_containers/glass/mob_act(mob/target, mob/living/user)
 	. = TRUE
 	if(!is_open_container())
+		return
+	if(user.a_intent == INTENT_GRAB && ishuman(target) && target.reagents?.has_reagent("blueberry_juice"))
+		collect_gs13_juice(target, user)
 		return
 
 	if(!reagents || !reagents.total_volume)

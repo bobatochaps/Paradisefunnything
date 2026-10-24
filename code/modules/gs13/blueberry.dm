@@ -25,4 +25,9 @@
 		if(!carbon_subject.gs13_preferences["blueberry_inflation"])
 			holder.del_reagent(id)
 			return STATUS_UPDATE_NONE
+		if(volume >= 999 && ishuman(carbon_subject))
+			var/mob/living/carbon/human/human_subject = carbon_subject
+			if(!(locate(/datum/quirk/gs13_permaberry) in human_subject.quirks))
+				var/datum/quirk/gs13_permaberry/quirk = new
+				quirk.apply_quirk_effects(human_subject)
 	return ..()
