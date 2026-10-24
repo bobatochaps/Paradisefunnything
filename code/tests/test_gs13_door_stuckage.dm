@@ -40,6 +40,7 @@
 	var/mob/living/carbon/human/bystander = allocate(/mob/living/carbon/human, origin)
 	TEST_ASSERT(bystander.Move(destination, EAST), "An opted-out bystander can leave the same doorway")
 	TEST_ASSERT_EQUAL(door.obj_integrity, before - 1, "The bystander's exit cannot damage the door")
+	bystander.forceMove(get_step(origin, NORTH))
 	subject.gs13_preferences["stuckage"] = 0
 	TEST_ASSERT(subject.Move(destination, EAST), "Disabling the threshold releases the mob on its next attempt")
 	TEST_ASSERT_EQUAL(door.obj_integrity, before - 1, "A released attempt applies no extra damage")
