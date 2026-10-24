@@ -63,13 +63,16 @@
 
 /obj/item/clothing/neck/human_petcollar/locked/antiburst/proc/refresh_field()
 	var/mob/living/carbon/human/new_wearer = field_active ? get_wearer() : null
+	bind_field_wearer(new_wearer)
+	update_icon(UPDATE_OVERLAYS)
+	get_wearer()?.update_inv_neck()
+
+/obj/item/clothing/neck/human_petcollar/locked/antiburst/proc/bind_field_wearer(mob/living/carbon/human/new_wearer)
 	if(field_wearer != new_wearer)
 		clear_field_wearer()
 		field_wearer = new_wearer
 	if(field_wearer)
 		ADD_TRAIT(field_wearer, TRAIT_NO_BURST, UID())
-	update_icon(UPDATE_OVERLAYS)
-	get_wearer()?.update_inv_neck()
 
 /obj/item/clothing/neck/human_petcollar/locked/antiburst/proc/toggle_field()
 	field_active = !field_active
@@ -78,7 +81,10 @@
 
 /obj/item/clothing/neck/human_petcollar/locked/antiburst/equipped(mob/user, slot, initial = FALSE)
 	. = ..()
-	refresh_field()
+	// Paradise calls equipped() before assigning the human's slot variable.
+	// The confirmed slot argument supplies the synchronous binding here.
+	bind_field_wearer(field_active && slot == ITEM_SLOT_NECK && ishuman(user) && loc == user ? user : null)
+	update_icon(UPDATE_OVERLAYS)
 
 /obj/item/clothing/neck/human_petcollar/locked/antiburst/dropped(mob/user, silent = FALSE)
 	clear_field_wearer()

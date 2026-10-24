@@ -160,7 +160,7 @@
 	viewer.gs13_preferences["see_bursting"] = TRUE
 	TEST_ASSERT(subject.gs13_burst_viewpoint_allows(viewer, GS13_BURST_BLUEBERRY), "A viewer's explicit blueberry opt-in is recognized")
 	TEST_ASSERT_NOT(subject.gs13_burst_viewpoint_allows(viewer, GS13_BURST_GLUTTON), "The two viewing preferences remain independent")
-	viewer.forceMove(null)
+	viewer.moveToNullspace()
 	TEST_ASSERT(subject.gs13_burst_viewpoint_allows(viewer, GS13_BURST_GLUTTON), "A viewpoint with no visible location cannot block a distant effect")
 	subject.gs13_preferences["see_bursting"] = FALSE
 	TEST_ASSERT_NOT(subject.gs13_burst_viewers_allow(GS13_BURST_BLUEBERRY), "The subject's own viewing setting is always respected")
