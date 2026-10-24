@@ -68,7 +68,7 @@
 		if(!isnum(value) || !GS13_IS_FINITE(value))
 			continue
 		if(pref in gs13_helplessness_labels())
-			result[pref] = clamp(value, 0, SHORT_REAL_LIMIT)
+			result[pref] = clamp(value, 0, pref == "stuckage_custom" ? 100 : SHORT_REAL_LIMIT)
 			continue
 		switch(pref)
 			if("body_size")
@@ -101,7 +101,7 @@
 /datum/character_save/proc/show_gs13_preferences(mob/user)
 	gs13_preferences = gs13_sanitize_preferences(gs13_preferences)
 	var/list/labels = gs13_preference_labels()
-	var/list/html = list("<h2>GS13 weight preferences</h2>", "<p>Enable weight gain and choose its allowed sources. Starting weight and body size apply on your next spawn. Body size also works with weight gain disabled. Save your character to keep these settings.</p><p>Helplessness thresholds use apparent fat minus muscle. Zero disables an effect. Related quirks and server settings can override thresholds; hydraulic MOD assistance grants immunity.</p>")
+	var/list/html = list("<h2>GS13 weight preferences</h2>", "<p>Enable weight gain and choose its allowed sources. Starting weight and body size apply on your next spawn. Body size also works with weight gain disabled. Save your character to keep these settings.</p><p>Helplessness thresholds use apparent fat minus muscle. Zero disables an effect. Related quirks and server settings can override thresholds. Hydraulic MOD assistance suspends threshold effects. Chair breakage and doorway squeezing use apparent fat, independently of muscle and hydraulic assistance.</p>")
 	for(var/pref in labels)
 		var/value = gs13_preferences[pref]
 		if(!gs13_numeric_preference(pref))
@@ -127,6 +127,8 @@
 				maximum = FATNESS_LEVEL_BLOB
 			else if(setting in list("weight_gain_rate", "weight_loss_rate"))
 				maximum = 2
+			else if(setting == "stuckage_custom")
+				maximum = 100
 			value = tgui_input_number(user, labels[setting], "GS13 preferences", value, maximum, minimum, round_value = FALSE)
 			if(isnull(value) || character != active_character)
 				return

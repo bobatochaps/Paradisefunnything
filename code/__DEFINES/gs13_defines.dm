@@ -85,6 +85,7 @@
 #define TRAIT_HELPLESS_CHAIR_DESTROYER "chair_destroyer_helpless"
 #define TRAIT_HELPLESS_THICK_NECK "thick_neck_helpless"
 #define TRAIT_HELPLESS_WADDLING "waddling_helpless"
+#define TRAIT_HELPLESS_STUCKAGE "stuckage_helpless"
 #define TRAIT_NO_JUMPSUIT "gs13_no_jumpsuit"
 #define TRAIT_NO_MISC "gs13_no_misc_clothing"
 #define TRAIT_NO_BELT "gs13_no_belt"

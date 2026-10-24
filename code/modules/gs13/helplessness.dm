@@ -162,6 +162,8 @@
 		"no_buckle" = "Unable to buckle threshold (BFI; 0 = disabled)",
 		"waddle" = "Waddling threshold (BFI; 0 = disabled)",
 		"chair_breakage" = "Chair breakage threshold (apparent BFI; 0 = disabled)",
+		"stuckage" = "Doorway squeezing threshold (apparent BFI; 0 = disabled)",
+		"stuckage_custom" = "Doorway block chance (percent; 0 = source default)",
 	)
 
 /proc/gs13_numeric_preference(setting)

@@ -35,6 +35,7 @@
 
 /obj/structure/mineral_door/Initialize(mapload)
 	. = ..()
+	AddComponent(/datum/component/gs13_door_stuckage)
 	initial_state = icon_state
 	recalculate_atmos_connectivity()
 	AddComponent(/datum/component/debris, DEBRIS_SPARKS, -20, 10)

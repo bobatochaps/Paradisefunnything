@@ -10,6 +10,7 @@
 
 #ifdef GAME_TESTS
 #include "test_gs13_body_size.dm"
+#include "test_gs13_door_stuckage.dm"
 #include "test_gs13_helplessness.dm"
 #include "test_gs13_weight.dm"
 #endif

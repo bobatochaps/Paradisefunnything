@@ -69,6 +69,7 @@
 
 /obj/machinery/door/Initialize(mapload)
 	. = ..()
+	AddComponent(/datum/component/gs13_door_stuckage)
 	set_init_door_layer()
 	update_bounds()
 	update_freelook_sight()

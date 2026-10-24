@@ -3802,6 +3802,7 @@
 #include "code\modules\gs13\weapon_consumables.dm"
 #include "code\modules\gs13\memento_calori.dm"
 #include "code\modules\gs13\cyborg_feeding.dm"
+#include "code\modules\gs13\door_stuckage.dm"
 #include "code\modules\gs13\portable_blender.dm"
 #include "code\modules\gs13\feeding_machine.dm"
 #include "code\modules\gs13\adipoelectric.dm"

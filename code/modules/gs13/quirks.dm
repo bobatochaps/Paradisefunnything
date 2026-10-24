@@ -83,3 +83,9 @@
 	desc = "At 4430 effective BFI neckwear stops fitting. Overrides your neckwear fit threshold."
 	cost = -1
 	trait_to_apply = TRAIT_HELPLESS_THICK_NECK
+
+/datum/quirk/gs13_helplessness_stuckage
+	name = "Heavy Load"
+	desc = "Above 1480 apparent BFI you have a chance to get stuck while leaving a doorway. Overrides your doorway squeezing threshold and custom chance. Muscle and hydraulic assistance do not remove this effect."
+	cost = -2
+	trait_to_apply = TRAIT_HELPLESS_STUCKAGE
