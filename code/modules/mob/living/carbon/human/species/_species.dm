@@ -206,6 +206,7 @@
 	unarmed = new unarmed_type()
 	if(!sprite_sheet_name)
 		sprite_sheet_name = name
+	add_gs13_digestive_organs()
 
 /datum/species/proc/get_random_name(gender)
 	var/datum/language/species_language = GLOB.all_languages[language]

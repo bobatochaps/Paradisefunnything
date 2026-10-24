@@ -78,6 +78,8 @@
 #define COMSIG_GS13_PERSPECTIVE_CHANGED "gs13_perspective_changed"
 #define COMSIG_GS13_REAGENTS_CHANGED "gs13_reagents_changed"
 #define GS13_BURST_BLUEBERRY "blueberry"
+// Paradise's existing "stomach" slot belongs to the nutriment implant.
+#define GS13_ORGAN_STOMACH "gs13_stomach"
 #define GS13_BURST_GLUTTON "glutton"
 #define TRAIT_NO_BURST "gs13_no_burst"
 #define COMSIG_LIVING_BURSTING_TRANSFORM_SIGNAL "living_bursting_transform"

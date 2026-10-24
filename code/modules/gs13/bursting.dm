@@ -333,6 +333,7 @@ GLOBAL_LIST_INIT(gs13_fat_slosh_sounds, list('modular_gs/sound/effects/inflation
 	var/mode = subject.get_bursting_pref()
 	var/was_safe = subject.gs13_blueberry_burst_is_safe()
 	var/injure_limbs = fatness_ratio > 1
+	var/injure_stomach = fullness_ratio > 1
 	resolving = TRUE
 	cancel_pending(kind == GS13_BURST_BLUEBERRY ? 5 MINUTES : 3 MINUTES)
 	if(kind == GS13_BURST_BLUEBERRY)
@@ -378,6 +379,9 @@ GLOBAL_LIST_INIT(gs13_fat_slosh_sounds, list('modular_gs/sound/effects/inflation
 			if(mode >= 2)
 				var/mob/living/carbon/human/human_subject = subject
 				human_subject.apply_damage(mode == 2 ? 40 : 110, BRUTE, BODY_ZONE_CHEST)
+				if(injure_stomach)
+					var/obj/item/organ/internal/stomach = human_subject.get_organ_slot(GS13_ORGAN_STOMACH)
+					stomach?.receive_damage(mode == 2 ? 30 : 100)
 				if(injure_limbs)
 					for(var/zone in list(BODY_ZONE_L_ARM, BODY_ZONE_R_ARM, BODY_ZONE_L_LEG, BODY_ZONE_R_LEG))
 						human_subject.apply_damage(mode == 2 ? 5 : 10, BRUTE, zone)
