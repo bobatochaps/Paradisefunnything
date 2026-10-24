@@ -181,10 +181,11 @@
 	if(!can_collect_gs13_juice(target, user))
 		return 0
 	var/amount = min(10, amount_per_transfer_from_this, target.reagents.get_reagent_amount("blueberry_juice"), reagents.maximum_volume - reagents.total_volume)
-	var/moved = target.reagents.trans_id_to(src, "blueberry_juice", amount)
-	if(moved && length(target.viruses))
+	// Drainage can cure the virus synchronously. Copy its contamination before
+	// transferring the last dose, while the source disease is still intact.
+	if(length(target.viruses))
 		AddComponent(/datum/component/viral_contamination, target.viruses)
-	return moved
+	return target.reagents.trans_id_to(src, "blueberry_juice", amount)
 
 /obj/item/reagent_containers/glass/proc/collect_gs13_juice(mob/living/carbon/human/target, mob/living/user)
 	while(can_collect_gs13_juice(target, user) && do_after(user, 1 SECONDS, target = target))

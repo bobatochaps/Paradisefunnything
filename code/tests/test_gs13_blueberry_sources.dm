@@ -2,7 +2,7 @@
 	var/mob/living/carbon/human/subject = allocate(/mob/living/carbon/human)
 	var/datum/disease/advance/gs13_berry/disease = allocate(/datum/disease/advance/gs13_berry)
 	disease.affected_mob = subject
-	disease.base_properties["stage rate"] = 4
+	disease.base_properties["stage rate"] = 3
 	disease.stage = 5
 	disease.processing = TRUE
 	var/datum/symptom/gs13_berry/symptom = disease.symptoms[1]
@@ -27,20 +27,27 @@
 	var/mob/living/carbon/human/subject = allocate(/mob/living/carbon/human)
 	subject.gs13_preferences["blueberry_inflation"] = TRUE
 	var/datum/disease/advance/gs13_berry/seed = allocate(/datum/disease/advance/gs13_berry)
+	seed.evolution_chance = 0
 	TEST_ASSERT(subject.ForceContractDisease(seed), "Native virology can infect an organic host with Berrification")
 	var/datum/disease/advance/infection = subject.viruses[1]
 	var/datum/symptom/gs13_berry/symptom = locate() in infection.symptoms
 	TEST_ASSERT_NOTNULL(symptom, "The native disease copy retains the symptom")
+	infection.incubation = 0
 	infection.stage_act()
 	TEST_ASSERT(subject.reagents.has_reagent("blueberry_juice"), "The ordinary disease processing path seeds juice")
 	var/datum/component/gs13_berry_sound/controller = subject.GetComponent(/datum/component/gs13_berry_sound)
 	var/datum/looping_sound/gs13_blueberry/sound_loop = controller.inflation_loop
-	subject.reagents.del_reagent("blueberry_juice")
+	var/obj/item/reagent_containers/glass/beaker/beaker = allocate(/obj/item/reagent_containers/glass/beaker)
+	subject.put_in_active_hand(beaker)
+	beaker.amount_per_transfer_from_this = 50
+	while(subject.reagents.has_reagent("blueberry_juice"))
+		TEST_ASSERT(beaker.collect_gs13_juice_dose(subject, subject) > 0, "The final collected dose remains drainable")
 	TEST_ASSERT(QDELETED(infection), "Completely draining juice cures the active disease immediately")
 	TEST_ASSERT_NOT(infection in subject.viruses, "The cured disease leaves the native infection list")
 	TEST_ASSERT(QDELETED(sound_loop), "Cure deletes the owned sound loop")
 	TEST_ASSERT(QDELETED(controller), "Cure deletes the unused sound controller")
 	TEST_ASSERT_NULL(subject.color, "Draining also restores ordinary body appearance")
+	TEST_ASSERT_NOTNULL(beaker.GetComponent(/datum/component/viral_contamination), "Collected juice retains viral contamination even when the final dose cures its source")
 
 /datum/game_test/room_test/gs13_berry_sound_lifecycle/Run()
 	var/mob/living/carbon/human/subject = allocate(/mob/living/carbon/human)
@@ -73,7 +80,7 @@
 	var/mob/living/carbon/human/gardener = allocate(/mob/living/carbon/human, get_step(get_turf(bottom_left), EAST))
 	var/obj/item/seeds/berry/base_seed = allocate(/obj/item/seeds/berry)
 	TEST_ASSERT(/obj/item/seeds/berry/blueberry in base_seed.mutatelist, "Normal berry mutation supplies blueberry seeds")
-	TEST_ASSERT(/obj/item/seeds/berry/glow in base_seed.mutatelist && /obj/item/seeds/berry/poison in base_seed.mutatelist, "Existing native berry mutations remain available")
+	TEST_ASSERT((/obj/item/seeds/berry/glow in base_seed.mutatelist) && (/obj/item/seeds/berry/poison in base_seed.mutatelist), "Existing native berry mutations remain available")
 	var/obj/item/seeds/berry/blueberry/seed = allocate(/obj/item/seeds/berry/blueberry)
 	TEST_ASSERT_EQUAL(seed.potency, 1, "The starting crop retains the source's low potency")
 	TEST_ASSERT(seed.icon_state in icon_states(seed.icon), "The seed packet uses original source artwork")
