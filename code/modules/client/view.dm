@@ -39,6 +39,8 @@
 		winset(src, "paramapwindow.map", "icon-size=0")
 
 	view = view_range
+	if(mob)
+		SEND_SIGNAL(mob, COMSIG_GS13_VIEW_CHANGED)
 
 	var/view_range_calc = maxview()
 

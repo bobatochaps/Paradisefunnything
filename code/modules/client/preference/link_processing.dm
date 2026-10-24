@@ -895,6 +895,8 @@
 
 					if(actual_new_range != parent.view)
 						parent.view = actual_new_range
+						if(parent.mob)
+							SEND_SIGNAL(parent.mob, COMSIG_GS13_VIEW_CHANGED)
 						// Update the size of the click catcher
 						var/list/actualview = getviewsize(parent.view)
 						parent.void.UpdateGreed(actualview[1],actualview[2])

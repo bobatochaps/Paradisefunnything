@@ -89,3 +89,9 @@
 	desc = "Above 1480 apparent BFI you have a chance to get stuck while leaving a doorway. Overrides your doorway squeezing threshold and custom chance. Muscle and hydraulic assistance do not remove this effect."
 	cost = -2
 	trait_to_apply = TRAIT_HELPLESS_STUCKAGE
+
+/datum/quirk/gs13_helplessness_cheeks
+	name = "Big Cheeks"
+	desc = "At 4430 effective BFI your face becomes unrecognizable and your peripheral view dims and blurs; at 8860 the clear forward view narrows further. Overrides your face and field-of-view thresholds."
+	cost = -2
+	trait_to_apply = TRAIT_HELPLESS_BIG_CHEEKS

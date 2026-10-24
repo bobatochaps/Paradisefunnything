@@ -29,12 +29,12 @@
 	var/effective_weight = subject.calculate_effective_fatness()
 	var/forced_weight = GLOB.configuration.gs13?.forced_helplessness[preference]
 	if(forced_weight > 0 && effective_weight >= forced_weight && !is_type_in_list(get_area(subject), gs13_size_allowed_areas()))
-		return apply_helplessness(subject)
+		return apply_helplessness(subject, threshold > 0 ? min(threshold, forced_weight) : forced_weight, effective_weight)
 	if(threshold <= 0 || effective_weight < threshold)
 		return disable_helplessness(subject)
-	return apply_helplessness(subject)
+	return apply_helplessness(subject, threshold, effective_weight)
 
-/datum/helplessness/proc/apply_helplessness(mob/living/carbon/human/subject)
+/datum/helplessness/proc/apply_helplessness(mob/living/carbon/human/subject, threshold = 0, effective_weight = 0)
 	if(HAS_TRAIT_FROM(subject, helplessness_trait, HELPLESSNESS_TRAIT))
 		return FALSE
 	ADD_TRAIT(subject, helplessness_trait, HELPLESSNESS_TRAIT)
@@ -150,6 +150,7 @@
 		"no_movement" = "Immobility threshold (BFI; 0 = disabled)",
 		"clumsy" = "Clumsy fingers threshold (BFI; 0 = disabled)",
 		"nearsighted" = "Nearsightedness threshold (BFI; 0 = disabled)",
+		"low_fov" = "Restricted field of view threshold (BFI; 0 = disabled)",
 		"hidden_face" = "Unrecognizable face threshold (BFI; 0 = disabled)",
 		"mute" = "Muteness threshold (BFI; 0 = disabled)",
 		"immobile_arms" = "Immobile arms threshold (BFI; 0 = disabled)",

@@ -68,6 +68,14 @@
 #define COMSIG_GS13_BODY_SIZE_CHANGED "gs13_body_size_changed"
 #define GS13_WEIGHT_TRAIT "gs13_weight"
 #define HELPLESSNESS_TRAIT "gs13_helplessness"
+#define TRAIT_LOW_FOV "gs13_low_fov"
+#define TRAIT_VERY_LOW_FOV "gs13_very_low_fov"
+#define GS13_FOV_SCENE_PLANE -98
+#define GS13_FOV_MASK_PLANE -97
+#define GS13_FOV_OUTPUT_PLANE 24.5
+#define COMSIG_GS13_HUD_CHANGED "gs13_hud_changed"
+#define COMSIG_GS13_VIEW_CHANGED "gs13_view_changed"
+#define COMSIG_GS13_PERSPECTIVE_CHANGED "gs13_perspective_changed"
 #define TRAIT_NO_HELPLESSNESS "no_helplessness"
 #define TRAIT_GS13_HIDDEN_FACE "gs13_hidden_face"
 #define TRAIT_GS13_LISP "gs13_lisp"

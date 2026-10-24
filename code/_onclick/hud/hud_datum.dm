@@ -74,6 +74,7 @@
 /mob/proc/set_hud_used(datum/hud/new_hud)
 	hud_used = new_hud
 	new_hud.build_action_groups()
+	SEND_SIGNAL(src, COMSIG_GS13_HUD_CHANGED)
 
 /datum/hud/proc/get_all_action_buttons()
 	var/list/all_action_buttons = list()
@@ -256,6 +257,7 @@
 		var/atom/movable/screen/plane_master/PM = plane_masters[thing]
 		PM.backdrop(mymob)
 		mymob.client?.screen += PM
+	SEND_SIGNAL(mymob, COMSIG_GS13_HUD_CHANGED)
 
 /datum/hud/human/show_hud(version = 0, mob/viewmob)
 	. = ..()

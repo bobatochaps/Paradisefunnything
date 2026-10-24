@@ -21,3 +21,5 @@ Calorite glass, shards, windows, and reflectors are adapted from GS13 `modular_g
 Adipolipus/lipofruit and munchies weed are adapted from GS13 `modular_gs/code/modules/hydroponics/{lipoplant,munchies_weed}.dm`. The three original hydroponics icon sheets are copied unchanged under `modular_gs/icons/obj/hydroponics/`. Lipofruit’s coconut liqueur follows the inherited `code/modules/reagents/chemistry/reagents/drinks/alcohol_reagents.dm`, with native Paradise alcohol strength.
 
 `icons/obj/drinks.dmi` is copied unchanged from the pinned GS13 source for cocktail glass artwork.
+
+Directional vision is adapted from the same pinned source's inherited `code/modules/mob/living/living_fov.dm`, `code/datums/components/fov_handler.dm`, and `code/_onclick/hud/rendering/render_plate.dm`, together with GS13's helplessness rules. The original `icons/effects/fov/field_of_view.dmi` is copied unchanged to `modular_gs/icons/upstream/field_of_view.dmi`. The source repository now lives at `Gain-Station-13/GS13-Blubberstation` (repository ID 991425722); the pinned source revision and original authorship remain unchanged.

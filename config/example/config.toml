@@ -937,6 +937,7 @@ asset_simple_preload = true
 no_movement = 0
 clumsy = 0
 nearsighted = 0
+low_fov = 0
 hidden_face = 0
 mute = 0
 immobile_arms = 0

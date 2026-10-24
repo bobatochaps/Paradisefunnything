@@ -1,10 +1,10 @@
-// Native adapters for GS13 helplessness. Directional FOV remains separate.
+// Native adapters for GS13 helplessness.
 /datum/helplessness/immobile/get_trigger_weight(mob/living/carbon/human/subject, removing_trait)
 	if(removing_trait != override_quirk && removing_trait != TRAIT_WEAKLEGS && HAS_TRAIT(subject, override_quirk) && HAS_TRAIT(subject, TRAIT_WEAKLEGS))
 		return FATNESS_LEVEL_BARELYMOBILE
 	return ..()
 
-/datum/helplessness/nearsighted/apply_helplessness(mob/living/carbon/human/subject)
+/datum/helplessness/nearsighted/apply_helplessness(mob/living/carbon/human/subject, threshold = 0, effective_weight = 0)
 	. = ..()
 	if(.)
 		subject.update_nearsighted_effects()
@@ -14,7 +14,7 @@
 	if(. && !QDELETED(subject))
 		subject.update_nearsighted_effects()
 
-/datum/helplessness/hidden_face/apply_helplessness(mob/living/carbon/human/subject)
+/datum/helplessness/hidden_face/apply_helplessness(mob/living/carbon/human/subject, threshold = 0, effective_weight = 0)
 	. = ..()
 	if(.)
 		subject.name = subject.get_visible_name()
@@ -136,7 +136,7 @@
 	gain_message = "Your legs are too thick to walk straight."
 	lose_message = "Your legs are thin enough to walk normally again."
 
-/datum/helplessness/waddle/apply_helplessness(mob/living/carbon/human/subject)
+/datum/helplessness/waddle/apply_helplessness(mob/living/carbon/human/subject, threshold = 0, effective_weight = 0)
 	. = ..()
 	if(.)
 		subject.AddElement(/datum/element/waddling/gs13)
@@ -148,3 +148,36 @@
 
 // A distinct identity preserves an independently installed native waddle.
 /datum/element/waddling/gs13
+
+/datum/helplessness/low_fov
+	helplessness_trait = TRAIT_LOW_FOV
+	default_trigger_weight = FATNESS_LEVEL_BLOB
+	override_quirk = TRAIT_HELPLESS_BIG_CHEEKS
+	preference = "low_fov"
+	gain_message = "Your fat makes it difficult to see the world around you."
+	lose_message = "You are thin enough to see your environment better."
+
+/datum/helplessness/low_fov/apply_helplessness(mob/living/carbon/human/subject, threshold = 0, effective_weight = 0)
+	var/old_angle = HAS_TRAIT_FROM(subject, TRAIT_VERY_LOW_FOV, HELPLESSNESS_TRAIT) ? 270 : (HAS_TRAIT_FROM(subject, TRAIT_LOW_FOV, HELPLESSNESS_TRAIT) ? 180 : 0)
+	var/new_angle = effective_weight >= 2 * threshold ? 270 : 180
+	// One replaceable source covers both stages, including stage-down recovery.
+	subject.add_fov_trait(HELPLESSNESS_TRAIT, new_angle)
+	if(new_angle == 270)
+		ADD_TRAIT(subject, TRAIT_VERY_LOW_FOV, HELPLESSNESS_TRAIT)
+		REMOVE_TRAIT(subject, TRAIT_LOW_FOV, HELPLESSNESS_TRAIT)
+	else
+		ADD_TRAIT(subject, TRAIT_LOW_FOV, HELPLESSNESS_TRAIT)
+		REMOVE_TRAIT(subject, TRAIT_VERY_LOW_FOV, HELPLESSNESS_TRAIT)
+	if(old_angle == new_angle)
+		return FALSE
+	to_chat(subject, SPAN_WARNING(gain_message))
+	return TRUE
+
+/datum/helplessness/low_fov/disable_helplessness(mob/living/carbon/human/subject)
+	var/had_effect = HAS_TRAIT_FROM(subject, TRAIT_LOW_FOV, HELPLESSNESS_TRAIT) || HAS_TRAIT_FROM(subject, TRAIT_VERY_LOW_FOV, HELPLESSNESS_TRAIT)
+	REMOVE_TRAIT(subject, TRAIT_LOW_FOV, HELPLESSNESS_TRAIT)
+	REMOVE_TRAIT(subject, TRAIT_VERY_LOW_FOV, HELPLESSNESS_TRAIT)
+	subject.remove_fov_trait(HELPLESSNESS_TRAIT)
+	if(had_effect && !QDELETED(subject))
+		to_chat(subject, SPAN_NOTICE(lose_message))
+	return had_effect

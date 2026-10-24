@@ -618,6 +618,7 @@ GLOBAL_LIST_INIT(slot_equipment_priority, list( \
 		else
 			clear_fullscreen("remote_view", 0)
 		update_pipe_vision()
+		SEND_SIGNAL(src, COMSIG_GS13_PERSPECTIVE_CHANGED)
 
 /mob/dead/reset_perspective(atom/A)
 	. = ..()
