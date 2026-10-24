@@ -286,6 +286,7 @@ to destroy them and players will be able to make replacements.
 		"Getmore Chocolate Corp" =				/obj/machinery/economy/vending/snack,
 		"Mr. Chang" =							/obj/machinery/economy/vending/chinese,
 		"Robust Softdrinks" =					/obj/machinery/economy/vending/cola,
+		"Starshine Vending Machine" =				/obj/machinery/economy/vending/starshine,
 		"ShadyCigs Deluxe" =					/obj/machinery/economy/vending/cigarette,
 		"Hatlord 9000" =						/obj/machinery/economy/vending/hatdispenser,
 		"Suitlord 9000" =						/obj/machinery/economy/vending/suitdispenser,

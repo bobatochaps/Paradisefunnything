@@ -287,18 +287,35 @@
 	. = ..()
 	underlays.Cut()
 	if(panel_open)
-		. += "[icon_panel ? "[icon_panel]_panel" : "[icon_state]_panel"]"
+		var/panel_state = get_vending_overlay_state(icon_panel || icon_state, "panel")
+		if(panel_state)
+			. += panel_state
 	if(icon_addon)
 		. += "[icon_addon]"
 	if((stat & (BROKEN|NOPOWER)) || force_no_power_icon_state)
-		. += "[icon_off ? "[icon_off]_off" : "[icon_state]_off"]"
+		var/off_state = get_vending_overlay_state(icon_off || icon_state, "off")
+		if(off_state)
+			. += off_state
 		if(stat & BROKEN)
-			. += "[icon_broken ? "[icon_broken]_broken" : "[icon_state]_broken"]"
+			var/broken_state = get_vending_overlay_state(icon_broken || icon_state, "broken")
+			if(broken_state)
+				. += broken_state
 		return
 	if(light)
-		var/mutable_appearance/lightmask  = emissive_appearance(icon, "[icon_lightmask ? "[icon_lightmask]_lightmask" : "[icon_state]_off"]")
-		lightmask.transform = transform
-		underlays += lightmask
+		var/light_state = get_vending_overlay_state(icon_lightmask || icon_state, icon_lightmask ? "lightmask" : "off")
+		if(light_state)
+			var/mutable_appearance/lightmask = emissive_appearance(icon, light_state)
+			lightmask.transform = transform
+			underlays += lightmask
+
+// TG source sheets use hyphenated states; native Paradise sheets use underscores.
+// Resolve both without editing the original source artwork or changing previews.
+/obj/machinery/economy/vending/proc/get_vending_overlay_state(prefix, suffix)
+	var/state = "[prefix]_[suffix]"
+	if(icon_exists(icon, state))
+		return state
+	state = "[prefix]-[suffix]"
+	return icon_exists(icon, state) ? state : null
 
 /*
  * Reimp, flash the screen on and off repeatedly.

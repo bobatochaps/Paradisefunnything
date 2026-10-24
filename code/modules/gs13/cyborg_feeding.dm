@@ -14,8 +14,7 @@
 	charge_cost = 75 // Source 0.075 standard cells, scaled to Paradise's 1,000-unit cell.
 	refill_delay = 5 // SSobj processes every two seconds: refill on its sixth call.
 	var/upgraded = FALSE
-	// Blueberry juice and Starshine Neutron require their remaining transformation systems.
-	var/list/expanded_reagent_ids = list("alien_honey", "pinkmilk", "chocolate_milk", "weak_lipoifier")
+	var/list/expanded_reagent_ids = list("alien_honey", "pinkmilk", "chocolate_milk", "weak_lipoifier", "blueberry_juice", "starshine_blue")
 
 /obj/item/reagent_containers/borghypo/medical/feeding_tube/refill_hypo(mob/living/silicon/robot/user, quick = FALSE)
 	if(quick)
@@ -60,7 +59,7 @@
 /obj/item/reagent_containers/borghypo/medical/feeding_tube/hacked
 	name = "hacked cyborg feeding tube"
 	desc = "A modified nutrient synthesizer and injector with additional weight-altering chemicals."
-	reagent_ids = list("cream", "milk", "nutriment", "alien_honey", "pinkmilk", "chocolate_milk", "weak_lipoifier", "lipoifier", "micro_calorite", "fermi_fat")
+	reagent_ids = list("cream", "milk", "nutriment", "alien_honey", "pinkmilk", "chocolate_milk", "weak_lipoifier", "blueberry_juice", "starshine_blue", "lipoifier", "micro_calorite", "fermi_fat")
 	expanded_reagent_ids = list()
 	upgraded = TRUE
 
@@ -85,7 +84,7 @@
 
 /obj/item/borg/upgrade/feeding_tube_upgrade
 	name = "cyborg feeding tube expansion"
-	desc = "Expands an existing feeding tube with alien honey, strawberry milk, chocolate milk, and weak lipoifier."
+	desc = "Expands a feeding tube with alien honey, strawberry milk, chocolate milk, weak lipoifier, blueberry juice, and Starshine Neutron."
 	icon_state = "cyborg_upgrade3"
 	require_module = TRUE
 	materials = list(MAT_METAL = 800, MAT_GLASS = 600, MAT_SILVER = 400, MAT_CALORITE = 200)

@@ -932,7 +932,7 @@
 	installer.put_in_active_hand(expansion)
 	TEST_ASSERT(expansion.action(installer, robot), "Expansion applies through the native upgrade action")
 	TEST_ASSERT(tube.upgraded, "The tube records its expanded state")
-	TEST_ASSERT_EQUAL(length(tube.get_radial_contents()), 7, "All currently ported expanded chemicals appear in the reagent selector")
+	TEST_ASSERT_EQUAL(length(tube.get_radial_contents()), 9, "The complete source expanded palette appears in the reagent selector")
 	TEST_ASSERT_EQUAL(tube.reagent_ids["cream"], 10, "Expansion does not refill depleted base reservoirs for free")
 	var/obj/item/borg/upgrade/feeding_tube_upgrade/duplicate = allocate(/obj/item/borg/upgrade/feeding_tube_upgrade)
 	TEST_ASSERT_NOT(duplicate.pre_install_checks(installer, robot), "An expanded tube cannot receive a duplicate expansion")
@@ -957,7 +957,7 @@
 	TEST_ASSERT(upgrade.action(installer, robot), "The hacked module installs through the native upgrade action")
 	var/obj/item/reagent_containers/borghypo/medical/feeding_tube/hacked/tube = locate() in robot.module.modules
 	TEST_ASSERT_NOTNULL(tube, "The hacked injector appears in the cyborg's module list")
-	TEST_ASSERT_EQUAL(length(tube.get_radial_contents()), 10, "The hacked selector includes the ported food and chemical payloads")
+	TEST_ASSERT_EQUAL(length(tube.get_radial_contents()), 12, "The hacked selector includes the complete food and chemical palette")
 	for(var/reagent_id in tube.reagent_ids)
 		TEST_ASSERT_NOTNULL(GLOB.chemical_reagents_list[reagent_id], "Every selectable reagent is registered in native chemistry")
 	TEST_ASSERT(tube.icon_state in icon_states(tube.icon), "The feeding tube has its source sprite")
