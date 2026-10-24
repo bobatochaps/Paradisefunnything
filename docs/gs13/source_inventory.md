@@ -56,7 +56,7 @@ Regenerate with `python3 tools/gs13/audit_source.py ../gs13-source`. Detailed de
 | [modular_gs/code/datums/diseases/advance/presets.dm](https://github.com/sheepishgoat/GS13-Blubberstation/blob/ec3ad13bd34b64451813004e32892d49de745404/modular_gs/code/datums/diseases/advance/presets.dm) | needs-semantic-audit | Audit required |
 | [modular_gs/code/datums/diseases/advance/symptoms/berry.dm](https://github.com/sheepishgoat/GS13-Blubberstation/blob/ec3ad13bd34b64451813004e32892d49de745404/modular_gs/code/datums/diseases/advance/symptoms/berry.dm) | needs-semantic-audit | Audit required |
 | [modular_gs/code/datums/diseases/advance/symptoms/weight_gain.dm](https://github.com/sheepishgoat/GS13-Blubberstation/blob/ec3ad13bd34b64451813004e32892d49de745404/modular_gs/code/datums/diseases/advance/symptoms/weight_gain.dm) | partial-adapter | `code/modules/gs13/virology.dm` |
-| [modular_gs/code/datums/helplessness/helplessness.dm](https://github.com/sheepishgoat/GS13-Blubberstation/blob/ec3ad13bd34b64451813004e32892d49de745404/modular_gs/code/datums/helplessness/helplessness.dm) | partial-adapter | `code/modules/gs13/helplessness.dm`, `code/modules/gs13/helplessness_effects.dm`, `code/modules/gs13/helplessness_equipment.dm` |
+| [modular_gs/code/datums/helplessness/helplessness.dm](https://github.com/sheepishgoat/GS13-Blubberstation/blob/ec3ad13bd34b64451813004e32892d49de745404/modular_gs/code/datums/helplessness/helplessness.dm) | partial-adapter | `code/modules/gs13/helplessness.dm`, `code/modules/gs13/helplessness_effects.dm`, `code/modules/gs13/helplessness_equipment.dm`, `code/modules/gs13/field_of_view.dm` |
 | [modular_gs/code/datums/interaction_datum.dm](https://github.com/sheepishgoat/GS13-Blubberstation/blob/ec3ad13bd34b64451813004e32892d49de745404/modular_gs/code/datums/interaction_datum.dm) | needs-semantic-audit | Audit required |
 | [modular_gs/code/datums/keybinds.dm](https://github.com/sheepishgoat/GS13-Blubberstation/blob/ec3ad13bd34b64451813004e32892d49de745404/modular_gs/code/datums/keybinds.dm) | needs-semantic-audit | Audit required |
 | [modular_gs/code/datums/mutations/adipohazard.dm](https://github.com/sheepishgoat/GS13-Blubberstation/blob/ec3ad13bd34b64451813004e32892d49de745404/modular_gs/code/datums/mutations/adipohazard.dm) | needs-semantic-audit | Audit required |
@@ -999,3 +999,13 @@ A/M/D mean added/modified/deleted relative to the historical Bubber merge base. 
 | M | `tools/pull_request_hooks/autoChangelog.js` |
 | M | `tools/ss13_genchangelog.py` |
 | M | `tools/ticked_file_enforcement/ticked_file_enforcement.py` |
+
+## Reviewed inherited vision dependencies
+
+These pinned provider files are partially adapted in `code/modules/gs13/field_of_view.dm`. They are recorded separately from the modular file count and lexical provider candidates. The original mask is preserved at `modular_gs/icons/upstream/field_of_view.dmi`. Direct client rendering/performance checks and additional inherited consumers remain open.
+
+| Source | Blob | Status |
+|---|---|---|
+| `code/datums/components/fov_handler.dm` | `0a5ff314b180685a32c61ec5894f409ff4379da7` | partial-adapter |
+| `code/modules/mob/living/living_fov.dm` | `7b83803e34eb6843e5960545a3f7489dce5a5192` | partial-adapter |
+| `code/_onclick/hud/rendering/render_plate.dm` | `4d9bfbb2ff559ebdffbddab77b2af6ca93914256` | partial-adapter |

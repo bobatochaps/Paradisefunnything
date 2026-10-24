@@ -17,14 +17,16 @@ SOURCE_REV = "ec3ad13bd34b64451813004e32892d49de745404"
 ORIGINAL_BASE = "7084a06407db70b41389045dd38f54ae3eb2d1f1"
 TARGET_REV = "4657875a140bf9b49416a154fe4bc4cd364ce925"
 SOURCE_MERGE_BASE = "2968992d556348d5ac3815c034614e441faa8261"
-SOURCE_URL = f"https://github.com/sheepishgoat/GS13-Blubberstation/blob/{SOURCE_REV}/"
+SOURCE_REPOSITORY = "Gain-Station-13/GS13-Blubberstation"
+SOURCE_REPOSITORY_ID = 991425722
+SOURCE_URL = f"https://github.com/{SOURCE_REPOSITORY}/blob/{SOURCE_REV}/"
 
 # Explicitly identified adapters. This means partial implementation, not parity.
 # File names are source-relative after modular_gs/; target files are native adapters.
 ADAPTERS = {
     "code/controllers/configuration/entries/helplessness.dm": ["helplessness"],
     "code/datums/_helplessness.dm": ["helplessness"],
-    "code/datums/helplessness/helplessness.dm": ["helplessness", "helplessness_effects", "helplessness_equipment"],
+    "code/datums/helplessness/helplessness.dm": ["helplessness", "helplessness_effects", "helplessness_equipment", "field_of_view"],
     "code/datums/quirks/negative/negative_quirks.dm": ["quirks"],
     "code/mechanics/chair_brekage.dm": ["helplessness_equipment"],
     "code/mechanics/stuckage.dm": ["door_stuckage"],
@@ -84,6 +86,12 @@ ADAPTERS = {
     "code/modules/projectiles/projectiles.dm": ["weapons"],
     "code/modules/projectiles/projectile.dm": ["weapons"],
     "code/modules/uplink/uplink_items/adipowarfare.dm": ["weapon_distribution"],
+}
+
+INHERITED_ADAPTERS = {
+    "code/datums/components/fov_handler.dm": ["field_of_view"],
+    "code/modules/mob/living/living_fov.dm": ["field_of_view"],
+    "code/_onclick/hud/rendering/render_plate.dm": ["field_of_view"],
 }
 
 RULES = [
@@ -217,13 +225,26 @@ def main():
         delta.append({"source": path, "change": change, "status": "needs-semantic-audit"})
     outside_delta = [row for row in delta if not row["source"].startswith("modular_gs/")]
     upstream_changes = git(root, "diff", "--name-status", ORIGINAL_BASE, TARGET_REV).decode().splitlines()
+    inherited_reviews = []
+    for path, names in INHERITED_ADAPTERS.items():
+        targets = [f"code/modules/gs13/{name}.dm" for name in names]
+        if not all((root / target).is_file() for target in targets):
+            raise ValueError(f"Missing inherited adapter: {path}")
+        inherited_reviews.append({
+            "source": path,
+            "git_blob_sha": git(source, "rev-parse", f"{SOURCE_REV}:{path}").decode().strip(),
+            "status": "partial-adapter", "target_adapters": targets,
+            "remaining_gate": "Manual BYOND client rendering and performance checks remain pending. Additional inherited vision consumers and sound cues are outside the weight-vision adapter.",
+        })
     result = {
         "schema": 1, "source_revision": SOURCE_REV, "source_parent": "Bubberstation/Bubberstation",
+        "source_repository": SOURCE_REPOSITORY, "source_repository_id": SOURCE_REPOSITORY_ID,
         "original_paradise_base": ORIGINAL_BASE, "audited_paradise_master": TARGET_REV,
         "source_bubber_merge_base": SOURCE_MERGE_BASE,
         "limitations": ["Lexical discovery is not a compiler dependency graph.", "Root DME membership does not evaluate conditional compilation.", "Provider candidates include overrides and require human review.", "The historical branch delta includes additions, changes, and deletions; each needs a semantic disposition, not automatic copying.", "An adapter and passing focused tests do not establish complete feature parity."],
         "entries": entries, "outside_module_marker_candidates": hooks,
         "inherited_provider_candidates": candidates, "source_branch_delta": delta,
+        "reviewed_inherited_adapters": inherited_reviews,
         "paradise_upstream_changes": upstream_changes,
     }
     out = root / "docs/gs13"
@@ -246,6 +267,10 @@ def main():
         lines.append(f"| [{h['source']}]({SOURCE_URL}{h['source']}) | {', '.join(map(str, h['marker_lines'][:12]))}{' …' if len(h['marker_lines']) > 12 else ''} |")
     lines += ["", "## Historical changes outside modular_gs", "", "A/M/D mean added/modified/deleted relative to the historical Bubber merge base. All require semantic review; inherited systems may also be required when unchanged in this delta.", "", "| Change | File |", "|---|---|"]
     lines += [f"| {row['change']} | `{row['source']}` |" for row in outside_delta]
+    lines += ["", "## Reviewed inherited vision dependencies", "",
+              "These pinned provider files are partially adapted in `code/modules/gs13/field_of_view.dm`. They are recorded separately from the modular file count and lexical provider candidates. The original mask is preserved at `modular_gs/icons/upstream/field_of_view.dmi`. Direct client rendering/performance checks and additional inherited consumers remain open.", "",
+              "| Source | Blob | Status |", "|---|---|---|"]
+    lines += [f"| `{row['source']}` | `{row['git_blob_sha']}` | {row['status']} |" for row in inherited_reviews]
     (out / "source_inventory.md").write_text("\n".join(lines) + "\n")
     print(json.dumps({"modular_files": len(entries), "partial_adapters": sum(bool(e['target_adapters']) for e in entries), "outside_marker_files": len(hooks), "inherited_provider_candidates": len(candidates), "source_branch_changes": len(delta), "outside_source_changes": len(outside_delta), "upstream_changed_files": len(upstream_changes), "json_bytes": (out / 'source_inventory.json').stat().st_size}))
 

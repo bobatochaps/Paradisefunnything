@@ -417,7 +417,7 @@
         "code/controllers/configuration/config_entry.dm"
       ],
       "asset_literals": [],
-      "remaining_gate": "Directional FOV forcing and manual client gameplay remain pending; implemented thresholds have native configuration and lifecycle coverage."
+      "remaining_gate": "Native forcing includes directional FOV. Manual client checks and source-specific area integration remain pending."
     },
     {
       "source": "modular_gs/code/controllers/subsystem/mapping.dm",
@@ -506,7 +506,7 @@
         "modular_zubbers/code/modules/client/flavor_text/flavor_text.dm"
       ],
       "asset_literals": [],
-      "remaining_gate": "Directional FOV and remaining client behavior remain pending. Native threshold, trait-source cleanup, quirk, and lifecycle tests cover the implemented effects."
+      "remaining_gate": "Native threshold and source-scoped lifecycle behavior is adapted; direct client rendering, performance, and remaining source feedback/variants remain pending."
     },
     {
       "source": "modular_gs/code/datums/_id_trim.dm",
@@ -834,7 +834,8 @@
       "target_adapters": [
         "code/modules/gs13/helplessness.dm",
         "code/modules/gs13/helplessness_effects.dm",
-        "code/modules/gs13/helplessness_equipment.dm"
+        "code/modules/gs13/helplessness_equipment.dm",
+        "code/modules/gs13/field_of_view.dm"
       ],
       "declarations": [
         "/datum/helplessness/back_clothing",
@@ -908,7 +909,7 @@
         "modular_zubbers/code/modules/greyscale/component_style.dm"
       ],
       "asset_literals": [],
-      "remaining_gate": "Directional FOV remains pending. Weak-lung code is commented out in the pinned source. Complete manual client gameplay validation before closure."
+      "remaining_gate": "Active threshold effects have native adapters, including staged directional FOV. Weak-lung code is source-disabled. Direct client rendering and complete gameplay validation remain pending."
     },
     {
       "source": "modular_gs/code/datums/interaction_datum.dm",
@@ -4736,7 +4737,7 @@
         "code/modules/client/preferences/_preference.dm"
       ],
       "asset_literals": [],
-      "remaining_gate": "Directional FOV preference and manual client validation remain pending. Implemented thresholds use the native per-character JSON/SQL snapshots."
+      "remaining_gate": "Implemented threshold preferences include directional FOV. Real player SQL save/load and direct client gameplay validation remain pending."
     },
     {
       "source": "modular_gs/code/modules/client/preferences/noise_preferences.dm",
@@ -19607,5 +19608,36 @@
     "A\ttools/ci/pytest/test_unticked_files.py",
     "M\ttools/ci/pytest/test_user_verb_params.py",
     "D\ttools/ci/unticked_files.py"
+  ],
+  "source_repository": "Gain-Station-13/GS13-Blubberstation",
+  "source_repository_id": 991425722,
+  "reviewed_inherited_adapters": [
+    {
+      "source": "code/datums/components/fov_handler.dm",
+      "git_blob_sha": "0a5ff314b180685a32c61ec5894f409ff4379da7",
+      "status": "partial-adapter",
+      "target_adapters": [
+        "code/modules/gs13/field_of_view.dm"
+      ],
+      "remaining_gate": "Manual BYOND client rendering and performance checks remain pending. Additional inherited vision consumers and sound cues are outside the weight-vision adapter."
+    },
+    {
+      "source": "code/modules/mob/living/living_fov.dm",
+      "git_blob_sha": "7b83803e34eb6843e5960545a3f7489dce5a5192",
+      "status": "partial-adapter",
+      "target_adapters": [
+        "code/modules/gs13/field_of_view.dm"
+      ],
+      "remaining_gate": "Manual BYOND client rendering and performance checks remain pending. Additional inherited vision consumers and sound cues are outside the weight-vision adapter."
+    },
+    {
+      "source": "code/_onclick/hud/rendering/render_plate.dm",
+      "git_blob_sha": "4d9bfbb2ff559ebdffbddab77b2af6ca93914256",
+      "status": "partial-adapter",
+      "target_adapters": [
+        "code/modules/gs13/field_of_view.dm"
+      ],
+      "remaining_gate": "Manual BYOND client rendering and performance checks remain pending. Additional inherited vision consumers and sound cues are outside the weight-vision adapter."
+    }
   ]
 }
