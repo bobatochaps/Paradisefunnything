@@ -18,12 +18,27 @@ Six integration tests cover species/slot coexistence, native transplant/death/de
 
 ## Next dependencies
 
-Review the inherited fluid-organ contract used by Neutron's persistent overdose effect, with source-specific preferences, organ ownership, surgical transfer, and regeneration. Then extend supported species and body-shape/clothing rendering together. This candidate does not complete the broader anatomy milestone or the blueberry group. Direct client gameplay, rendering, and performance checks remain open.
+Implement the reviewed fluid-organ contract used by Neutron's persistent overdose effect, with source-specific preferences, organ ownership, surgical transfer, and regeneration. Extend supported species and body-shape/clothing rendering together. These checkpoints do not complete the broader anatomy milestone or the blueberry group. Direct client gameplay, rendering, and performance checks remain open.
 
-## Human body-shape candidate
+## Neutron fluid-organ dependency review
+
+The pinned `starshine.dm` overdose changes existing human anatomy: it sets `internal_fluid_datum` to Neutron on the breasts, testicles, and vagina slots, and enables `lactates` on the breasts. It creates no missing organs and does not immediately replace the fluid already stored in their reagent holders. The change belongs to the actual organ and persists when the drink metabolizes; clearing it with the temporary volume/light effects would be incorrect. It does not rewrite DNA defaults.
+
+The required inherited implementation is split between `modular_skyrat/modules/customization/modules/surgery/organs/genitals.dm` and `modular_skyrat/modules/modular_items/lewd_items/code/lewd_organs/{_genital,breasts,testicles,vagina}.dm`, with GS13 production/size changes in `modular_gs/code/modules/mob/living/genitals.dm` and saved customization in `modular_gs/code/modules/client/preferences/genitals.dm`. Source organ insertion and production also depend on its configuration and player/body preferences. Paradise has none of that complete anatomy contract yet. These exact pinned files have been reviewed; the persistent effect remains unimplemented until the native anatomy, preferences, storage/production, and lifecycle work is present. The existing overdose warning is not a substitute for it.
+
+## Human body-shape checkpoint
 
 The character GS13 editor now offers the source Classic, Round, Smooth, and Smooth without arms belly styles. The last remains the default to preserve existing characters. All choices use original, unchanged source sheets and the existing nine weight stages. The selected style uses the character JSON/SQL snapshot, applies during the round, remains with the physical body across mind transfers, and participates in the native appearance cache. Invalid saved values use the compatible default. Existing glutton outcome choices use the same native choice editor.
 
 The three additional sheets include arm/hand pixels. A body with any missing or robotic arm/hand uses the original sheet without arms while retaining its saved style; restoring the anatomy restores the selected style. Separate per-limb source masks are still pending. Native torso coverage, modular uniform panels, current skin coloring, appearance opt-out, and unadapted-species cleanup remain applicable. The new styles do not add unsupported species, independent minimum/maximum body-part sizes, or the source's full modular anatomy model.
 
-Six integration tests cover preference serialization, live saved-character changes, all 36 style/stage pairs with actual BYOND previews, missing/prosthetic limb fallback and recovery, clothing/appearance/species cleanup, and body ownership through mind transfer/death/revival. Native validation is pending; generated preview inspection and direct client verification are separate gates.
+Six integration tests cover preference serialization, live saved-character changes, all 36 style/stage pairs with actual BYOND previews, missing/prosthetic limb fallback and recovery, clothing/appearance/species cleanup, and body ownership through mind transfer/death/revival. Final checkpoint `49dd09382c99a2e017845d3d777a39b5d6048510` passed 224 focused and 279 full native tests with zero compiler errors/warnings, no runtime failures, and successful UI and live MariaDB checks in [run 40116638947](https://github.com/bobatochaps/Paradisefunnything/actions/runs/40116638947). Thirteen native BYOND PNG previews were inspected: four styles at stages 1, 4, and 9, plus a clothed case, each in all four directions. These confirm the generated native images; direct client gameplay/rendering and performance checks remain unperformed.
+
+
+## Client verification still required
+
+In Character Setup's GS13 editor, save and reload each Human belly shape, enable weight gain/body sprites, and test gaining/losing weight at different stages. Repeat with blueberry transformation independent of ordinary weight gain, native skin changes, clothing concealment, dyed/rolled modular uniforms, and an unsupported species. Verify live style changes update the current body's appearance and other saved character slots do not change it.
+
+With Classic, Round, or Smooth selected, test a missing/prosthetic arm or hand: the visible fallback must preserve that limb while retaining the saved style, and organic replacement must restore the selected shape. Repeat after reconnect, mind transfer, death/revival, and native icon regeneration.
+
+Test opted-in Injure/Critical fullness bursting with a native scanner and chest surgery. Verify the stomach remains the same damaged organ, ordinary mending treats non-necrotic injury, and native revival/replacement handles destruction. Fit a nutriment implant at the same time, then extract/transplant the physical stomach and verify its damage and ownership. Native random chest-organ injury remains separate from the explicit fullness amount. This procedure has not been performed in a live client.

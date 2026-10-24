@@ -6775,7 +6775,7 @@
         "modular_gs/sound/voice/gurgle2.ogg",
         "modular_gs/sound/voice/gurgle3.ogg"
       ],
-      "remaining_gate": "Native capacity, confirmation, outcomes, timers, recovery, viewer checks, and transform cleanup are adapted. TG stomach-organ injury and direct multi-client gameplay/audio checks remain pending."
+      "remaining_gate": "Native capacity, confirmations, outcomes, timers, recovery, viewers, transform cleanup, and actual stomach injury are adapted. Complete source anatomy/digestion and direct multi-client gameplay/audio checks remain pending."
     },
     {
       "source": "modular_gs/code/modules/mob/living/carbon/calorite_poisoning.dm",
@@ -7162,8 +7162,10 @@
       "sha256": "514ed40cb81795a400f1df092c150747191f375323414dc82dc7162369d48f71",
       "domain": "body-and-appearance",
       "root_dme_entry": true,
-      "status": "needs-semantic-audit",
-      "target_adapters": [],
+      "status": "partial-adapter",
+      "target_adapters": [
+        "code/modules/gs13/weight_appearance.dm"
+      ],
       "declarations": [
         "/datum/sprite_accessory/genital/belly/belly_teshari",
         "/datum/sprite_accessory/genital/belly/normal_gs",
@@ -7187,7 +7189,7 @@
         "modular_gs/icons/mob/human/genitals/teshbelly.dmi",
         "modular_gs/icons/mob/human/genitals/teshbutt.dmi"
       ],
-      "remaining_gate": "Audit behavior, dependencies, assets, acquisition, preferences, lifecycle, and native integration tests."
+      "remaining_gate": "Four human belly choices and the initial hip shape have native rendering adapters. Teshari anatomy, independent part sizes/colors/layers, broader species/clothing, and direct client verification remain pending."
     },
     {
       "source": "modular_gs/code/modules/mob/living/genitals.dm",
@@ -8467,8 +8469,11 @@
       "sha256": "e4108dbcf8131234e48cab914b95988e0dcb0414904f1769c9920429386b318c",
       "domain": "species-medical-and-quirks",
       "root_dme_entry": true,
-      "status": "needs-semantic-audit",
-      "target_adapters": [],
+      "status": "partial-adapter",
+      "target_adapters": [
+        "code/modules/gs13/weight.dm",
+        "code/modules/gs13/fullness.dm"
+      ],
       "declarations": [
         "/obj/item/organ/stomach/proc/handle_gaining_weight"
       ],
@@ -8476,7 +8481,7 @@
         "code/modules/surgery/organs/internal/stomach/_stomach.dm"
       ],
       "asset_literals": [],
-      "remaining_gate": "Audit behavior, dependencies, assets, acquisition, preferences, lifecycle, and native integration tests."
+      "remaining_gate": "Weight conversion, calorite processing, and fullness use native body-life adapters. Separate stomach/blood digestion, missing-stomach ingestion, specialized species, source mood/timing details, and direct client checks remain pending."
     },
     {
       "source": "modular_gs/code/modules/surgery/organs/internal/stomach/stomach_ethereal.dm",
@@ -19661,6 +19666,17 @@
         "code/modules/gs13/field_of_view.dm"
       ],
       "remaining_gate": "Manual BYOND client rendering and performance checks remain pending. Additional inherited vision consumers and sound cues are outside the weight-vision adapter."
+    },
+    {
+      "source": "code/modules/surgery/organs/internal/stomach/_stomach.dm",
+      "git_blob_sha": "e146052bba6d568dbb541ad7179107c3a96c113f",
+      "status": "partial-adapter",
+      "target_adapters": [
+        "code/modules/gs13/digestive_organs.dm",
+        "code/modules/gs13/weight.dm",
+        "code/modules/gs13/fullness.dm"
+      ],
+      "remaining_gate": "Native stomach anatomy, surgery, transplantation, burst trauma, food response, and cleanup are adapted. Separate ingested/blood compartments, drip transfer, missing-stomach ingestion, swallowed-item digestion, specialized organs, automatic tissue healing, and client checks remain pending."
     }
   ]
 }

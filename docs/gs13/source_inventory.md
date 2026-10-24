@@ -245,7 +245,7 @@ Regenerate with `python3 tools/gs13/audit_source.py ../gs13-source`. Existing se
 | [modular_gs/code/modules/mob/living/carbon/weight_helpers.dm](https://github.com/sheepishgoat/GS13-Blubberstation/blob/ec3ad13bd34b64451813004e32892d49de745404/modular_gs/code/modules/mob/living/carbon/weight_helpers.dm) | partial-adapter | `code/modules/gs13/weight.dm`, `code/modules/gs13/body_size.dm` |
 | [modular_gs/code/modules/mob/living/emote.dm](https://github.com/sheepishgoat/GS13-Blubberstation/blob/ec3ad13bd34b64451813004e32892d49de745404/modular_gs/code/modules/mob/living/emote.dm) | needs-semantic-audit | Audit required |
 | [modular_gs/code/modules/mob/living/fullness.dm](https://github.com/sheepishgoat/GS13-Blubberstation/blob/ec3ad13bd34b64451813004e32892d49de745404/modular_gs/code/modules/mob/living/fullness.dm) | needs-semantic-audit | Audit required |
-| [modular_gs/code/modules/mob/living/genital_sprite_accessories.dm](https://github.com/sheepishgoat/GS13-Blubberstation/blob/ec3ad13bd34b64451813004e32892d49de745404/modular_gs/code/modules/mob/living/genital_sprite_accessories.dm) | needs-semantic-audit | Audit required |
+| [modular_gs/code/modules/mob/living/genital_sprite_accessories.dm](https://github.com/Gain-Station-13/GS13-Blubberstation/blob/ec3ad13bd34b64451813004e32892d49de745404/modular_gs/code/modules/mob/living/genital_sprite_accessories.dm) | partial-adapter | `code/modules/gs13/weight_appearance.dm` |
 | [modular_gs/code/modules/mob/living/genitals.dm](https://github.com/sheepishgoat/GS13-Blubberstation/blob/ec3ad13bd34b64451813004e32892d49de745404/modular_gs/code/modules/mob/living/genitals.dm) | needs-semantic-audit | Audit required |
 | [modular_gs/code/modules/mob/living/species.dm](https://github.com/sheepishgoat/GS13-Blubberstation/blob/ec3ad13bd34b64451813004e32892d49de745404/modular_gs/code/modules/mob/living/species.dm) | needs-semantic-audit | Audit required |
 | [modular_gs/code/modules/mod/mod_clothes.dm](https://github.com/sheepishgoat/GS13-Blubberstation/blob/ec3ad13bd34b64451813004e32892d49de745404/modular_gs/code/modules/mod/mod_clothes.dm) | needs-semantic-audit | Audit required |
@@ -285,7 +285,7 @@ Regenerate with `python3 tools/gs13/audit_source.py ../gs13-source`. Existing se
 | [modular_gs/code/modules/storyteller/gamemode.dm](https://github.com/sheepishgoat/GS13-Blubberstation/blob/ec3ad13bd34b64451813004e32892d49de745404/modular_gs/code/modules/storyteller/gamemode.dm) | needs-semantic-audit | Audit required |
 | [modular_gs/code/modules/surgery/organs/augments.dm](https://github.com/sheepishgoat/GS13-Blubberstation/blob/ec3ad13bd34b64451813004e32892d49de745404/modular_gs/code/modules/surgery/organs/augments.dm) | partial-adapter | `code/modules/gs13/nutritech_implants.dm` |
 | [modular_gs/code/modules/surgery/organs/internal/lungs.dm](https://github.com/sheepishgoat/GS13-Blubberstation/blob/ec3ad13bd34b64451813004e32892d49de745404/modular_gs/code/modules/surgery/organs/internal/lungs.dm) | needs-semantic-audit | Audit required |
-| [modular_gs/code/modules/surgery/organs/internal/stomach/_stomach.dm](https://github.com/sheepishgoat/GS13-Blubberstation/blob/ec3ad13bd34b64451813004e32892d49de745404/modular_gs/code/modules/surgery/organs/internal/stomach/_stomach.dm) | needs-semantic-audit | Audit required |
+| [modular_gs/code/modules/surgery/organs/internal/stomach/_stomach.dm](https://github.com/Gain-Station-13/GS13-Blubberstation/blob/ec3ad13bd34b64451813004e32892d49de745404/modular_gs/code/modules/surgery/organs/internal/stomach/_stomach.dm) | partial-adapter | `code/modules/gs13/weight.dm`, `code/modules/gs13/fullness.dm` |
 | [modular_gs/code/modules/surgery/organs/internal/stomach/stomach_ethereal.dm](https://github.com/sheepishgoat/GS13-Blubberstation/blob/ec3ad13bd34b64451813004e32892d49de745404/modular_gs/code/modules/surgery/organs/internal/stomach/stomach_ethereal.dm) | needs-semantic-audit | Audit required |
 | [modular_gs/code/modules/taur_mechanics/taur_body.dm](https://github.com/sheepishgoat/GS13-Blubberstation/blob/ec3ad13bd34b64451813004e32892d49de745404/modular_gs/code/modules/taur_mechanics/taur_body.dm) | needs-semantic-audit | Audit required |
 | [modular_gs/code/modules/uplink/uplink_items/adipowarfare.dm](https://github.com/sheepishgoat/GS13-Blubberstation/blob/ec3ad13bd34b64451813004e32892d49de745404/modular_gs/code/modules/uplink/uplink_items/adipowarfare.dm) | partial-adapter | `code/modules/gs13/weapon_distribution.dm` |
@@ -1000,12 +1000,13 @@ A/M/D mean added/modified/deleted relative to the historical Bubber merge base. 
 | M | `tools/ss13_genchangelog.py` |
 | M | `tools/ticked_file_enforcement/ticked_file_enforcement.py` |
 
-## Reviewed inherited vision dependencies
+## Reviewed inherited dependencies
 
-These pinned provider files are partially adapted in `code/modules/gs13/field_of_view.dm`. They are recorded separately from the modular file count and lexical provider candidates. The original mask is preserved at `modular_gs/icons/upstream/field_of_view.dmi`. Direct client rendering/performance checks and additional inherited consumers remain open.
+These pinned provider files have partial native adapters and are recorded separately from the modular file count and lexical provider candidates. Detailed remaining gates are in the JSON inventory. Source assets and native adaptations are described in the vision and anatomy implementation records; direct client verification and other inherited behavior remain open.
 
-| Source | Blob | Status |
-|---|---|---|
-| `code/datums/components/fov_handler.dm` | `0a5ff314b180685a32c61ec5894f409ff4379da7` | partial-adapter |
-| `code/modules/mob/living/living_fov.dm` | `7b83803e34eb6843e5960545a3f7489dce5a5192` | partial-adapter |
-| `code/_onclick/hud/rendering/render_plate.dm` | `4d9bfbb2ff559ebdffbddab77b2af6ca93914256` | partial-adapter |
+| Source | Blob | Status | Native adapters |
+|---|---|---|---|
+| `code/datums/components/fov_handler.dm` | `0a5ff314b180685a32c61ec5894f409ff4379da7` | partial-adapter | `code/modules/gs13/field_of_view.dm` |
+| `code/modules/mob/living/living_fov.dm` | `7b83803e34eb6843e5960545a3f7489dce5a5192` | partial-adapter | `code/modules/gs13/field_of_view.dm` |
+| `code/_onclick/hud/rendering/render_plate.dm` | `4d9bfbb2ff559ebdffbddab77b2af6ca93914256` | partial-adapter | `code/modules/gs13/field_of_view.dm` |
+| `code/modules/surgery/organs/internal/stomach/_stomach.dm` | `e146052bba6d568dbb541ad7179107c3a96c113f` | partial-adapter | `code/modules/gs13/digestive_organs.dm`, `code/modules/gs13/weight.dm`, `code/modules/gs13/fullness.dm` |

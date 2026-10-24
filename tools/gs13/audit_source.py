@@ -70,6 +70,8 @@ ADAPTERS = {
     "code/modules/mob/living/bursting.dm": ["bursting"],
     "code/modules/mob/living/carbon/carbon_defines.dm": ["weight", "transformations", "bursting"],
     "code/modules/mob/living/carbon/human/human_defines.dm": ["bursting"],
+    "code/modules/mob/living/genital_sprite_accessories.dm": ["weight_appearance"],
+    "code/modules/surgery/organs/internal/stomach/_stomach.dm": ["weight", "fullness"],
     "code/modules/mod/mod_exoskeleton.dm": ["mod_exoskeleton"],
     "code/modules/mod/modules/modules_fat.dm": ["mod_modules"],
     "code/modules/surgery/organs/augments.dm": ["nutritech_implants"],
@@ -100,6 +102,7 @@ INHERITED_ADAPTERS = {
     "code/datums/components/fov_handler.dm": ["field_of_view"],
     "code/modules/mob/living/living_fov.dm": ["field_of_view"],
     "code/_onclick/hud/rendering/render_plate.dm": ["field_of_view"],
+    "code/modules/surgery/organs/internal/stomach/_stomach.dm": ["digestive_organs", "weight", "fullness"],
 }
 
 RULES = [
@@ -165,7 +168,7 @@ def domain(path):
     return "world-content-and-misc"
 
 
-def read_reviewed_gates(root):
+def read_reviewed_gates(root, section="entries", hash_field="sha256"):
     """Retain semantic review notes only for unchanged files at the same pin."""
     try:
         previous = json.loads((root / "docs/gs13/source_inventory.json").read_text())
@@ -173,10 +176,13 @@ def read_reviewed_gates(root):
         return {}
     if not isinstance(previous, dict) or previous.get("source_revision") != SOURCE_REV:
         return {}
+    entries = previous.get(section, [])
+    if not isinstance(entries, list):
+        return {}
     return {
-        (entry["source"], entry["sha256"]): entry["remaining_gate"]
-        for entry in previous.get("entries", [])
-        if isinstance(entry, dict) and all(isinstance(entry.get(key), str) for key in ("source", "sha256", "remaining_gate"))
+        (entry["source"], entry[hash_field]): entry["remaining_gate"]
+        for entry in entries
+        if isinstance(entry, dict) and all(isinstance(entry.get(key), str) for key in ("source", hash_field, "remaining_gate"))
     }
 
 
@@ -187,6 +193,7 @@ def main():
     source = args.source.resolve()
     root = Path(__file__).resolve().parents[2]
     reviewed_gates = read_reviewed_gates(root)
+    inherited_gates = read_reviewed_gates(root, "reviewed_inherited_adapters", "git_blob_sha")
     if git(source, "rev-parse", "HEAD").decode().strip() != SOURCE_REV:
         parser.error(f"Source checkout must be exactly {SOURCE_REV}")
     tracked = sorted(p.decode() for p in git(source, "ls-files", "-z").split(b"\0") if p)
@@ -255,11 +262,12 @@ def main():
         targets = [f"code/modules/gs13/{name}.dm" for name in names]
         if not all((root / target).is_file() for target in targets):
             raise ValueError(f"Missing inherited adapter: {path}")
+        source_blob = git(source, "rev-parse", f"{SOURCE_REV}:{path}").decode().strip()
         inherited_reviews.append({
             "source": path,
-            "git_blob_sha": git(source, "rev-parse", f"{SOURCE_REV}:{path}").decode().strip(),
+            "git_blob_sha": source_blob,
             "status": "partial-adapter", "target_adapters": targets,
-            "remaining_gate": "Manual BYOND client rendering and performance checks remain pending. Additional inherited vision consumers and sound cues are outside the weight-vision adapter.",
+            "remaining_gate": inherited_gates.get((path, source_blob), "Audit remaining inherited behavior, preferences, lifecycle, native integration, and client gameplay."),
         })
     result = {
         "schema": 1, "source_revision": SOURCE_REV, "source_parent": "Bubberstation/Bubberstation",
@@ -292,10 +300,10 @@ def main():
         lines.append(f"| [{h['source']}]({SOURCE_URL}{h['source']}) | {', '.join(map(str, h['marker_lines'][:12]))}{' …' if len(h['marker_lines']) > 12 else ''} |")
     lines += ["", "## Historical changes outside modular_gs", "", "A/M/D mean added/modified/deleted relative to the historical Bubber merge base. All require semantic review; inherited systems may also be required when unchanged in this delta.", "", "| Change | File |", "|---|---|"]
     lines += [f"| {row['change']} | `{row['source']}` |" for row in outside_delta]
-    lines += ["", "## Reviewed inherited vision dependencies", "",
-              "These pinned provider files are partially adapted in `code/modules/gs13/field_of_view.dm`. They are recorded separately from the modular file count and lexical provider candidates. The original mask is preserved at `modular_gs/icons/upstream/field_of_view.dmi`. Direct client rendering/performance checks and additional inherited consumers remain open.", "",
-              "| Source | Blob | Status |", "|---|---|---|"]
-    lines += [f"| `{row['source']}` | `{row['git_blob_sha']}` | {row['status']} |" for row in inherited_reviews]
+    lines += ["", "## Reviewed inherited dependencies", "",
+              "These pinned provider files have partial native adapters and are recorded separately from the modular file count and lexical provider candidates. Detailed remaining gates are in the JSON inventory. Source assets and native adaptations are described in the vision and anatomy implementation records; direct client verification and other inherited behavior remain open.", "",
+              "| Source | Blob | Status | Native adapters |", "|---|---|---|---|"]
+    lines += [f"| `{row['source']}` | `{row['git_blob_sha']}` | {row['status']} | {', '.join(f'`{p}`' for p in row['target_adapters'])} |" for row in inherited_reviews]
     (out / "source_inventory.md").write_text("\n".join(lines) + "\n")
     print(json.dumps({"modular_files": len(entries), "partial_adapters": sum(bool(e['target_adapters']) for e in entries), "outside_marker_files": len(hooks), "inherited_provider_candidates": len(candidates), "source_branch_changes": len(delta), "outside_source_changes": len(outside_delta), "upstream_changed_files": len(upstream_changes), "json_bytes": (out / 'source_inventory.json').stat().st_size}))
 
