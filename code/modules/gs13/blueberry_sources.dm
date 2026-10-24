@@ -47,7 +47,8 @@
 		return
 	next_production = world.time + 20 SECONDS
 	host.reagents.add_reagent("blueberry_juice", max(disease.totalStageSpeed(), 0.2) * disease.stage * unmitigated)
-	to_chat(host, SPAN_WARNING(disease.stage >= 5 ? "A deep slosh comes from inside you. You taste blueberries." : "You feel oddly full and taste blueberries."))
+	var/production_message = disease.stage >= 5 ? "A deep slosh comes from inside you. You taste blueberries." : "You feel oddly full and taste blueberries."
+	to_chat(host, SPAN_WARNING(production_message))
 	refresh_sound()
 
 /datum/symptom/gs13_berry/proc/on_dose_changed(datum/source)
@@ -122,6 +123,8 @@
 
 /datum/component/gs13_berry_sound/proc/refresh_sound()
 	SIGNAL_HANDLER
+	if(QDELETED(src) || QDELETED(inflation_loop))
+		return
 	var/mob/living/carbon/subject = parent
 	if(!QDELETED(subject) && subject.stat != DEAD && subject.gs13_preferences["blueberry_inflation"] && subject.reagents?.has_reagent("blueberry_juice") && length(sources))
 		inflation_loop.start()
