@@ -380,7 +380,7 @@ GLOBAL_LIST_INIT(gs13_fat_slosh_sounds, list('modular_gs/sound/effects/inflation
 				if(injure_limbs)
 					for(var/zone in list(BODY_ZONE_L_ARM, BODY_ZONE_R_ARM, BODY_ZONE_L_LEG, BODY_ZONE_R_LEG))
 						human_subject.apply_damage(mode == 2 ? 5 : 10, BRUTE, zone)
-			subject.Unconscious(5 SECONDS)
+			subject.Paralyse(5 SECONDS, TRUE)
 	if(!QDELETED(subject))
 		SEND_SIGNAL(subject, COMSIG_LIVING_BURSTING_BURST)
 		calculate_capacity()
