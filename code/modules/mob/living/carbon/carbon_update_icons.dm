@@ -5,6 +5,13 @@
 	var/final_pixel_y = pixel_y
 	var/final_dir = dir
 	var/changed = 0
+	// Remove only the previous burst multiplier before native rotation/resizing.
+	// Reapply it below in the body's current orientation, without old snapshots.
+	if(gs13_burst_scale_x != 1 || gs13_burst_scale_y != 1)
+		ntransform.Scale(1 / gs13_burst_scale_x, 1 / gs13_burst_scale_y)
+		gs13_burst_scale_x = 1
+		gs13_burst_scale_y = 1
+		changed++
 	if(lying_angle != lying_prev)
 		changed++
 		ntransform.TurnTo(lying_prev , lying_angle)
@@ -27,6 +34,11 @@
 			ntransform.Translate(0, (resize - 1) * 16) // Pixel Y shift: 1.25 = 4, 1.5 = 8, 2 -> 16, 3 -> 32, 4 -> 48, 5 -> 64
 		resize = RESIZE_DEFAULT_SIZE
 
+	if(gs13_burst_swell)
+		gs13_burst_scale_x = IS_HORIZONTAL(src) ? 1.1 : 1.8
+		gs13_burst_scale_y = IS_HORIZONTAL(src) ? 1.8 : 1.1
+		ntransform.Scale(gs13_burst_scale_x, gs13_burst_scale_y)
+		changed++
 	if(changed)
 		floating = FALSE
 		animate(src, transform = ntransform, time = (lying_prev == 0 || lying_angle == 0) ? 2 : 0, pixel_y = final_pixel_y, dir = final_dir, easing = (EASE_IN|EASE_OUT))

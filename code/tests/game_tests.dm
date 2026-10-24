@@ -11,6 +11,7 @@
 #ifdef GAME_TESTS
 #include "test_gs13_body_size.dm"
 #include "test_gs13_blueberry_sources.dm"
+#include "test_gs13_bursting.dm"
 #include "test_gs13_door_stuckage.dm"
 #include "test_gs13_fov.dm"
 #include "test_gs13_helplessness.dm"

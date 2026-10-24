@@ -105,6 +105,9 @@
 	var/list/overlays_standing[TOTAL_LAYERS]
 	/// The last GS13 body stage/fullness combination used to build overlays.
 	var/gs13_weight_appearance_key
+	var/bursting_capacity_fullness = -1
+	var/bursting_capacity_fatness = -1
+	var/bursting_capacity_percentage = -1
 	/// Stores what the body last looked like. Prevents updating the body when we don't need to
 	var/previous_damage_appearance
 

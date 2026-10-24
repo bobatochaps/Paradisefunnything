@@ -1058,6 +1058,7 @@ GLOBAL_LIST_EMPTY(damage_icon_parts)
 			worn_layer = NECK_LAYER
 
 		var/mutable_appearance/standing = mutable_appearance(worn_icon, worn_icon_state, layer = -worn_layer, alpha = neck.alpha, color = neck.color)
+		standing.overlays += neck.get_gs13_neck_overlays()
 
 		overlays_standing[worn_layer] = standing
 		apply_overlay(worn_layer)

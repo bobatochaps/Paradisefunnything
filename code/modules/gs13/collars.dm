@@ -70,7 +70,10 @@
 
 /obj/item/clothing/neck/human_petcollar/examine(mob/user)
 	. = ..()
-	. += SPAN_NOTICE("Activate it in hand to rename its tag. Drag it onto yourself to open its small pocket.")
+	. += SPAN_NOTICE("[gs13_activation_hint()] Drag it onto yourself to open its small pocket.")
+
+/obj/item/clothing/neck/human_petcollar/proc/gs13_activation_hint()
+	return "Activate it in hand to rename its tag."
 
 /obj/item/clothing/neck/human_petcollar/activate_self(mob/user)
 	if(..() || !can_manipulate(user))

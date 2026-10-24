@@ -130,6 +130,7 @@
 	handle_calorite_poisoning(seconds)
 	update_gs13_weight_alerts()
 	handle_gs13_fullness(seconds)
+	handle_gs13_bursting(seconds)
 	update_gs13_weight_appearance()
 
 /// Match GS13's replace-by-name API without allocating unowned modifier datums.

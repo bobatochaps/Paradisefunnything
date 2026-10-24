@@ -27,6 +27,7 @@
 	)
 	for(var/key in gs13_helplessness_labels())
 		.[key] = 0
+	. += gs13_burst_default_preferences()
 
 /proc/gs13_preference_labels()
 	. = list(
@@ -55,6 +56,7 @@
 		"muscle_gain" = "Allow muscle gain",
 	)
 	. += gs13_helplessness_labels()
+	. += gs13_burst_preference_labels()
 
 /proc/gs13_sanitize_preferences(saved)
 	if(istext(saved))
@@ -67,7 +69,16 @@
 		return result
 	for(var/pref in result)
 		var/value = saved[pref]
+		if(pref == "glutton_bursting_type")
+			if(value in gs13_burst_modes())
+				result[pref] = value
+			continue
 		if(!isnum(value) || !GS13_IS_FINITE(value))
+			continue
+		if(pref in gs13_burst_numeric_preferences())
+			result[pref] = clamp(value, 0, SHORT_REAL_LIMIT)
+			if(pref == "blueberry_lives")
+				result[pref] = round(result[pref])
 			continue
 		if(pref in gs13_helplessness_labels())
 			result[pref] = clamp(value, 0, pref == "stuckage_custom" ? 100 : SHORT_REAL_LIMIT)
@@ -100,6 +111,7 @@
 	character.sync_gs13_transformations()
 	character.calculate_fatness()
 	character.handle_weight_gain(0)
+	character.refresh_gs13_bursting()
 
 /datum/character_save/proc/show_gs13_preferences(mob/user)
 	gs13_preferences = gs13_sanitize_preferences(gs13_preferences)
@@ -107,7 +119,7 @@
 	var/list/html = list("<h2>GS13 weight preferences</h2>", "<p>Enable weight gain and choose its allowed sources. Starting weight and body size apply on your next spawn. Body size also works with weight gain disabled. Save your character to keep these settings.</p><p>Helplessness thresholds use apparent fat minus muscle. Zero disables an effect. Related quirks and server settings can override thresholds. Hydraulic MOD assistance suspends threshold effects. Chair breakage and doorway squeezing use apparent fat, independently of muscle and hydraulic assistance.</p>")
 	for(var/pref in labels)
 		var/value = gs13_preferences[pref]
-		if(!gs13_numeric_preference(pref))
+		if(!gs13_numeric_preference(pref) && pref != "glutton_bursting_type")
 			value = value ? "Enabled" : "Disabled"
 		html += "[labels[pref]]: <a href='byond://?_src_=prefs;preference=gs13;setting=[pref]'>[value]</a><br>"
 	var/datum/browser/popup = new(user, "gs13_preferences", "GS13 preferences", 520, 640)
@@ -120,7 +132,11 @@
 	var/list/labels = gs13_preference_labels()
 	if(setting in labels)
 		var/value = character.gs13_preferences[setting]
-		if(gs13_numeric_preference(setting))
+		if(setting == "glutton_bursting_type")
+			value = tgui_input_list(user, labels[setting], "GS13 preferences", gs13_burst_modes(), value)
+			if(isnull(value) || character != active_character)
+				return
+		else if(gs13_numeric_preference(setting))
 			var/minimum = 0
 			var/maximum = SHORT_REAL_LIMIT
 			if(setting == "body_size")

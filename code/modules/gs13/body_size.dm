@@ -20,6 +20,7 @@
 /// The length of the transformed X axis also works while the mob is rotated/lying down.
 /mob/living/carbon/human/proc/gs13_render_size()
 	var/matrix/current_transform = matrix(transform)
+	current_transform.Scale(1 / gs13_burst_scale_x, 1 / gs13_burst_scale_y)
 	return sqrt(current_transform.a ** 2 + current_transform.d ** 2)
 
 /// Starting size, rather than the current render transform, determines physical mass.
