@@ -3,6 +3,7 @@
 	. = list(
 		"master_wg_pref" = FALSE,
 		"weight_body_sprites" = TRUE,
+		"weight_belly_shape" = "Smooth without arms",
 		"blueberry_inflation" = FALSE,
 		"body_size" = RESIZE_DEFAULT_SIZE,
 		"weight_size_scaling" = FALSE,
@@ -33,6 +34,7 @@
 	. = list(
 		"master_wg_pref" = "Enable weight gain",
 		"weight_body_sprites" = "Show weight body sprites (human body and modular uniforms)",
+		"weight_belly_shape" = "Human belly shape",
 		"blueberry_inflation" = "Allow blueberry transformations (independent of ordinary weight gain)",
 		"body_size" = "Starting body size (0.8 to 2; 1 = normal)",
 		"weight_size_scaling" = "Grow in size above the blob weight stage",
@@ -58,6 +60,13 @@
 	. += gs13_helplessness_labels()
 	. += gs13_burst_preference_labels()
 
+/proc/gs13_preference_choices(setting)
+	switch(setting)
+		if("glutton_bursting_type")
+			return gs13_burst_modes()
+		if("weight_belly_shape")
+			return gs13_belly_styles()
+
 /proc/gs13_sanitize_preferences(saved)
 	if(istext(saved))
 		try
@@ -69,8 +78,9 @@
 		return result
 	for(var/pref in result)
 		var/value = saved[pref]
-		if(pref == "glutton_bursting_type")
-			if(value in gs13_burst_modes())
+		var/list/choices = gs13_preference_choices(pref)
+		if(choices)
+			if(value in choices)
 				result[pref] = value
 			continue
 		if(!isnum(value) || !GS13_IS_FINITE(value))
@@ -119,7 +129,7 @@
 	var/list/html = list("<h2>GS13 weight preferences</h2>", "<p>Enable weight gain and choose its allowed sources. Starting weight and body size apply on your next spawn. Body size also works with weight gain disabled. Save your character to keep these settings.</p><p>Helplessness thresholds use apparent fat minus muscle. Zero disables an effect. Related quirks and server settings can override thresholds. Hydraulic MOD assistance suspends threshold effects. Chair breakage and doorway squeezing use apparent fat, independently of muscle and hydraulic assistance.</p>")
 	for(var/pref in labels)
 		var/value = gs13_preferences[pref]
-		if(!gs13_numeric_preference(pref) && pref != "glutton_bursting_type")
+		if(!gs13_numeric_preference(pref) && !gs13_preference_choices(pref))
 			value = value ? "Enabled" : "Disabled"
 		html += "[labels[pref]]: <a href='byond://?_src_=prefs;preference=gs13;setting=[pref]'>[value]</a><br>"
 	var/datum/browser/popup = new(user, "gs13_preferences", "GS13 preferences", 520, 640)
@@ -132,8 +142,9 @@
 	var/list/labels = gs13_preference_labels()
 	if(setting in labels)
 		var/value = character.gs13_preferences[setting]
-		if(setting == "glutton_bursting_type")
-			value = tgui_input_list(user, labels[setting], "GS13 preferences", gs13_burst_modes(), value)
+		var/list/choices = gs13_preference_choices(setting)
+		if(choices)
+			value = tgui_input_list(user, labels[setting], "GS13 preferences", choices, value)
 			if(isnull(value) || character != active_character)
 				return
 		else if(gs13_numeric_preference(setting))

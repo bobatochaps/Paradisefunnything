@@ -1,6 +1,37 @@
 // Native Paradise adapter for GS13 species.dm and modular_items.dm.
 // The first compatible body is the standard human. Other species keep their
 // native appearance until their body-specific sprites have been adapted.
+/proc/gs13_belly_styles()
+	return list("Smooth without arms", "Classic", "Round", "Smooth")
+
+/proc/gs13_belly_style_icon(style)
+	switch(style)
+		if("belly")
+			return 'modular_gs/icons/mob/human/genitals/belly.dmi'
+		if("round")
+			return 'modular_gs/icons/mob/human/genitals/belly_round.dmi'
+		if("smooth")
+			return 'modular_gs/icons/mob/human/genitals/belly_smooth.dmi'
+	return 'modular_gs/icons/mob/human/genitals/belly_smooth_noarms.dmi'
+
+/mob/living/carbon/human/proc/get_gs13_belly_style()
+	var/style = "smoothnoarms"
+	switch(gs13_preferences["weight_belly_shape"])
+		if("Classic")
+			style = "belly"
+		if("Round")
+			style = "round"
+		if("Smooth")
+			style = "smooth"
+	if(style != "smoothnoarms")
+		// These source sheets include fat arms/hands. Keep native amputations and
+		// prosthetics visible until those shapes have separate limb masks.
+		for(var/zone in list(BODY_ZONE_L_ARM, BODY_ZONE_R_ARM, BODY_ZONE_PRECISE_L_HAND, BODY_ZONE_PRECISE_R_HAND))
+			var/obj/item/organ/external/limb = get_organ(zone)
+			if(!limb || limb.is_robotic())
+				return "smoothnoarms"
+	return style
+
 /mob/living/carbon/proc/update_gs13_weight_appearance(force = FALSE)
 	return
 
@@ -21,7 +52,8 @@
 	else if(current_fullness >= FULLNESS_LEVEL_BEEG)
 		belly_stage++
 	belly_stage = min(belly_stage, 9)
-	var/render_key = "[stage]:[shape]:[belly_stage]:[HAS_TRAIT(src, TRAIT_HULK)]:[HAS_TRAIT(src, TRAIT_HUSK)]"
+	var/belly_style = get_gs13_belly_style()
+	var/render_key = "[stage]:[shape]:[belly_stage]:[belly_style]:[HAS_TRAIT(src, TRAIT_HULK)]:[HAS_TRAIT(src, TRAIT_HUSK)]"
 	if(!force && render_key == gs13_weight_appearance_key)
 		return
 	gs13_weight_appearance_key = render_key
@@ -41,8 +73,7 @@
 	var/chest_covered = (w_uniform?.body_parts_covered & UPPER_TORSO) || (suit_coverage & UPPER_TORSO)
 	var/hips_covered = (w_uniform?.body_parts_covered & (LOWER_TORSO | LEGS)) || (suit_coverage & (LOWER_TORSO | LEGS))
 	if(has_belly && stage && !chest_covered)
-		// This source shape does not paint arms over amputations or prosthetics.
-		var/mutable_appearance/belly = mutable_appearance('modular_gs/icons/mob/human/genitals/belly_smooth_noarms.dmi', "m_belly_smoothnoarms_[stage]_FRONT", layer = -LIMBS_LAYER + 0.5)
+		var/mutable_appearance/belly = mutable_appearance(gs13_belly_style_icon(belly_style), "m_belly_[belly_style]_[stage]_FRONT", layer = -LIMBS_LAYER + 0.5)
 		belly.color = gs13_weight_skin_color(chest, 18)
 		standing += belly
 	if(has_hips && stage && !hips_covered)
