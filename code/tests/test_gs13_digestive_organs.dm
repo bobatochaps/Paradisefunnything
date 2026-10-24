@@ -59,6 +59,8 @@
 /datum/game_test/room_test/gs13_stomach_fullness_burst/Run()
 	for(var/mode in list("Injure", "Critical"))
 		var/mob/living/carbon/human/subject = gs13_burst_subject(GS13_BURST_GLUTTON)
+		// Isolate explicit stomach trauma from native random chest-organ injury.
+		subject.physiology.brute_mod = 0
 		subject.gs13_preferences["glutton_bursting_type"] = mode
 		subject.gs13_preferences["glutton_fatness_before_burst"] = 0
 		subject.gs13_preferences["glutton_fullness_before_burst"] = 300
@@ -74,6 +76,7 @@
 /datum/game_test/room_test/gs13_stomach_burst_boundaries/Run()
 	for(var/scenario in list("exact", "fat", "safe", "missing"))
 		var/mob/living/carbon/human/subject = gs13_burst_subject(GS13_BURST_GLUTTON)
+		subject.physiology.brute_mod = 0
 		subject.gs13_preferences["glutton_bursting_type"] = scenario == "safe" ? "Safe" : "Injure"
 		subject.gs13_preferences["glutton_fullness_before_burst"] = 300
 		subject.nutrition = scenario == "exact" ? 1050 : (scenario == "fat" ? 500 : 1080)

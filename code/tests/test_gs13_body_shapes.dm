@@ -28,6 +28,7 @@
 
 /datum/game_test/room_test/gs13_body_shape_stages/Run()
 	var/mob/living/carbon/human/subject = allocate(/mob/living/carbon/human)
+	subject.gs13_preferences = gs13_default_preferences()
 	subject.gs13_preferences["master_wg_pref"] = TRUE
 	for(var/style in gs13_belly_styles())
 		subject.gs13_preferences["weight_belly_shape"] = style
@@ -45,6 +46,7 @@
 
 /datum/game_test/room_test/gs13_body_shape_limb_safety/Run()
 	var/mob/living/carbon/human/subject = allocate(/mob/living/carbon/human)
+	subject.gs13_preferences = gs13_default_preferences()
 	subject.gs13_preferences["master_wg_pref"] = TRUE
 	subject.gs13_preferences["weight_belly_shape"] = "Round"
 	subject.adjust_fatness(FATNESS_LEVEL_OBESE, FATTENING_TYPE_ALMIGHTY, TRUE)
@@ -62,6 +64,7 @@
 
 /datum/game_test/room_test/gs13_body_shape_clothing_and_cleanup/Run()
 	var/mob/living/carbon/human/subject = allocate(/mob/living/carbon/human)
+	subject.gs13_preferences = gs13_default_preferences()
 	subject.gs13_preferences["master_wg_pref"] = TRUE
 	subject.gs13_preferences["weight_belly_shape"] = "Classic"
 	subject.adjust_fatness(FATNESS_LEVEL_OBESE, FATTENING_TYPE_ALMIGHTY, TRUE)
@@ -84,6 +87,8 @@
 /datum/game_test/room_test/gs13_body_shape_physical_ownership/Run()
 	var/mob/living/carbon/human/original = allocate(/mob/living/carbon/human)
 	var/mob/living/carbon/human/recipient = allocate(/mob/living/carbon/human)
+	original.gs13_preferences = gs13_default_preferences()
+	recipient.gs13_preferences = gs13_default_preferences()
 	original.gs13_preferences["master_wg_pref"] = TRUE
 	recipient.gs13_preferences["master_wg_pref"] = TRUE
 	original.gs13_preferences["weight_belly_shape"] = "Round"
