@@ -10,8 +10,10 @@
 /mob/living/carbon/proc/set_gs13_body_change(source, apparent_fatness, tint = null)
 	if((!istext(source) && !istype(source, /datum)) || !source || QDELETED(src))
 		return FALSE
-	if(istype(source, /datum) && QDELETED(source))
-		return FALSE
+	if(istype(source, /datum))
+		var/datum/datum_source = source
+		if(QDELETED(datum_source))
+			return FALSE
 	if(!isnum(apparent_fatness) || !GS13_IS_FINITE(apparent_fatness) || apparent_fatness < 0 || (!isnull(tint) && !istext(tint)))
 		return FALSE
 	if(!apparent_fatness && !tint)
