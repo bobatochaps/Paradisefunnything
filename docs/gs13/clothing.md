@@ -8,13 +8,13 @@ The existing grey family supplies original-source belly/hip panels through nativ
 
 Checkpoint `fe3eca09c6c6229189e390ba644341acacfb7b7d` passed 265 focused / 320 full native tests, zero compiler errors/warnings, no runtime failures, UI checks, and live MariaDB in [run 40169413941](https://github.com/bobatochaps/Paradisefunnything/actions/runs/40169413941). Six additional tests cover sizes/colors; the cloning fixture captures these settings too. Four additional native BYOND previews were inspected in all four directions: independent naked sizes, Round uniform panels, fullness expansion, and independent part colors. These are native renders, not live-client gameplay verification.
 
-## Acquisition candidate
+## Validated native acquisition
 
 The existing native grey-jumpsuit loadout choice keeps its saved type path. Eight additional native choices cover source science, engineering, cargo, medical, security, blue security, command, and service variants. They use the ordinary one-point native uniform cost. Departmental restrictions map to native science, engineering, supply, medical, active-security, and command roles; the blue security choice inherits its restriction. Service remains unrestricted. Native outfit spawning continues to enforce the role list.
 
 ClothesMate supplies five ordinary modular grey suits. The source-matched native departmental wardrobes supply three of their relevant implemented variant: SecDrobe/DetDrobe, MediDrobe/ViroDrobe/ChemDrobe/GeneDrobe, SciDrobe/RoboDrobe, EngiDrobe/AtmosDrobe, CargoDrobe, and the chef/bar/hydroponics/janitorial/legal/chaplain wardrobes. Stock merges before native inventory/refill construction. Existing products, prices, and type defaults remain intact. New suits use each vendor's ordinary uniform price, currently 50 credits in the departmental wardrobes and 75 in ClothesMate. Existing free-vendor pricing is retained.
 
-Ordinary native refill canisters and recovered stock handle the additional suits. Three integration tests exercise real loadout registration/interface data/spawning/equipment, role metadata and inherited blue-security restrictions, all eighteen native vendor catalogs, actual vending/restocking, separate stock records, and deconstruction recovery. Native validation of this acquisition candidate is pending.
+Ordinary native refill canisters and recovered stock handle the additional suits. Three integration tests exercise real loadout registration/interface data/spawning/equipment, role metadata and inherited blue-security restrictions, all eighteen native vendor catalogs, actual vending/restocking, separate stock records, and deconstruction recovery. Checkpoint `8dfd591b385487435cc76b3c7076860bb2a6cdfd` passed 268 focused / 323 full native tests with clean compilation, UI checks, and live MariaDB in [run 40170376288](https://github.com/bobatochaps/Paradisefunnything/actions/runs/40170376288). The following combined reservoir checkpoint passed 271 focused / 326 full native tests in [run 40171231550](https://github.com/bobatochaps/Paradisefunnything/actions/runs/40171231550).
 
 ## Remaining gates
 

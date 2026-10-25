@@ -4662,7 +4662,8 @@
       "status": "partial-adapter",
       "target_adapters": [
         "code/modules/gs13/anatomy_preferences.dm",
-        "code/modules/gs13/preferences.dm"
+        "code/modules/gs13/preferences.dm",
+        "code/modules/gs13/weight_appearance.dm"
       ],
       "declarations": [
         "/datum/preference/choiced/breast_produce",
@@ -4707,7 +4708,7 @@
         "modular_skyrat/modules/modular_items/lewd_items/code/lewd_organs/breasts.dm"
       ],
       "asset_literals": [],
-      "remaining_gate": "Saved breast product choices and native optional anatomy preferences are adapted. Source minimum/maximum part sizes, belly/butt customization, unsupported products, species/rendering, and direct player SQL/client checks remain pending. Source-commented preference blocks are not active features."
+      "remaining_gate": "Saved fluid products and optional anatomy, live breast maxima with creation-DNA persistence, and independent human belly/hip sizes/colors have partial native adapters. Body/uniform sizes use the native 0-to-9 palette. Full source part-size DNA/ranges, breast rendering, unsupported products/species, and player SQL/client checks remain pending. Source-commented preference blocks are not active features."
     },
     {
       "source": "modular_gs/code/modules/client/preferences/helplessness_prefs.dm",
@@ -5126,8 +5127,10 @@
       "sha256": "927d3a0057979d64d9177166a5a3e74ecf8d141067e1e8551a907d22c87eb0d0",
       "domain": "body-and-appearance",
       "root_dme_entry": true,
-      "status": "needs-semantic-audit",
-      "target_adapters": [],
+      "status": "partial-adapter",
+      "target_adapters": [
+        "code/modules/gs13/weight_appearance.dm"
+      ],
       "declarations": [
         "/mob/living/carbon/proc/handle_modular_items",
         "/obj/item",
@@ -5199,7 +5202,7 @@
       "asset_literals": [
         "modular_gs/icons/mob/modclothes/modular_grey.dmi"
       ],
-      "remaining_gate": "Audit behavior, dependencies, assets, acquisition, preferences, lifecycle, and native integration tests."
+      "remaining_gate": "Human grey/departmental belly/hip panels, independent sizes/colors, source Round shapes, independent fullness expansion, native dyeing/rolling/coverage, loadout/wardrobe acquisition, and cleanup have partial adapters. Breast panels, digitigrade/taur/species variants, remaining families, source armor/palette details, full layering/multi-color behavior, and client checks remain pending."
     },
     {
       "source": "modular_gs/code/modules/clothing/under/jobs/turtleneck.dm",
@@ -6301,8 +6304,10 @@
       "sha256": "e07f4e27008aa9ccd20974c909d5a95b20959ebd547402262c16ba2d1e41760c",
       "domain": "distribution-and-research",
       "root_dme_entry": true,
-      "status": "needs-semantic-audit",
-      "target_adapters": [],
+      "status": "partial-adapter",
+      "target_adapters": [
+        "code/modules/gs13/clothing_distribution.dm"
+      ],
       "declarations": [
         "/datum/loadout_item/uniform/jumpsuit/gs13",
         "/datum/loadout_item/uniform/jumpsuit/gs13/bunny_suit",
@@ -6353,7 +6358,7 @@
         "modular_skyrat/master_files/code/modules/loadout/categories/uniform.dm"
       ],
       "asset_literals": [],
-      "remaining_gate": "Audit behavior, dependencies, assets, acquisition, preferences, lifecycle, and native integration tests."
+      "remaining_gate": "The existing grey native loadout path and eight modular department choices have native registry/spawn/slot and role metadata adapters. Source department restrictions map to native job groups; blue security inherits its restriction and service stays unrestricted. Dual-tone/button-up/turtleneck families, remaining source roles/body fits, player SQL/client checks, and full source loadout semantics remain pending."
     },
     {
       "source": "modular_gs/code/modules/mapping/areas.dm",
@@ -7202,7 +7207,8 @@
       "status": "partial-adapter",
       "target_adapters": [
         "code/modules/gs13/fluid_organs.dm",
-        "code/modules/gs13/anatomy_preferences.dm"
+        "code/modules/gs13/anatomy_preferences.dm",
+        "code/modules/gs13/weight_appearance.dm"
       ],
       "declarations": [
         "/datum/sprite_accessory/genital/breasts/alt_GS13/pair",
@@ -7234,15 +7240,19 @@
         "modular_gs/icons/obj/genitals/breasts_smooth_onmob.dmi",
         "modular_gs/icons/obj/genitals/teshbreasts.dmi"
       ],
-      "remaining_gate": "Native breast capacity, bounded five-percent-per-second lactation, persistent product changes, and physical organ lifecycle are adapted. Independent body-part growth/limits, alternative external breast rendering, specialized species, inherited interactions, and client checks remain pending."
+      "remaining_gate": "Native breast reservoir capacity, bounded lactation, persistent products, apparent-weight growth and live maxima, physical lifecycle, and human belly/hip bases/caps have partial adapters. Full source part-size DNA/ranges, external breast rendering, specialized species, inherited interactions, and client checks remain pending."
     },
     {
       "source": "modular_gs/code/modules/mob/living/species.dm",
       "sha256": "a31024037722f1d4ddb513827a52b33760334edfd004074aa0ddb429532037a8",
       "domain": "preferences-and-core",
       "root_dme_entry": true,
-      "status": "needs-semantic-audit",
-      "target_adapters": [],
+      "status": "partial-adapter",
+      "target_adapters": [
+        "code/modules/gs13/weight.dm",
+        "code/modules/gs13/weight_appearance.dm",
+        "code/modules/gs13/helplessness.dm"
+      ],
       "declarations": [
         "/datum/fatness_delay_modifier",
         "/datum/movespeed_modifier/fatness",
@@ -7289,7 +7299,7 @@
         "modular_zubbers/modules/taur_mechanics/taur_body.dm"
       ],
       "asset_literals": [],
-      "remaining_gate": "Audit behavior, dependencies, assets, acquisition, preferences, lifecycle, and native integration tests."
+      "remaining_gate": "Native weight stages, movement modifiers, helplessness integration, and human belly/hip base-plus-stage growth with independent caps/colors have partial adapters. Remaining species/body parts, breast and taur growth, source feedback/trait consumers, complete rendering/clothing, and client checks remain pending."
     },
     {
       "source": "modular_gs/code/modules/mod/mod_clothes.dm",
@@ -8727,8 +8737,10 @@
       "sha256": "ae88e83d38febf3a67e5414fa81e70056699a424ba87cca387fbe52cb3229988",
       "domain": "distribution-and-research",
       "root_dme_entry": true,
-      "status": "needs-semantic-audit",
-      "target_adapters": [],
+      "status": "partial-adapter",
+      "target_adapters": [
+        "code/modules/gs13/clothing_distribution.dm"
+      ],
       "declarations": [
         "/obj/machinery/vending/access/command/proc/build_gs13_access_list",
         "/obj/machinery/vending/clothing",
@@ -8776,7 +8788,7 @@
         "modular_zubbers/code/modules/vending/wardrobe.dm"
       ],
       "asset_literals": [],
-      "remaining_gate": "Audit behavior, dependencies, assets, acquisition, preferences, lifecycle, and native integration tests."
+      "remaining_gate": "Source grey/departmental modular uniforms have native stock in ClothesMate and seventeen corresponding wardrobes, normal native pricing, refill/deconstruction recovery, and per-instance catalogs. Remaining clothing families, native curator/command-access wardrobe equivalents, broader categories/access/distribution, and client checks remain pending."
     },
     {
       "source": "modular_gs/code/modules/vore/absorb_fatness.dm",
@@ -19694,9 +19706,10 @@
       "status": "partial-adapter",
       "target_adapters": [
         "code/modules/gs13/fluid_organs.dm",
-        "code/modules/gs13/anatomy_preferences.dm"
+        "code/modules/gs13/anatomy_preferences.dm",
+        "code/modules/gs13/weight_appearance.dm"
       ],
-      "remaining_gate": "Optional native fluid storage, creation defaults, production/collection, DNA separation, and lifecycle have partial adapters. Full inherited external rendering, species, arousal/release/interactions, unsupported products, and player SQL/client checks remain pending."
+      "remaining_gate": "Optional fluid creation/storage/production, birth DNA separation, and independent human belly/hip sizes/colors have partial native adapters. Full source organ-size DNA/ranges, multi-channel rendering, remaining parts/species, inherited interactions/products, and player SQL/client checks remain pending."
     },
     {
       "source": "modular_skyrat/modules/modular_items/lewd_items/code/lewd_organs/_genital.dm",
@@ -19714,7 +19727,7 @@
       "target_adapters": [
         "code/modules/gs13/fluid_organs.dm"
       ],
-      "remaining_gate": "Optional native fluid storage, creation defaults, production/collection, DNA separation, and lifecycle have partial adapters. Full inherited external rendering, species, arousal/release/interactions, unsupported products, and player SQL/client checks remain pending."
+      "remaining_gate": "Native breast storage, bounded production/collection, apparent-weight growth and live size limits, DNA defaults, and lifecycle have partial adapters. External rendering, remaining source breast/accessory options, inherited arousal/release/interactions and products, and player SQL/client checks remain pending."
     },
     {
       "source": "modular_skyrat/modules/modular_items/lewd_items/code/lewd_organs/testicles.dm",
@@ -19741,9 +19754,10 @@
       "target_adapters": [
         "code/modules/gs13/anatomy_preferences.dm",
         "code/modules/gs13/preferences.dm",
-        "code/modules/gs13/fluid_organs.dm"
+        "code/modules/gs13/fluid_organs.dm",
+        "code/modules/gs13/weight_appearance.dm"
       ],
-      "remaining_gate": "Optional native fluid storage, creation defaults, production/collection, DNA separation, and lifecycle have partial adapters. Full inherited external rendering, species, arousal/release/interactions, unsupported products, and player SQL/client checks remain pending."
+      "remaining_gate": "Optional fluid creation/storage/production, birth DNA separation, and independent human belly/hip sizes/colors have partial native adapters. Full source organ-size DNA/ranges, multi-channel rendering, remaining parts/species, inherited interactions/products, and player SQL/client checks remain pending."
     },
     {
       "source": "modular_skyrat/modules/modular_items/lewd_items/code/lewd_chemistry/reagents/breast_milk.dm",

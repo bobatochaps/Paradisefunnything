@@ -18,7 +18,7 @@ Six integration tests cover species/slot coexistence, native transplant/death/de
 
 ## Next dependencies
 
-The reviewed optional fluid-organ/preferences contract and Neutron's persistent overdose are now implemented; see [the fluid-organ record](fluid_organs.md). Continue digestive compatibility, independent part sizes/colors, supported species, and body-shape/clothing rendering together. These checkpoints do not complete the broader anatomy milestone or the blueberry group. Direct client gameplay, rendering, and performance checks remain open.
+The optional fluid-organ/preferences contract, persistent Neutron overdose, source reservoir growth/live limits, and independent human belly/hip sizes/colors are implemented; see [the fluid-organ record](fluid_organs.md). Continue external breast rendering, full source part-size DNA/ranges and color channels, digestive compatibility, supported species, and broader clothing together. These checkpoints do not complete the anatomy milestone or blueberry group. Direct client gameplay, rendering, and performance checks remain open.
 
 ## Neutron fluid-organ dependency review
 
@@ -35,21 +35,27 @@ The three additional sheets include arm/hand pixels. A body with any missing or 
 Six integration tests cover preference serialization, live saved-character changes, all 36 style/stage pairs with actual BYOND previews, missing/prosthetic limb fallback and recovery, clothing/appearance/species cleanup, and body ownership through mind transfer/death/revival. Final checkpoint `49dd09382c99a2e017845d3d777a39b5d6048510` passed 224 focused and 279 full native tests with zero compiler errors/warnings, no runtime failures, and successful UI and live MariaDB checks in [run 40116638947](https://github.com/bobatochaps/Paradisefunnything/actions/runs/40116638947). Thirteen native BYOND PNG previews were inspected: four styles at stages 1, 4, and 9, plus a clothed case, each in all four directions. These confirm the generated native images; direct client gameplay/rendering and performance checks remain unperformed.
 
 
-## Independent human part-size candidate
+## Validated independent human part sizes
 
 The GS13 editor now exposes separate base and maximum sprite sizes for the human belly and hips. Source `modular_gs/code/modules/mob/living/species.dm` adds the current weight stage to each part's saved base, while the size setters in `genitals.dm` apply their maximum. The native adapter follows that growth/cap contract within its current 0-to-9 body/uniform palette. Defaults of base zero and maximum nine retain the previous appearance. A maximum below the base wins; zero maximum removes that part's extra overlay. These settings change the display, not physical fat/muscle, measured mass, movement, or fullness pressure.
 
 Native modular uniform panels use the same independent part sizes. The source Round belly uses its own uniform panels before fullness; fullness can expand clothing one or two sizes beyond the underlying body part's maximum, up to the nine-size uniform limit, without rewriting that part. Current skin shading, prosthetic/missing-limb safety, torso coverage, appearance opt-out, and cache cleanup remain applicable. The settings use the existing body-owned character snapshot and are captured by native cloning. Ordinary DNA transfer still preserves the destination body's visual policy. Full source organ-size DNA, higher-range palettes, other body parts/species, and complete clothing compatibility remain open.
 
-Three additional integration tests cover numeric save/default/editor handling, live independent body sizes and limits without changing measured mass, real Round/fullness uniform panels and limb cleanup, and three additional native BYOND previews. The cloning snapshot fixture also checks both a base size and a maximum. Native validation is pending.
+Three additional integration tests cover numeric save/default/editor handling, live independent body sizes and limits without changing measured mass, real Round/fullness uniform panels and limb cleanup, and three additional native BYOND previews. The cloning fixture checks both a base size and a maximum. Together with colors, checkpoint `fe3eca09c6c6229189e390ba644341acacfb7b7d` passed 265 focused / 320 full native tests with clean compilation, UI checks, and live MariaDB in [run 40169413941](https://github.com/bobatochaps/Paradisefunnything/actions/runs/40169413941). All four additional size/color previews were inspected in all four directions.
 
-## Independent human part-color candidate
+## Validated independent human part colors
 
 The belly and hips now each have a separate custom-color switch and native color picker. Both switches default off, preserving current limb skin shading. The adapter follows the reviewed inherited `ORGAN_COLOR_INHERIT` versus `ORGAN_COLOR_OVERRIDE` contract: an opted-in part uses its stored color, while a part using native skin follows the current body, including Hulk/husk shading. Global paint and transformation color effects still compose above these underlying part colors. Uniform panels retain their own native palette.
 
 Colors use validated six-digit native hexadecimal values, the existing character snapshot, live cache invalidation, and cloning capture. Turning a switch off reveals current native skin rather than restoring an old snapshot. Appearance opt-out, unsupported-species cleanup, and existing limb safety remain in force. Full source multi-channel color/layer controls and birth-anatomy DNA transfer remain open.
 
-Three additional integration tests cover saved color validation, real live appearance/cache changes and current-skin restoration, native uniform palette ownership, species/appearance cleanup, and one additional BYOND preview. The cloning fixture also checks explicit color permission and the chosen value. Native validation is pending.
+Three additional integration tests cover saved color validation, real live appearance/cache changes and current-skin restoration, native uniform palette ownership, species/appearance cleanup, and one additional BYOND preview. The cloning fixture also checks explicit color permission and the chosen value. Validation and visual inspection are recorded above. Later combined checkpoint `8160d07b6039498123ff701b3709bb7a4da40a0e` passed 271 focused / 326 full native tests with clean compilation, UI checks, and live MariaDB in [run 40171231550](https://github.com/bobatochaps/Paradisefunnything/actions/runs/40171231550).
+
+## Next paired-breast render dependency
+
+The physical organ now tracks its source birth base, current apparent-weight size, live maximum, and arrangement multiplier; see [the validated reservoir record](fluid_organs.md). Normal modular-grey acquisition is in [the clothing record](clothing.md). External breast graphics and matching uniform panels are still absent.
+
+The original smooth paired source sheet is reviewed at `modular_gs/icons/obj/genitals/breasts_smooth_onmob.dmi` (Git blob `256464aa80e515154c47c275a28124a2f3c39992`). Its unshaded front/back states cover sizes 0 to 18; behind states begin at size three. The PNG has real alpha transparency. The reviewed inherited breast overlay uses front and body-behind layers. The existing source modular-grey sheet already has breast clothing panels through the named huge/massive/giga/impossible sizes. A native adapter still needs ownership/species/chest/visibility gates, independent weight-master behavior for explicitly chosen anatomy, safe size/state selection, caching/layers, original asset attribution, lifecycle tests, and inspected native previews. Other arrangements/styles/species remain separate gates.
 
 ## Client verification still required
 
