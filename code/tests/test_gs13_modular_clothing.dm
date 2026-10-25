@@ -7,7 +7,7 @@
 		TEST_ASSERT_NOTNULL(category["[gear_path]"], "The real loadout interface lists every implemented source choice")
 		TEST_ASSERT_EQUAL(gear.cost, 1, "The adaptive family uses ordinary native uniform cost")
 		var/obj/item/clothing/under/gs13_dual_tone/uniform = gear.spawn_item(get_turf(bottom_left), list())
-		allocated += uniform
+		LAZYADD(allocated, uniform)
 		TEST_ASSERT(istype(uniform), "Native loadout spawning creates the original two-channel family")
 		count++
 	TEST_ASSERT_EQUAL(count, 25, "All twenty-five source dual-tone loadout choices are registered")
@@ -26,10 +26,10 @@
 	TEST_ASSERT_EQUAL(length(color_keys), 2, "The native editor exposes two independent color controls")
 	TEST_ASSERT_NOT(color_keys[1] == color_keys[2], "Each channel has its own persistent native metadata key")
 	var/obj/item/clothing/under/gs13_dual_tone/custom = white.spawn_item(get_turf(bottom_left), json_decode(json_encode(metadata)))
-	allocated += custom
+	LAZYADD(allocated, custom)
 	TEST_ASSERT_EQUAL(custom.gs13_uniform_colors[1], "#3366cc", "The real native spawn applies saved fabric metadata")
 	TEST_ASSERT_EQUAL(custom.gs13_uniform_colors[2], "#aa2244", "The independent stripe metadata survives the same JSON round trip")
-	var/icon/item_icon = custom.icon
+	var/icon/item_icon = icon(custom.icon, custom.icon_state)
 	TEST_ASSERT_EQUAL(copytext(item_icon.GetPixel(13, 21), 1, 8), "#3366cc", "Source object masks receive the actual chosen fabric color")
 	TEST_ASSERT_EQUAL(copytext(item_icon.GetPixel(12, 20), 1, 8), "#aa2244", "Object stripe pixels use the other channel")
 	TEST_ASSERT_EQUAL(copytext(custom.worn_icon.GetPixel(12, 21, SOUTH), 1, 8), "#3366cc", "The equipped base icon uses the same fabric palette")
@@ -53,7 +53,7 @@
 	TEST_ASSERT_EQUAL(uniform.gs13_uniform_colors[1], "#3366cc", "The native sanitizer normalizes saved hexadecimal values")
 	TEST_ASSERT_EQUAL(uniform.gs13_uniform_colors[2], "#ffffff", "Editing fabric never changes the stripe palette")
 	for(var/bad in list("#abc", "#ffffff00", "#gggggg", list("#ffffff"), 1))
-		TEST_ASSERT_NOT(uniform.set_gs13_uniform_color(1, bad), "Malformed colors cannot hide, tint, or corrupt the source masks")
+		TEST_ASSERT_NOT(uniform.set_gs13_uniform_color(1, bad), "Malformed colors ([json_encode(bad)]) cannot hide, tint, or corrupt the source masks")
 	TEST_ASSERT_NOT(uniform.set_gs13_uniform_color(3, "#ffffff"), "Unknown color channels are rejected")
 	ADD_TRAIT(subject, TRAIT_HANDS_BLOCKED, "gs13-palette-test")
 	TEST_ASSERT_NOT(uniform.can_customize_gs13_colors(subject), "Native blocked hands stop editing")
@@ -70,11 +70,12 @@
 	uniform.set_gs13_uniform_color(1, "#123456")
 	uniform.set_gs13_uniform_color(2, "#abcdef")
 	var/list/saved = uniform.serialize()
-	var/obj/item/clothing/under/gs13_dual_tone/restored = allocate(/obj/item/clothing/under/gs13_dual_tone)
-	restored.deserialize(saved)
+	TEST_ASSERT_NOT("icon" in saved, "Native item persistence stores source colors instead of ephemeral icon resources")
+	var/obj/item/clothing/under/gs13_dual_tone/restored = json_to_object(json_encode(saved), get_turf(bottom_left))
+	LAZYADD(allocated, restored)
 	TEST_ASSERT_EQUAL(restored.gs13_uniform_colors[1], "#123456", "Actual native item serialization preserves fabric")
 	TEST_ASSERT_EQUAL(restored.gs13_uniform_colors[2], "#abcdef", "Actual native item serialization independently preserves stripes")
-	var/icon/restored_icon = restored.icon
+	var/icon/restored_icon = icon(restored.icon, restored.icon_state)
 	TEST_ASSERT_EQUAL(copytext(restored_icon.GetPixel(13, 21), 1, 8), "#123456", "Deserialization rebuilds the usable native object icon")
 	TEST_ASSERT_EQUAL(other.gs13_uniform_colors[1], "#ffffff", "Separate actual suits never share a mutable palette")
 	restored.set_gs13_uniform_color(1, "#ffffff")
@@ -155,7 +156,7 @@
 		if(record.product_path == /obj/item/clothing/under/gs13_dual_tone/security)
 			product = record
 	var/obj/item/clothing/under/gs13_dual_tone/security/suit = product.vend(get_turf(bottom_left))
-	allocated += suit
+	LAZYADD(allocated, suit)
 	TEST_ASSERT(istype(suit), "Actual native vending supplies the fixed source security palette")
 	TEST_ASSERT_EQUAL(suit.gs13_uniform_colors[1], "#00386e", "Vending preserves the reviewed source department color")
 	TEST_ASSERT_EQUAL(product.amount, 2, "A real vend consumes exactly one source suit")

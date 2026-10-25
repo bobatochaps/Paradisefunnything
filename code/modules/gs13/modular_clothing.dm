@@ -1,4 +1,18 @@
 // Original GS13 two-channel masks rendered through native Paradise icons.
+GLOBAL_LIST_EMPTY(gs13_uniform_protection_cache)
+
+/// List-valued type defaults are runtime initializers in DM. Resolve each
+/// ordinary native uniform once, after its real armor initialization.
+/proc/gs13_native_uniform_protection(uniform_path)
+	var/list/protection = GLOB.gs13_uniform_protection_cache[uniform_path]
+	if(protection)
+		return protection
+	var/obj/item/clothing/under/template = new uniform_path
+	protection = list("armor" = template.armor, "permeability" = template.permeability_coefficient, "resistance" = template.resistance_flags)
+	GLOB.gs13_uniform_protection_cache[uniform_path] = protection
+	qdel(template)
+	return protection
+
 /obj/item/clothing/under/proc/gs13_clothing_belly_shape(shape)
 	return shape
 
@@ -28,11 +42,10 @@
 	gs13_uniform_colors = gs13_uniform_colors.Copy()
 	gs13_panel_icons = list()
 	if(gs13_protection_template)
-		var/obj/item/clothing/under/template = gs13_protection_template
-		var/list/ratings = initial(template.armor)
-		armor = islist(ratings) ? getArmor(arglist(ratings)) : getArmor()
-		permeability_coefficient = initial(template.permeability_coefficient)
-		resistance_flags = initial(template.resistance_flags)
+		var/list/protection = gs13_native_uniform_protection(gs13_protection_template)
+		armor = protection["armor"]
+		permeability_coefficient = protection["permeability"]
+		resistance_flags = protection["resistance"]
 	if(random_sensor)
 		sensor_mode = pick(SENSOR_OFF, SENSOR_LIVING, SENSOR_VITALS, SENSOR_COORDS)
 	if(!gs13_recolorable)
@@ -60,8 +73,8 @@
 /obj/item/clothing/under/gs13_dual_tone/proc/set_gs13_uniform_color(channel, value)
 	if(!gs13_recolorable || !(channel in list(1, 2)) || !istext(value) || length(value) != 7)
 		return FALSE
-	var/clean = sanitize_hexcolor(value, null)
-	if(!clean)
+	var/clean = sanitize_hexcolor(value, "invalid")
+	if(clean == "invalid")
 		return FALSE
 	if(gs13_uniform_colors[channel] != clean)
 		gs13_uniform_colors[channel] = clean
@@ -98,12 +111,18 @@
 	data["gs13_uniform_colors"] = gs13_uniform_colors.Copy()
 	return data
 
+/obj/item/clothing/under/gs13_dual_tone/vars_to_save()
+	. = ..()
+	// Rebuild runtime icon resources from persistent source masks and colors.
+	. -= "icon"
+
 /obj/item/clothing/under/gs13_dual_tone/deserialize(list/data)
 	. = ..()
 	var/list/saved = data["gs13_uniform_colors"]
 	if(islist(saved) && length(saved) == 2)
 		for(var/channel in 1 to 2)
 			set_gs13_uniform_color(channel, saved[channel])
+	gs13_rebuild_uniform_icons()
 
 /obj/item/clothing/under/gs13_dual_tone/gs13_clothing_belly_shape(shape)
 	// This family deliberately uses soft panels even on Round/stuffed bodies.
