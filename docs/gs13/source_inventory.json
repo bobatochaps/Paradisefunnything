@@ -4932,8 +4932,10 @@
       "sha256": "ef108e0f69b32ef95b23a824df1c86d76d0545768c243e119e4fafa53d1eeb59",
       "domain": "body-and-appearance",
       "root_dme_entry": true,
-      "status": "needs-semantic-audit",
-      "target_adapters": [],
+      "status": "partial-adapter",
+      "target_adapters": [
+        "code/modules/gs13/modular_clothing.dm"
+      ],
       "declarations": [
         "/datum/greyscale_config/dual_tone_suit",
         "/datum/greyscale_config/dual_tone_suit/worn",
@@ -4966,7 +4968,7 @@
         "modular_gs/icons/mob/modclothes/dual_tone_suit_worn.dmi",
         "modular_gs/icons/obj/clothing/modclothes/dual_tone_suit.dmi"
       ],
-      "remaining_gate": "Audit behavior, dependencies, assets, acquisition, preferences, lifecycle, and native integration tests."
+      "remaining_gate": "Two-channel original-source masks, palette permissions, native uniform protection/sensors, item persistence, loadout and wardrobe acquisition have a partial native adapter. Checkpoint 885f113 passed 281 focused / 336 full native tests, UI/live SQL checks, and two inspected native previews. Source digitigrade/taur/species fits, missing curator/command-access wardrobes, additional world/role acquisition, complete layering and live client checks remain open."
     },
     {
       "source": "modular_gs/code/modules/clothing/under/jobs/modular_clothing/button_up.dm",
@@ -5015,8 +5017,11 @@
       "sha256": "c6a3137c39e7449f5bd807e27044e92840819b591d2bb1198bd397dfa2efc0de",
       "domain": "body-and-appearance",
       "root_dme_entry": true,
-      "status": "needs-semantic-audit",
-      "target_adapters": [],
+      "status": "partial-adapter",
+      "target_adapters": [
+        "code/modules/gs13/modular_clothing_variants.dm",
+        "code/modules/gs13/modular_clothing.dm"
+      ],
       "declarations": [
         "/obj/item/clothing/under/dual_tone/cargo",
         "/obj/item/clothing/under/dual_tone/cargo/bitrunner",
@@ -5079,7 +5084,7 @@
         "modular_zubbers/code/modules/clothing/under/security.dm"
       ],
       "asset_literals": [],
-      "remaining_gate": "Audit behavior, dependencies, assets, acquisition, preferences, lifecycle, and native integration tests."
+      "remaining_gate": "Two-channel original-source masks, palette permissions, native uniform protection/sensors, item persistence, loadout and wardrobe acquisition have a partial native adapter. Checkpoint 885f113 passed 281 focused / 336 full native tests, UI/live SQL checks, and two inspected native previews. Source digitigrade/taur/species fits, missing curator/command-access wardrobes, additional world/role acquisition, complete layering and live client checks remain open."
     },
     {
       "source": "modular_gs/code/modules/clothing/under/jobs/modular_clothing/turtleneck.dm",
@@ -5131,7 +5136,8 @@
       "status": "partial-adapter",
       "target_adapters": [
         "code/modules/gs13/weight_appearance.dm",
-        "code/modules/gs13/anatomy_appearance.dm"
+        "code/modules/gs13/anatomy_appearance.dm",
+        "code/modules/gs13/modular_clothing.dm"
       ],
       "declarations": [
         "/mob/living/carbon/proc/handle_modular_items",
@@ -5204,7 +5210,7 @@
       "asset_literals": [
         "modular_gs/icons/mob/modclothes/modular_grey.dmi"
       ],
-      "remaining_gate": "Optional smooth paired body/clothing layers with separate live visibility, source assets, native coverage/rolling, and organ lifecycle pass native tests and inspected previews. Human grey/departmental belly/hip panels, independent sizes/colors, source Round shapes, independent fullness expansion, native dyeing/rolling/coverage, loadout/wardrobe acquisition, and cleanup have partial adapters. digitigrade/taur/species variants, remaining families, source armor/palette details, full layering/multi-color behavior, and client checks remain pending."
+      "remaining_gate": "The dual-tone family adds reviewed palette masks and source loadout/wardrobe paths in a partial native adapter validated at 281 focused / 336 full native tests with two inspected previews. Optional smooth paired body/clothing layers with separate live visibility, source assets, native coverage/rolling, and organ lifecycle pass native tests and inspected previews. Human grey/departmental belly/hip panels, independent sizes/colors, source Round shapes, independent fullness expansion, native dyeing/rolling/coverage, loadout/wardrobe acquisition, and cleanup have partial adapters. digitigrade/taur/species variants, remaining families, source armor/palette details, full layering/multi-color behavior, and client checks remain pending."
     },
     {
       "source": "modular_gs/code/modules/clothing/under/jobs/turtleneck.dm",
@@ -6308,7 +6314,8 @@
       "root_dme_entry": true,
       "status": "partial-adapter",
       "target_adapters": [
-        "code/modules/gs13/clothing_distribution.dm"
+        "code/modules/gs13/clothing_distribution.dm",
+        "code/modules/gs13/modular_clothing_distribution.dm"
       ],
       "declarations": [
         "/datum/loadout_item/uniform/jumpsuit/gs13",
@@ -6360,7 +6367,7 @@
         "modular_skyrat/master_files/code/modules/loadout/categories/uniform.dm"
       ],
       "asset_literals": [],
-      "remaining_gate": "The existing grey native loadout path and eight modular department choices have native registry/spawn/slot and role metadata adapters. Source department restrictions map to native job groups; blue security inherits its restriction and service stays unrestricted. Dual-tone/button-up/turtleneck families, remaining source roles/body fits, player SQL/client checks, and full source loadout semantics remain pending."
+      "remaining_gate": "The dual-tone family adds reviewed palette masks and source loadout/wardrobe paths in a partial native adapter validated at 281 focused / 336 full native tests with two inspected previews. The existing grey native loadout path and eight modular department choices have native registry/spawn/slot and role metadata adapters. Source department restrictions map to native job groups; blue security inherits its restriction and service stays unrestricted. Dual-tone/button-up/turtleneck families, remaining source roles/body fits, player SQL/client checks, and full source loadout semantics remain pending."
     },
     {
       "source": "modular_gs/code/modules/mapping/areas.dm",
@@ -8742,7 +8749,8 @@
       "root_dme_entry": true,
       "status": "partial-adapter",
       "target_adapters": [
-        "code/modules/gs13/clothing_distribution.dm"
+        "code/modules/gs13/clothing_distribution.dm",
+        "code/modules/gs13/modular_clothing_distribution.dm"
       ],
       "declarations": [
         "/obj/machinery/vending/access/command/proc/build_gs13_access_list",
@@ -8791,7 +8799,7 @@
         "modular_zubbers/code/modules/vending/wardrobe.dm"
       ],
       "asset_literals": [],
-      "remaining_gate": "Source grey/departmental modular uniforms have native stock in ClothesMate and seventeen corresponding wardrobes, normal native pricing, refill/deconstruction recovery, and per-instance catalogs. Remaining clothing families, native curator/command-access wardrobe equivalents, broader categories/access/distribution, and client checks remain pending."
+      "remaining_gate": "The dual-tone family adds reviewed palette masks and source loadout/wardrobe paths in a partial native adapter validated at 281 focused / 336 full native tests with two inspected previews. Source grey/departmental modular uniforms have native stock in ClothesMate and seventeen corresponding wardrobes, normal native pricing, refill/deconstruction recovery, and per-instance catalogs. Remaining clothing families, native curator/command-access wardrobe equivalents, broader categories/access/distribution, and client checks remain pending."
     },
     {
       "source": "modular_gs/code/modules/vore/absorb_fatness.dm",
