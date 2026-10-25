@@ -29,8 +29,9 @@
 	allocated += custom
 	TEST_ASSERT_EQUAL(custom.gs13_uniform_colors[1], "#3366cc", "The real native spawn applies saved fabric metadata")
 	TEST_ASSERT_EQUAL(custom.gs13_uniform_colors[2], "#aa2244", "The independent stripe metadata survives the same JSON round trip")
-	TEST_ASSERT_EQUAL(copytext(custom.icon.GetPixel(13, 21), 1, 8), "#3366cc", "Source object masks receive the actual chosen fabric color")
-	TEST_ASSERT_EQUAL(copytext(custom.icon.GetPixel(12, 20), 1, 8), "#aa2244", "Object stripe pixels use the other channel")
+	var/icon/item_icon = custom.icon
+	TEST_ASSERT_EQUAL(copytext(item_icon.GetPixel(13, 21), 1, 8), "#3366cc", "Source object masks receive the actual chosen fabric color")
+	TEST_ASSERT_EQUAL(copytext(item_icon.GetPixel(12, 20), 1, 8), "#aa2244", "Object stripe pixels use the other channel")
 	TEST_ASSERT_EQUAL(copytext(custom.worn_icon.GetPixel(12, 21, SOUTH), 1, 8), "#3366cc", "The equipped base icon uses the same fabric palette")
 	TEST_ASSERT_EQUAL(copytext(custom.worn_icon.GetPixel(10, 18, SOUTH), 1, 8), "#aa2244", "The equipped base icon preserves the stripe channel")
 
@@ -73,7 +74,8 @@
 	restored.deserialize(saved)
 	TEST_ASSERT_EQUAL(restored.gs13_uniform_colors[1], "#123456", "Actual native item serialization preserves fabric")
 	TEST_ASSERT_EQUAL(restored.gs13_uniform_colors[2], "#abcdef", "Actual native item serialization independently preserves stripes")
-	TEST_ASSERT_EQUAL(copytext(restored.icon.GetPixel(13, 21), 1, 8), "#123456", "Deserialization rebuilds the usable native object icon")
+	var/icon/restored_icon = restored.icon
+	TEST_ASSERT_EQUAL(copytext(restored_icon.GetPixel(13, 21), 1, 8), "#123456", "Deserialization rebuilds the usable native object icon")
 	TEST_ASSERT_EQUAL(other.gs13_uniform_colors[1], "#ffffff", "Separate actual suits never share a mutable palette")
 	restored.set_gs13_uniform_color(1, "#ffffff")
 	TEST_ASSERT_EQUAL(saved["gs13_uniform_colors"][1], "#123456", "Later item edits cannot mutate the saved snapshot")
