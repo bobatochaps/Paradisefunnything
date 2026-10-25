@@ -1,4 +1,4 @@
-// Original GS13 two-channel masks rendered through native Paradise icons.
+// Original GS13 indexed masks rendered through native Paradise icons.
 GLOBAL_LIST_EMPTY(gs13_uniform_protection_cache)
 
 /// List-valued type defaults are runtime initializers in DM. Resolve each
@@ -34,6 +34,8 @@ GLOBAL_LIST_EMPTY(gs13_uniform_protection_cache)
 	var/gs13_uniform_state = "dual_tone_jumpsuit"
 	var/list/gs13_uniform_colors = list("#ffffff", "#ffffff")
 	var/gs13_skin_masks = FALSE
+	var/gs13_skin_mask_index = 4
+	var/gs13_color_mask_offset = 0
 	var/gs13_recolorable = TRUE
 	/// A native uniform supplies ratings instead of importing TG armor units.
 	var/gs13_protection_template
@@ -60,7 +62,7 @@ GLOBAL_LIST_EMPTY(gs13_uniform_protection_cache)
 	var/state = gs13_uniform_state
 	var/icon/composite
 	for(var/channel in 1 to length(gs13_uniform_colors))
-		var/icon/mask = icon(source_icon, "[state]-[channel]")
+		var/icon/mask = icon(source_icon, gs13_uniform_mask_state(state, channel))
 		mask.Blend(gs13_uniform_colors[channel], ICON_MULTIPLY)
 		if(composite)
 			composite.Blend(mask, ICON_OVERLAY)
@@ -101,8 +103,10 @@ GLOBAL_LIST_EMPTY(gs13_uniform_protection_cache)
 	if(!can_customize_gs13_colors(user))
 		return
 	var/list/channels = list("Main fabric" = 1, "Secondary fabric" = 2)
-	if(length(gs13_uniform_colors) == 3)
+	if(length(gs13_uniform_colors) >= 3)
 		channels["Trim"] = 3
+	for(var/index in 4 to length(gs13_uniform_colors))
+		channels["Color [index]"] = index
 	var/choice = tgui_input_list(user, "Choose a color channel.", "Uniform colors", channels)
 	if(!can_customize_gs13_colors(user) || !(choice in channels))
 		return
@@ -140,22 +144,23 @@ GLOBAL_LIST_EMPTY(gs13_uniform_protection_cache)
 	return "soft"
 
 /obj/item/clothing/under/gs13_dual_tone/proc/gs13_uniform_mask_state(state, channel)
-	return channel ? "[state]-[channel]" : state
+	return channel ? "[state]-[channel + gs13_color_mask_offset]" : state
 
 /obj/item/clothing/under/gs13_dual_tone/gs13_add_modular_panels(list/standing, state, draw_layer, tint, skin_tint)
 	var/list/channels = list(0)
 	if(gs13_skin_masks && skin_tint)
-		channels += 4 // Source cutout skin precedes the garment's color masks.
+		channels += -1 // Source cutout skin precedes the garment's color masks.
 	for(var/index in 1 to length(gs13_uniform_colors))
 		channels += index
 	for(var/channel in channels)
-		var/mask_state = gs13_uniform_mask_state(state, channel)
+		var/is_skin = channel == -1
+		var/mask_state = is_skin ? "[state]-[gs13_skin_mask_index]" : gs13_uniform_mask_state(state, channel)
 		if(!icon_exists(gs13_modular_icon, mask_state))
 			continue
 		var/panel_icon = gs13_modular_icon
 		if(channel)
-			var/mask_color = channel == 4 ? skin_tint : gs13_uniform_colors[channel]
-			var/cache_key = channel == 4 ? "[mask_state]:[mask_color]" : mask_state
+			var/mask_color = is_skin ? skin_tint : gs13_uniform_colors[channel]
+			var/cache_key = is_skin ? "[mask_state]:[mask_color]" : mask_state
 			panel_icon = gs13_panel_icons[cache_key]
 			if(!panel_icon)
 				var/icon/mask = icon(gs13_modular_icon, mask_state)
@@ -181,6 +186,8 @@ GLOBAL_LIST_EMPTY(gs13_uniform_protection_cache)
 			display_type = "Secondary color"
 		if(3)
 			display_type = "Trim color"
+		else
+			display_type = "Color [channel]"
 	info = "Choose this uniform color channel."
 	return ..()
 
@@ -192,6 +199,15 @@ GLOBAL_LIST_EMPTY(gs13_uniform_protection_cache)
 
 /datum/gear_tweak/gs13_uniform_color/trim
 	channel = 3
+
+/datum/gear_tweak/gs13_uniform_color/detail_4
+	channel = 4
+
+/datum/gear_tweak/gs13_uniform_color/detail_5
+	channel = 5
+
+/datum/gear_tweak/gs13_uniform_color/detail_6
+	channel = 6
 
 /datum/gear_tweak/gs13_uniform_color/get_default()
 	return "#ffffff"

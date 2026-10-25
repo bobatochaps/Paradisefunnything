@@ -3805,6 +3805,7 @@
 #include "code\modules\gs13\modular_clothing_distribution.dm"
 #include "code\modules\gs13\modular_shirts.dm"
 #include "code\modules\gs13\modular_shirt_variants.dm"
+#include "code\modules\gs13\modular_costume.dm"
 #include "code\modules\gs13\antiburst_collar.dm"
 #include "code\modules\gs13\starshine.dm"
 #include "code\modules\gs13\transformations.dm"

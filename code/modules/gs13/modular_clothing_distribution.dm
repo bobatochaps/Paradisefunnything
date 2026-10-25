@@ -142,7 +142,7 @@
 	var/list/gs13_dual_tone_stock
 
 /obj/machinery/economy/vending/clothing
-	gs13_dual_tone_stock = list(/obj/item/clothing/under/gs13_dual_tone = 5, /obj/item/clothing/under/gs13_dual_tone/button_up = 5, /obj/item/clothing/under/gs13_dual_tone/button_up/turtleneck = 5)
+	gs13_dual_tone_stock = list(/obj/item/clothing/under/gs13_dual_tone/bunny_suit = 5, /obj/item/clothing/under/gs13_dual_tone = 5, /obj/item/clothing/under/gs13_dual_tone/button_up = 5, /obj/item/clothing/under/gs13_dual_tone/button_up/turtleneck = 5)
 
 /obj/machinery/economy/vending/secdrobe
 	gs13_dual_tone_stock = list(/obj/item/clothing/under/gs13_dual_tone/security = 3)

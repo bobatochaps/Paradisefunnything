@@ -1,7 +1,7 @@
-/datum/game_test/room_test/proc/gs13_clothing_panel_pixel(mob/living/carbon/human/subject, state, x, y)
+/datum/game_test/room_test/proc/gs13_clothing_panel_pixel(mob/living/carbon/human/subject, state, x, y, direction = SOUTH)
 	for(var/mutable_appearance/part as anything in subject.overlays_standing[GS13_WEIGHT_BODY_LAYER])
 		if(part.icon_state == state)
-			var/icon/panel = icon(part.icon, part.icon_state, SOUTH)
+			var/icon/panel = icon(part.icon, part.icon_state, direction)
 			return panel.GetPixel(x, y)
 
 /datum/game_test/room_test/gs13_modular_shirt_loadout/Run()
