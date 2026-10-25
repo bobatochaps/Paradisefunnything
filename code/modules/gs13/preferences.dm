@@ -104,7 +104,7 @@
 			result[pref] = clamp(round(value), 0, 9)
 			continue
 		if(pref in gs13_anatomy_numeric_preferences())
-			result[pref] = clamp(value, 0.5, 80)
+			result[pref] = clamp(value, pref == "max_breast_size" ? 0 : 0.5, 80)
 			continue
 		if(pref in gs13_burst_numeric_preferences())
 			result[pref] = clamp(value, 0, SHORT_REAL_LIMIT)
@@ -130,11 +130,14 @@
 /datum/character_save/proc/apply_gs13_preferences(mob/living/carbon/character, initialize_weight = TRUE)
 	gs13_preferences = gs13_sanitize_preferences(gs13_preferences)
 	character.set_gs13_preference_snapshot(gs13_preferences, slot_number)
-	if(initialize_weight)
-		if(ishuman(character))
-			var/mob/living/carbon/human/human_character = character
+	if(ishuman(character))
+		var/mob/living/carbon/human/human_character = character
+		if(initialize_weight)
 			human_character.set_gs13_body_size(gs13_preferences["body_size"])
 			human_character.initialize_gs13_anatomy(gs13_preferences)
+		else
+			human_character.update_gs13_anatomy_limits(gs13_preferences)
+	if(initialize_weight)
 		character.fatness_real = gs13_preferences["master_wg_pref"] ? gs13_preferences["starting_fatness"] : 0
 	character.sync_gs13_transformations()
 	character.calculate_fatness()
@@ -186,7 +189,7 @@
 			else if(setting in gs13_shape_default_preferences())
 				maximum = 9
 			else if(setting in gs13_anatomy_numeric_preferences())
-				minimum = 0.5
+				minimum = setting == "max_breast_size" ? 0 : 0.5
 				maximum = 80
 			else if(setting == "starting_fatness")
 				maximum = FATNESS_LEVEL_BLOB

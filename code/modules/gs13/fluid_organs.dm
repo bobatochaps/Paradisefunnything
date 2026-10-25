@@ -9,6 +9,29 @@
 	dna.gs13_anatomy_revision++
 	rebuild_gs13_fluid_anatomy()
 
+/mob/living/carbon/proc/update_gs13_fluid_sizes()
+	return
+
+/mob/living/carbon/human/update_gs13_fluid_sizes()
+	var/obj/item/organ/internal/gs13_fluid_organ/breasts/breasts = get_organ_slot(GS13_ORGAN_BREASTS)
+	if(istype(breasts) && breasts.owner == src)
+		breasts.update_size_from_weight(gs13_weight_stage(fatness))
+
+/// A live maximum edit changes the constraint and birth default without
+/// replacing the organ or its base/product/lactation. Excess fluid uses the
+/// same bounded proportional removal as any other reservoir reduction.
+/mob/living/carbon/human/proc/update_gs13_anatomy_limits(list/settings)
+	var/limit = settings?["max_breast_size"]
+	if(!isnum(limit) || !GS13_IS_FINITE(limit))
+		return
+	limit = clamp(limit, 0, 80)
+	if(dna?.gs13_anatomy)
+		dna.gs13_anatomy["max_breast_size"] = limit
+	var/obj/item/organ/internal/gs13_fluid_organ/breasts/breasts = get_organ_slot(GS13_ORGAN_BREASTS)
+	if(istype(breasts) && breasts.owner == src)
+		breasts.gs13_max_size = limit
+		breasts.update_size_from_weight(gs13_weight_stage(fatness))
+
 /// Ordinary appearance refreshes must not regrow removed or modified organs.
 /mob/living/carbon/human/proc/sync_gs13_anatomy_from_dna()
 	if(dna && gs13_anatomy_dna_key != "[dna.UID()]:[dna.gs13_anatomy_revision]")
@@ -126,13 +149,25 @@
 	internal_fluid_datum = /datum/reagent/consumable/breast_milk
 	internal_fluid_maximum = 120
 	var/lactates = FALSE
+	var/gs13_base_size = 1
+	var/gs13_size = 1
+	var/gs13_max_size = 80
+	var/gs13_arrangement_multiplier = 2
 
 /obj/item/organ/internal/gs13_fluid_organ/breasts/configure_from_blueprint(list/blueprint)
-	var/multiplier = blueprint["breasts_type"] == "Sextuple" ? 3 : (blueprint["breasts_type"] == "Quadruple" ? 2.5 : 2)
-	set_fluid_capacity(blueprint["breasts_size"] * multiplier * 60)
+	gs13_base_size = isnum(blueprint["breasts_size"]) && GS13_IS_FINITE(blueprint["breasts_size"]) ? clamp(blueprint["breasts_size"], 0.5, 80) : 1
+	gs13_max_size = isnum(blueprint["max_breast_size"]) && GS13_IS_FINITE(blueprint["max_breast_size"]) ? clamp(blueprint["max_breast_size"], 0, 80) : 80
+	gs13_arrangement_multiplier = blueprint["breasts_type"] == "Sextuple" ? 3 : (blueprint["breasts_type"] == "Quadruple" ? 2.5 : 2)
+	update_size_from_weight(gs13_weight_stage(owner?.fatness))
 	var/list/products = gs13_breast_products()
 	internal_fluid_datum = products[blueprint["breast_produce"]]
 	lactates = blueprint["breasts_lactation"]
+
+/obj/item/organ/internal/gs13_fluid_organ/breasts/proc/update_size_from_weight(weight_stage)
+	if(QDELETED(src) || !reagents || !isnum(weight_stage) || !GS13_IS_FINITE(weight_stage))
+		return FALSE
+	gs13_size = min(gs13_base_size + clamp(weight_stage, 0, 9), gs13_max_size, 80)
+	return set_fluid_capacity(gs13_size * gs13_arrangement_multiplier * 60)
 
 /obj/item/organ/internal/gs13_fluid_organ/breasts/on_life()
 	if(lactates && owner?.client && production_allowed())

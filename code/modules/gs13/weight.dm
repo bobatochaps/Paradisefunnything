@@ -61,6 +61,7 @@
 	fatness = max(0, fatness_real + fatness_perma + hiders_calc())
 	if(max_weight && !HAS_TRAIT(src, TRAIT_UNIVERSAL_GAINER))
 		fatness = min(fatness, max(0, max_weight - 1))
+	update_gs13_fluid_sizes()
 	xwg_resize()
 	SEND_SIGNAL(src, COMSIG_FATNESS_CHANGED, fatness)
 	update_gs13_weight_appearance()
