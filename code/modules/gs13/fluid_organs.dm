@@ -65,7 +65,7 @@
 	internal_fluid_maximum = clamp(capacity, 0, 3500)
 	// Never leave old liquid above a reduced reservoir's actual capacity.
 	if(reagents.total_volume > internal_fluid_maximum)
-		reagents.remove_any(reagents.total_volume - internal_fluid_maximum)
+		reagents.remove_all(reagents.total_volume - internal_fluid_maximum)
 	reagents.maximum_volume = internal_fluid_maximum
 	return TRUE
 

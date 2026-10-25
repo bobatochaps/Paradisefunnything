@@ -28,7 +28,10 @@
 	subject.gs13_preferences["blueberry_inflation"] = TRUE
 	var/datum/disease/advance/gs13_berry/seed = allocate(/datum/disease/advance/gs13_berry)
 	seed.evolution_chance = 0
-	TEST_ASSERT(subject.ForceContractDisease(seed), "Native virology can infect an organic host with Berrification")
+	// Forced contraction still includes a random native carbon resistance check.
+	// Install through the native disease-copy path to test processing and cure.
+	subject.AddDisease(seed)
+	TEST_ASSERT_EQUAL(length(subject.viruses), 1, "Native virology installs the organic Berrification fixture")
 	var/datum/disease/advance/infection = subject.viruses[1]
 	var/datum/symptom/gs13_berry/symptom = locate() in infection.symptoms
 	TEST_ASSERT_NOTNULL(symptom, "The native disease copy retains the symptom")

@@ -103,6 +103,12 @@
 	TEST_ASSERT_NOT(breasts.set_fluid_capacity(INFINITY), "An invalid capacity cannot corrupt the holder")
 	breasts.set_fluid_capacity(0)
 	TEST_ASSERT_EQUAL(breasts.reagents.total_volume, 0, "A zero-capacity reservoir cannot retain liquid")
+	breasts.set_fluid_capacity(10)
+	breasts.reagents.add_reagent("breast_milk", 0.2)
+	breasts.reagents.add_reagent("water", 0.2)
+	breasts.reagents.add_reagent("cream", 0.2)
+	breasts.set_fluid_capacity(0.3)
+	TEST_ASSERT(breasts.reagents.total_volume <= 0.301, "Fractional mixed doses cannot defeat capacity reduction through native whole-unit removal accounting")
 
 /datum/game_test/room_test/gs13_fluid_collection/Run()
 	var/mob/living/carbon/human/subject = gs13_fluid_subject()
@@ -126,7 +132,9 @@
 	var/obj/item/reagent_containers/glass/beaker/beaker = allocate(/obj/item/reagent_containers/glass/beaker)
 	beaker.reagents.add_reagent("water", beaker.reagents.maximum_volume - 10)
 	subject.put_in_active_hand(beaker)
-	TEST_ASSERT(organ.ui_action_click(subject, /datum/action/item_action/gs13_collect_fluid), "The actual native UI action completes its interruptible collection delay")
+	var/datum/action/item_action/action = organ.actions[1]
+	TEST_ASSERT_EQUAL(action.owner, subject, "Native implantation grants the actual action to the owner")
+	TEST_ASSERT(action.Trigger(), "The actual native item-action trigger completes its interruptible collection delay")
 	TEST_ASSERT_EQUAL(beaker.reagents.total_volume, beaker.reagents.maximum_volume, "The action stops exactly when the held container fills")
 	TEST_ASSERT_EQUAL(organ.reagents.total_volume, 30, "The timed action transfers only the volume that fits")
 	TEST_ASSERT_NOT(organ.collecting, "A completed action releases its in-progress state")
@@ -217,3 +225,18 @@
 	settings.load_data(list("fluid_anatomy_enabled" = FALSE))
 	TEST_ASSERT_NOT(settings.fluid_anatomy_enabled, "The native configuration loader accepts the anatomy switch independently of threshold overrides")
 	qdel(settings)
+
+/datum/game_test/room_test/gs13_fluid_body_deletion/Run()
+	var/mob/living/carbon/human/subject = gs13_fluid_subject()
+	var/obj/item/organ/internal/gs13_fluid_organ/organ = subject.get_organ_slot(GS13_ORGAN_TESTICLES)
+	var/datum/reagents/reservoir = organ.reagents
+	var/datum/action/item_action/action = organ.actions[1]
+	var/obj/item/reagent_containers/glass/beaker/beaker = allocate(/obj/item/reagent_containers/glass/beaker)
+	subject.put_in_active_hand(beaker)
+	INVOKE_ASYNC(organ, TYPE_PROC_REF(/obj/item/organ/internal/gs13_fluid_organ, ui_action_click), subject, action.type)
+	sleep(2)
+	qdel(subject)
+	sleep(2)
+	TEST_ASSERT(QDELETED(organ), "Deleting a body also deletes its installed optional organ")
+	TEST_ASSERT(QDELETED(reservoir), "Body deletion releases the physical fluid holder")
+	TEST_ASSERT(QDELETED(action), "Body deletion releases the granted sampling action")

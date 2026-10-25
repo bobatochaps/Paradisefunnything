@@ -16,7 +16,7 @@ Neutron's actual native overdose path changes `internal_fluid_datum` on the thre
 
 The original source object sheets are copied unchanged from `modular_skyrat/master_files/icons/obj/genitals/{breasts,testicles,vagina}.dmi` into `modular_gs/icons/upstream/fluid_organs/`. Source breast-milk and reproductive-fluid IDs use native consumable reagents and neutral sample/glass descriptions.
 
-Twelve integration tests cover default/serialized preferences, native creation/actions/artwork, source initial capacities/content, the real overdose threshold path and persistent state, absent organs, production gates, mixed-fluid capacity reduction, sampling/lids/ownership, the real timed action, transplantation, DNA and physical-state separation, live preference edits, all available products, and server configuration. Native validation is pending.
+Thirteen integration tests cover default/serialized preferences, native creation/actions/artwork, source initial capacities/content, the real overdose threshold path and persistent state, absent organs, production gates, mixed and fractional-fluid capacity reduction, sampling/lids/ownership, the real timed item-action trigger, transplantation, DNA and physical-state separation, live preference edits, all available products, server configuration, and body deletion during collection. Native validation is pending.
 
 ## Remaining gates
 
