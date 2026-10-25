@@ -1,13 +1,13 @@
-// GS13 fullness adapted to Paradise's single reagent holder and life tick duration.
+// GS13 fullness counts distinct pending food in the blood and physical stomach.
 /mob/living/carbon/proc/gs13_weight_enabled()
 	return gs13_preferences["master_wg_pref"] || HAS_TRAIT(src, TRAIT_UNIVERSAL_GAINER)
 
 /mob/living/carbon/proc/get_fullness()
 	fullness = nutrition
-	for(var/datum/reagent/consumable/food in reagents?.reagent_list)
-		var/depletion_rate = food.metabolization_rate * metabolism_efficiency
-		if(depletion_rate > 0)
-			fullness += food.nutriment_factor * food.volume / depletion_rate
+	fullness += gs13_pending_food_nutrition(reagents, metabolism_efficiency)
+	var/obj/item/organ/internal/gs13_stomach/stomach = get_organ_slot(GS13_ORGAN_STOMACH)
+	if(istype(stomach) && stomach.owner == src)
+		fullness += gs13_pending_food_nutrition(stomach.reagents, metabolism_efficiency, stomach)
 	return max(0, fullness + fullness_adjustment)
 
 /mob/living/carbon/proc/get_gs13_fullness_limit()

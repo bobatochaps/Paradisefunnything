@@ -361,6 +361,8 @@ GLOBAL_LIST_INIT(gs13_fat_slosh_sounds, list('modular_gs/sound/effects/inflation
 			subject.remove_gs13_burst_body(subject.gs13_preferences["bursting_leave_gibs"])
 	else
 		subject.reagents.clear_reagents()
+		var/obj/item/organ/internal/gs13_stomach/stomach = subject.get_organ_slot(GS13_ORGAN_STOMACH)
+		stomach?.reagents?.clear_reagents()
 		subject.nutrition = min(subject.nutrition, NUTRITION_LEVEL_FULL)
 		subject.fullness_adjustment = 0
 		var/threshold = subject.gs13_preferences["glutton_fatness_before_burst"]

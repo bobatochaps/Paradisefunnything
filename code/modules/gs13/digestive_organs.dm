@@ -22,13 +22,23 @@
 	max_damage = 100
 	min_bruised_damage = 10
 	min_broken_damage = 45
+	var/gs13_digestive_efficiency = 0.05
+	var/gs13_digesting = FALSE
+	var/gs13_transfer_id
+	var/gs13_transfer_volume = 0
+	var/gs13_transfer_start_volume = 0
+
+/obj/item/organ/internal/gs13_stomach/Initialize(mapload, mob/living/carbon/holder)
+	. = ..()
+	create_reagents(1000)
 
 /obj/item/organ/internal/gs13_stomach/on_life()
-	if(!owner || owner.stat == DEAD || damage < min_bruised_damage || !get_turf(owner))
+	if(!owner || owner.stat == DEAD)
 		return
-	// Paradise metabolizes ingested food in the body's single reagent holder.
-	// Use that existing pending nutriment rather than duplicating the dose.
-	var/datum/reagent/consumable/nutriment/food = locate(/datum/reagent/consumable/nutriment) in owner.reagents?.reagent_list
+	digest_gs13_reagents(2)
+	if(damage < min_bruised_damage || !get_turf(owner))
+		return
+	var/datum/reagent/consumable/nutriment/food = locate(/datum/reagent/consumable/nutriment) in reagents?.reagent_list
 	if(!food || food.volume <= 0)
 		return
 	var/food_volume = min(1000, food.volume)
