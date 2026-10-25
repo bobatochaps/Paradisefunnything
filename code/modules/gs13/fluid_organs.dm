@@ -20,12 +20,7 @@
 	if(!dna)
 		return
 	gs13_anatomy_dna_key = "[dna.UID()]:[dna.gs13_anatomy_revision]"
-	restore_missing_gs13_fluid_anatomy()
-
-/// Only explicit body creation/cloning may restore missing DNA-derived organs.
-/// Ordinary appearance refreshes and replacement limbs cannot regrow them.
-/mob/living/carbon/human/proc/restore_missing_gs13_fluid_anatomy()
-	var/list/blueprint = dna?.gs13_anatomy
+	var/list/blueprint = dna.gs13_anatomy
 	if(!GLOB.configuration.gs13?.fluid_anatomy_enabled || !blueprint?["custom_anatomy"] || !istype(dna.species, /datum/species/human) || HAS_TRAIT(src, TRAIT_SKELETONIZED))
 		return
 	var/list/types = list("anatomy_breasts" = /obj/item/organ/internal/gs13_fluid_organ/breasts, "anatomy_testicles" = /obj/item/organ/internal/gs13_fluid_organ/testicles, "anatomy_vagina" = /obj/item/organ/internal/gs13_fluid_organ/vagina)
@@ -33,8 +28,6 @@
 		if(!blueprint[key])
 			continue
 		var/obj/item/organ/internal/gs13_fluid_organ/path = types[key]
-		if(get_organ_slot(initial(path.slot)))
-			continue
 		var/obj/item/organ/external/part = get_organ(initial(path.parent_organ))
 		if(!part || part.is_robotic())
 			continue

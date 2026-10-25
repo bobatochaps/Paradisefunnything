@@ -384,7 +384,6 @@
 		return TRUE
 
 	if(!clone.getCloneLoss())
-		clone.restore_missing_gs13_fluid_anatomy()
 		clone.forceMove(loc)
 		var/datum/mind/patient_mind = locateUID(patient_data.mindUID)
 		patient_mind.transfer_to(clone)
@@ -400,7 +399,6 @@
 	if(!force)
 		return FALSE
 
-	clone.restore_missing_gs13_fluid_anatomy()
 	clone.forceMove(loc)
 	new /obj/effect/gibspawner/generic(get_turf(src), clone.dna)
 	playsound(loc, 'sound/effects/splat.ogg', 50, TRUE)

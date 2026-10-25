@@ -6,9 +6,9 @@ The native cloning scanner now captures an independent sanitized GS13 policy sna
 
 Policy restoration does not apply next-spawn settings over the physical DNA. Birth anatomy and physical starting scale still come from the scanned DNA; active organ products, stored fluid, chemical effects, and injuries remain separate. Ordinary DNA identity transfer carries birth anatomy without copying another body's live permissions or saved-character association. Existing mind transfers retain the destination body's policy.
 
-Native cloning grows non-vital limbs in stages, removing their initial internal organs along the way. Actual successful or forced ejection now restores only missing optional DNA-derived organs whose organic parent body part exists. Existing organs are preserved. Ordinary appearance refreshes and later limb replacement do not repeat this restoration. Source physical Neutron alterations remain on the original organ; a new cloned organ uses its birth product and initially configured contents.
+Native cloning grows non-vital limbs in stages while retaining its vital torso. Optional organs created from birth DNA remain in that torso throughout growth and ejection, with the same physical identity. No extra ejection/regrowth hook is needed. Ordinary appearance refreshes cannot regrow a later removed organ. Source physical Neutron alterations remain on the original organ; a new cloned organ uses its birth product and initially configured contents.
 
-Three native integration tests cover scan-time policy isolation and real clone creation, a complete native pod growth/ejection cycle with groin removal/regrowth and optional organ restoration, and older scans versus ordinary DNA identity changes. Native validation is pending.
+Three native integration tests cover scan-time policy isolation and real clone creation, a complete native pod limb-growth/ejection cycle with physical organ identity and birth-state preservation, and older scans versus ordinary DNA identity changes. Native validation is pending.
 
 ## Remaining persistence gates
 

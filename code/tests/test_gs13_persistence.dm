@@ -47,24 +47,28 @@
 	pod.currently_cloning = TRUE
 	pod.clone_progress = 11
 	var/mob/living/carbon/human/clone
-	var/groin_was_missing = FALSE
+	var/limb_was_missing = FALSE
+	var/list/birth_organs = list()
 	for(var/iteration in 1 to 400)
 		pod.process()
 		if(!clone && pod.clone)
 			clone = pod.clone
 			allocated += clone
-		if(clone && !clone.get_organ(BODY_ZONE_PRECISE_GROIN))
-			groin_was_missing = TRUE
+			for(var/slot in list(GS13_ORGAN_BREASTS, GS13_ORGAN_TESTICLES, GS13_ORGAN_VAGINA))
+				birth_organs[slot] = clone.get_organ_slot(slot)
+		if(clone && !clone.get_organ(BODY_ZONE_L_ARM))
+			limb_was_missing = TRUE
 		if(!pod.currently_cloning)
 			break
 	TEST_ASSERT_NOTNULL(clone, "The real native pod creates the cloned patient")
-	TEST_ASSERT(groin_was_missing, "The fixture exercises actual staged limb removal and regrowth")
+	TEST_ASSERT(limb_was_missing, "The fixture exercises actual staged limb removal and regrowth")
 	TEST_ASSERT_NOT(pod.currently_cloning, "The native pod completes and ejects its patient")
 	TEST_ASSERT_EQUAL(patient_mind.current, clone, "The actual ejection transfers the patient's mind")
 	for(var/slot in list(GS13_ORGAN_BREASTS, GS13_ORGAN_TESTICLES, GS13_ORGAN_VAGINA))
 		var/obj/item/organ/internal/gs13_fluid_organ/organ = clone.get_organ_slot(slot)
-		TEST_ASSERT_NOTNULL(organ, "Clone completion restores DNA-derived organs after their parent limb is grown")
-		TEST_ASSERT_EQUAL(organ.owner, clone, "The restored organ belongs to the actual cloned body")
+		TEST_ASSERT_NOTNULL(organ, "The real growth cycle preserves optional organs in the retained torso")
+		TEST_ASSERT_EQUAL(organ, birth_organs[slot], "Ejection preserves each existing physical organ rather than rebuilding it")
+		TEST_ASSERT_EQUAL(organ.owner, clone, "The organ belongs to the actual cloned body")
 	var/obj/item/organ/internal/gs13_fluid_organ/breasts/breasts = clone.get_organ_slot(GS13_ORGAN_BREASTS)
 	TEST_ASSERT_EQUAL(breasts.fluid_id(), "breast_milk", "Cloned birth anatomy does not inherit a physical Neutron alteration")
 	TEST_ASSERT_NOT(breasts.lactates, "Physical lactation changes are distinct from birth DNA")
@@ -72,7 +76,7 @@
 	TEST_ASSERT_EQUAL(source_breasts.fluid_id(), "starshine_blue", "Cloning leaves the source organ's persistent alteration intact")
 	qdel(clone.get_organ_slot(GS13_ORGAN_VAGINA))
 	clone.UpdateAppearance()
-	TEST_ASSERT_NULL(clone.get_organ_slot(GS13_ORGAN_VAGINA), "Later appearance refreshes cannot repeat the clone-completion restoration")
+	TEST_ASSERT_NULL(clone.get_organ_slot(GS13_ORGAN_VAGINA), "Later appearance refreshes cannot regrow a removed organ")
 
 /datum/game_test/room_test/gs13_clone_legacy_policy_and_dna/Run()
 	var/mob/living/carbon/human/subject = allocate(/mob/living/carbon/human)
