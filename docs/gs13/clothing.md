@@ -18,4 +18,4 @@ Ordinary native refill canisters and recovered stock handle the additional suits
 
 ## Remaining gates
 
-Breast panels and full source organ-size DNA, higher size ranges, multi-channel layers/colors, digitigrade/taur/species fits, dual-tone/button-up/turtleneck and other clothing families, source-specific armor/palette details, missing native curator/command-access wardrobe equivalents, additional distribution, and direct player/client verification remain open. This is a partial human rendering/acquisition adapter, not complete clothing parity.
+Optional paired breast panels for this family are validated in [the anatomy record](anatomy.md), including real ordinary/rolled coverage and inspected native previews. Full source organ-size DNA, higher size ranges, multi-channel layers/colors, digitigrade/taur/species fits, dual-tone/button-up/turtleneck and other clothing families, source-specific armor/palette details, missing native curator/command-access wardrobe equivalents, additional distribution, and direct player/client verification remain open. This is a partial human rendering/acquisition adapter, not complete clothing parity.
