@@ -71,7 +71,9 @@ ADAPTERS = {
     "code/modules/mob/living/carbon/carbon_defines.dm": ["weight", "transformations", "bursting"],
     "code/modules/mob/living/carbon/human/human_defines.dm": ["bursting"],
     "code/modules/mob/living/genital_sprite_accessories.dm": ["weight_appearance"],
-    "code/modules/surgery/organs/internal/stomach/_stomach.dm": ["weight", "fullness"],
+    "code/modules/mob/living/genitals.dm": ["fluid_organs", "anatomy_preferences"],
+    "code/modules/client/preferences/genitals.dm": ["anatomy_preferences", "preferences"],
+    "code/modules/surgery/organs/internal/stomach/_stomach.dm": ["weight", "fullness", "digestive_organs", "digestion"],
     "code/modules/mod/mod_exoskeleton.dm": ["mod_exoskeleton"],
     "code/modules/mod/modules/modules_fat.dm": ["mod_modules"],
     "code/modules/surgery/organs/augments.dm": ["nutritech_implants"],
@@ -82,7 +84,7 @@ ADAPTERS = {
     "code/modules/reagents/chemistry/reagents/food_reagents.dm": ["chemistry"],
     "code/modules/reagents/chemistry/reagents/consumable_reagents.dm": ["chemistry"],
     "code/modules/reagents/chemistry/reagents/blueberry.dm": ["blueberry", "transformations", "bursting"],
-    "code/modules/reagents/chemistry/reagents/starshine.dm": ["starshine", "transformations"],
+    "code/modules/reagents/chemistry/reagents/starshine.dm": ["starshine", "transformations", "fluid_organs"],
     "code/modules/spells/spells_type/touch/add_weight.dm": ["magic"],
     "code/modules/spells/spells_type/conjure/traps.dm": ["magic_traps"],
     "code/modules/weapons/grenades.dm": ["weapon_consumables"],
@@ -102,7 +104,15 @@ INHERITED_ADAPTERS = {
     "code/datums/components/fov_handler.dm": ["field_of_view"],
     "code/modules/mob/living/living_fov.dm": ["field_of_view"],
     "code/_onclick/hud/rendering/render_plate.dm": ["field_of_view"],
-    "code/modules/surgery/organs/internal/stomach/_stomach.dm": ["digestive_organs", "weight", "fullness"],
+    "code/modules/surgery/organs/internal/stomach/_stomach.dm": ["digestive_organs", "digestion", "weight", "fullness"],
+    "modular_skyrat/modules/customization/modules/surgery/organs/genitals.dm": ["fluid_organs", "anatomy_preferences"],
+    "modular_skyrat/modules/modular_items/lewd_items/code/lewd_organs/_genital.dm": ["fluid_organs"],
+    "modular_skyrat/modules/modular_items/lewd_items/code/lewd_organs/breasts.dm": ["fluid_organs"],
+    "modular_skyrat/modules/modular_items/lewd_items/code/lewd_organs/testicles.dm": ["fluid_organs"],
+    "modular_skyrat/modules/modular_items/lewd_items/code/lewd_organs/vagina.dm": ["fluid_organs"],
+    "modular_skyrat/master_files/code/modules/client/preferences/genitals.dm": ["anatomy_preferences", "preferences", "fluid_organs"],
+    "modular_skyrat/modules/modular_items/lewd_items/code/lewd_chemistry/reagents/breast_milk.dm": ["fluid_organs"],
+    "modular_skyrat/modules/modular_items/lewd_items/code/lewd_chemistry/reagents/cum.dm": ["fluid_organs"],
 }
 
 RULES = [
@@ -301,7 +311,7 @@ def main():
     lines += ["", "## Historical changes outside modular_gs", "", "A/M/D mean added/modified/deleted relative to the historical Bubber merge base. All require semantic review; inherited systems may also be required when unchanged in this delta.", "", "| Change | File |", "|---|---|"]
     lines += [f"| {row['change']} | `{row['source']}` |" for row in outside_delta]
     lines += ["", "## Reviewed inherited dependencies", "",
-              "These pinned provider files have partial native adapters and are recorded separately from the modular file count and lexical provider candidates. Detailed remaining gates are in the JSON inventory. Source assets and native adaptations are described in the vision and anatomy implementation records; direct client verification and other inherited behavior remain open.", "",
+              "These pinned provider files have partial native adapters and are recorded separately from the modular file count and lexical provider candidates. Detailed remaining gates are in the JSON inventory. Source assets and native adaptations are described in the vision, anatomy, fluid-organ, and digestion implementation records; direct client verification and other inherited behavior remain open.", "",
               "| Source | Blob | Status | Native adapters |", "|---|---|---|---|"]
     lines += [f"| `{row['source']}` | `{row['git_blob_sha']}` | {row['status']} | {', '.join(f'`{p}`' for p in row['target_adapters'])} |" for row in inherited_reviews]
     (out / "source_inventory.md").write_text("\n".join(lines) + "\n")

@@ -12,16 +12,16 @@ Fullness counts the distinct pending nutritional potential in both holders. Nati
 
 Nine integration tests cover physical routing/data preservation, dose-scaled oral effects, blood backpressure, missing organs versus injection, native fallback species, fullness during real transfer callbacks, death/transplant/deletion, inert/invalid processing, and two-holder burst cleanup. Checkpoint `123d45d8de36fab75ecdd92f65f2f4c738638b25` passed 246 focused / 301 full native tests, zero compiler errors/warnings, UI checks, and live MariaDB in [run 40166809588](https://github.com/bobatochaps/Paradisefunnything/actions/runs/40166809588).
 
-## Oral entry-point integration candidate
+## Validated oral entry-point integration
 
 Native food, utensils, drinks/chugging, pills, condiments, glass gulps, and the feeding machine now use the explicit oral API. Bites and sips are bounded by actual stomach capacity; rejected bites cannot invoke food callbacks. Pills require room for the whole dose and remain available when refused. Glass gulps retain their native delay and recheck the source, open lid, held item, reach, mouth, current bluespace recipient, and current capacity at completion. Bluespace food/drink/machine routing still follows the current eligible receiver; physical leftovers and tube reach remain native. Ordinary syringes, IVs, hyposprays, medical implants, and surgery keep their direct blood route.
 
-Seven additional integration tests exercise actual native food, drink, pill, condiment, delayed glass, feeding-machine, and syringe entry points. Existing feeding and bluespace tests now inspect the physical stomach and explicitly digest doses before checking body chemistry. Native validation of this candidate is pending.
+Seven additional integration tests exercise actual native food, drink, pill, condiment, delayed glass, feeding-machine, and syringe entry points. Existing feeding and bluespace tests now inspect the physical stomach and explicitly digest doses before checking body chemistry. Checkpoint `127d8e15c95d06f06dbe66ab51a6b2388c9f2e90` passed 253 focused / 308 full native tests, zero compiler errors/warnings, UI checks, and live MariaDB in [run 40167204070](https://github.com/bobatochaps/Paradisefunnything/actions/runs/40167204070).
 
-Remaining special oral sources (including edible restraints and dental pill implants), source swallowing/items, specialized stomachs, automatic tissue healing, broader species, and live client gameplay remain open.
+Source swallowing/items, specialized stomachs, automatic tissue healing, broader species, and live client gameplay remain open.
 
-## Special oral compatibility candidate
+## Validated special oral compatibility
 
 Native dental implant actions and edible candy restraints now use the oral compartment. Dental surgery creates the real pill action from its actual target; activation rejects a detached implant or insufficient room without deleting the pill. Candy restraints remain breakable when swallowing is impossible, so missing/full digestive anatomy cannot trap their wearer. A feeding-machine completion validator preserves its post-reaction physical connection, mouth, and current receiver checks before transferring fluid.
 
-Three additional tests exercise actual dental surgery/action activation, candy restraint escape/intake, and a native chemical reaction that disconnects the feeding machine before transfer. Native validation of this candidate is pending. The audit deliberately leaves non-oral plant prickles, blood-brood reabsorption, injection pens/projectiles, IVs, syringes, medical bots/mecha, and internal-tissue surgery on their prior body route.
+Three additional tests exercise actual dental surgery/action activation, candy restraint escape/intake, and a native chemical reaction that disconnects the feeding machine before transfer. Checkpoint `1619eda65aa848b5ceacc2cf34b6adc6fa899518` passed 256 focused / 311 full native tests, zero compiler errors/warnings, UI checks, and live MariaDB in [run 40167478086](https://github.com/bobatochaps/Paradisefunnything/actions/runs/40167478086). The audit deliberately leaves non-oral plant prickles, blood-brood reabsorption, injection pens/projectiles, IVs, syringes, medical bots/mecha, and internal-tissue surgery on their prior body route.

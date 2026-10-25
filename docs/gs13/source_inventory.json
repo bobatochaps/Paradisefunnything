@@ -4659,8 +4659,11 @@
       "sha256": "edd7383e9b6016ac894a774162aac0e895597650183ab652d62b99a423bb22e6",
       "domain": "body-and-appearance",
       "root_dme_entry": true,
-      "status": "needs-semantic-audit",
-      "target_adapters": [],
+      "status": "partial-adapter",
+      "target_adapters": [
+        "code/modules/gs13/anatomy_preferences.dm",
+        "code/modules/gs13/preferences.dm"
+      ],
       "declarations": [
         "/datum/preference/choiced/breast_produce",
         "/datum/preference/choiced/breast_produce/apply_to_human",
@@ -4704,7 +4707,7 @@
         "modular_skyrat/modules/modular_items/lewd_items/code/lewd_organs/breasts.dm"
       ],
       "asset_literals": [],
-      "remaining_gate": "Audit behavior, dependencies, assets, acquisition, preferences, lifecycle, and native integration tests."
+      "remaining_gate": "Saved breast product choices and native optional anatomy preferences are adapted. Source minimum/maximum part sizes, belly/butt customization, unsupported products, species/rendering, and direct player SQL/client checks remain pending. Source-commented preference blocks are not active features."
     },
     {
       "source": "modular_gs/code/modules/client/preferences/helplessness_prefs.dm",
@@ -7196,8 +7199,11 @@
       "sha256": "38b1c5b709fc7c3fc01e053266fe84036b3aeb955c5962a64cd47ba658481bcb",
       "domain": "body-and-appearance",
       "root_dme_entry": true,
-      "status": "needs-semantic-audit",
-      "target_adapters": [],
+      "status": "partial-adapter",
+      "target_adapters": [
+        "code/modules/gs13/fluid_organs.dm",
+        "code/modules/gs13/anatomy_preferences.dm"
+      ],
       "declarations": [
         "/datum/sprite_accessory/genital/breasts/alt_GS13/pair",
         "/datum/sprite_accessory/genital/breasts/alt_GS13/pair_smooth",
@@ -7228,7 +7234,7 @@
         "modular_gs/icons/obj/genitals/breasts_smooth_onmob.dmi",
         "modular_gs/icons/obj/genitals/teshbreasts.dmi"
       ],
-      "remaining_gate": "Audit behavior, dependencies, assets, acquisition, preferences, lifecycle, and native integration tests."
+      "remaining_gate": "Native breast capacity, bounded five-percent-per-second lactation, persistent product changes, and physical organ lifecycle are adapted. Independent body-part growth/limits, alternative external breast rendering, specialized species, inherited interactions, and client checks remain pending."
     },
     {
       "source": "modular_gs/code/modules/mob/living/species.dm",
@@ -7930,7 +7936,8 @@
       "status": "partial-adapter",
       "target_adapters": [
         "code/modules/gs13/starshine.dm",
-        "code/modules/gs13/transformations.dm"
+        "code/modules/gs13/transformations.dm",
+        "code/modules/gs13/fluid_organs.dm"
       ],
       "declarations": [
         "/datum/addiction/starshine_blue",
@@ -8006,7 +8013,7 @@
         "modular_gs/icons/obj/vending.dmi",
         "modular_gs/icons/obj/vending_restock.dmi"
       ],
-      "remaining_gate": "Native drinks, recipes, independent glow, Neutron mass/preferences, vending/board/cargo, and cyborg choices are adapted. Persistent overdose fluid-organ changes and direct client verification remain pending."
+      "remaining_gate": "Native drinks, recipes, independent glow, Neutron mass/preferences and persistent existing-organ overdose changes, vending/board/cargo, and cyborg choices are adapted. Full inherited anatomy/species/interaction behavior and direct client verification remain pending."
     },
     {
       "source": "modular_gs/code/modules/reagents/chemistry/recipes/fatchem.dm",
@@ -8472,7 +8479,9 @@
       "status": "partial-adapter",
       "target_adapters": [
         "code/modules/gs13/weight.dm",
-        "code/modules/gs13/fullness.dm"
+        "code/modules/gs13/fullness.dm",
+        "code/modules/gs13/digestive_organs.dm",
+        "code/modules/gs13/digestion.dm"
       ],
       "declarations": [
         "/obj/item/organ/stomach/proc/handle_gaining_weight"
@@ -8481,7 +8490,7 @@
         "code/modules/surgery/organs/internal/stomach/_stomach.dm"
       ],
       "asset_literals": [],
-      "remaining_gate": "Weight conversion, calorite processing, and fullness use native body-life adapters. Separate stomach/blood digestion, missing-stomach ingestion, specialized species, source mood/timing details, and direct client checks remain pending."
+      "remaining_gate": "Weight conversion, calorite processing, fullness, physical stomach contents, drip absorption, and explicit oral versus injection routes have native adapters. Specialized species, swallowed-item digestion, source mood/timing details, automatic tissue healing, and direct client checks remain pending."
     },
     {
       "source": "modular_gs/code/modules/surgery/organs/internal/stomach/stomach_ethereal.dm",
@@ -19673,10 +19682,86 @@
       "status": "partial-adapter",
       "target_adapters": [
         "code/modules/gs13/digestive_organs.dm",
+        "code/modules/gs13/digestion.dm",
         "code/modules/gs13/weight.dm",
         "code/modules/gs13/fullness.dm"
       ],
-      "remaining_gate": "Native stomach anatomy, surgery, transplantation, burst trauma, food response, and cleanup are adapted. Separate ingested/blood compartments, drip transfer, missing-stomach ingestion, swallowed-item digestion, specialized organs, automatic tissue healing, and client checks remain pending."
+      "remaining_gate": "Native anatomy, surgery, transplantation, burst trauma, food response, physical fluid contents, drip absorption, explicit oral routing, and cleanup have adapters. Swallowed-item digestion, specialized organs, automatic tissue healing, inherited disgust/mood behavior, and client checks remain pending."
+    },
+    {
+      "source": "modular_skyrat/modules/customization/modules/surgery/organs/genitals.dm",
+      "git_blob_sha": "e999ee340053f8db54b90b617b68d520a9b4eb42",
+      "status": "partial-adapter",
+      "target_adapters": [
+        "code/modules/gs13/fluid_organs.dm",
+        "code/modules/gs13/anatomy_preferences.dm"
+      ],
+      "remaining_gate": "Optional native fluid storage, creation defaults, production/collection, DNA separation, and lifecycle have partial adapters. Full inherited external rendering, species, arousal/release/interactions, unsupported products, and player SQL/client checks remain pending."
+    },
+    {
+      "source": "modular_skyrat/modules/modular_items/lewd_items/code/lewd_organs/_genital.dm",
+      "git_blob_sha": "bca5ab71729b840c90c3d6b5bd80ac3326c889cc",
+      "status": "partial-adapter",
+      "target_adapters": [
+        "code/modules/gs13/fluid_organs.dm"
+      ],
+      "remaining_gate": "Optional native fluid storage, creation defaults, production/collection, DNA separation, and lifecycle have partial adapters. Full inherited external rendering, species, arousal/release/interactions, unsupported products, and player SQL/client checks remain pending."
+    },
+    {
+      "source": "modular_skyrat/modules/modular_items/lewd_items/code/lewd_organs/breasts.dm",
+      "git_blob_sha": "8f7783c9b73c46d40aa08dbeef950fed24ad137d",
+      "status": "partial-adapter",
+      "target_adapters": [
+        "code/modules/gs13/fluid_organs.dm"
+      ],
+      "remaining_gate": "Optional native fluid storage, creation defaults, production/collection, DNA separation, and lifecycle have partial adapters. Full inherited external rendering, species, arousal/release/interactions, unsupported products, and player SQL/client checks remain pending."
+    },
+    {
+      "source": "modular_skyrat/modules/modular_items/lewd_items/code/lewd_organs/testicles.dm",
+      "git_blob_sha": "b777b22fbddf904ede6e238ff8b3bb897367b862",
+      "status": "partial-adapter",
+      "target_adapters": [
+        "code/modules/gs13/fluid_organs.dm"
+      ],
+      "remaining_gate": "Optional native fluid storage, creation defaults, production/collection, DNA separation, and lifecycle have partial adapters. Full inherited external rendering, species, arousal/release/interactions, unsupported products, and player SQL/client checks remain pending."
+    },
+    {
+      "source": "modular_skyrat/modules/modular_items/lewd_items/code/lewd_organs/vagina.dm",
+      "git_blob_sha": "55a0a87d8da621eccdd24ba882448ad0ded7329a",
+      "status": "partial-adapter",
+      "target_adapters": [
+        "code/modules/gs13/fluid_organs.dm"
+      ],
+      "remaining_gate": "Optional native fluid storage, creation defaults, production/collection, DNA separation, and lifecycle have partial adapters. Full inherited external rendering, species, arousal/release/interactions, unsupported products, and player SQL/client checks remain pending."
+    },
+    {
+      "source": "modular_skyrat/master_files/code/modules/client/preferences/genitals.dm",
+      "git_blob_sha": "3f29485c8895a58c4e971cc09639e35941f505b3",
+      "status": "partial-adapter",
+      "target_adapters": [
+        "code/modules/gs13/anatomy_preferences.dm",
+        "code/modules/gs13/preferences.dm",
+        "code/modules/gs13/fluid_organs.dm"
+      ],
+      "remaining_gate": "Optional native fluid storage, creation defaults, production/collection, DNA separation, and lifecycle have partial adapters. Full inherited external rendering, species, arousal/release/interactions, unsupported products, and player SQL/client checks remain pending."
+    },
+    {
+      "source": "modular_skyrat/modules/modular_items/lewd_items/code/lewd_chemistry/reagents/breast_milk.dm",
+      "git_blob_sha": "e8d32e5c8daf1e01f37b6c39c367b828b8f44ad0",
+      "status": "partial-adapter",
+      "target_adapters": [
+        "code/modules/gs13/fluid_organs.dm"
+      ],
+      "remaining_gate": "Native consumable IDs, ordinary nutrition, fluid production, and neutral sample/container descriptions have partial adapters. Inherited reagent-specific interactions, complete source chemistry dependencies, distribution, and client checks remain pending."
+    },
+    {
+      "source": "modular_skyrat/modules/modular_items/lewd_items/code/lewd_chemistry/reagents/cum.dm",
+      "git_blob_sha": "6b48a7edf43052ee81e08ffafb9a166b2f1f03e5",
+      "status": "partial-adapter",
+      "target_adapters": [
+        "code/modules/gs13/fluid_organs.dm"
+      ],
+      "remaining_gate": "Native consumable IDs, ordinary nutrition, fluid production, and neutral sample/container descriptions have partial adapters. Inherited reagent-specific interactions, complete source chemistry dependencies, distribution, and client checks remain pending."
     }
   ]
 }

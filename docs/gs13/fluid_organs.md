@@ -2,7 +2,7 @@
 
 Source: `Gain-Station-13/GS13-Blubberstation@ec3ad13bd34b64451813004e32892d49de745404`.
 
-## Native candidate
+## Native implementation
 
 Optional breasts, testicles, and vagina organs use native ownership, slots, reservoir objects, item actions, and deletion/removal. They default absent and require explicit saved character choices. The server can disable them with `fluid_anatomy_enabled = false` in `[gs13_configuration]`. Initial support covers ordinary human anatomy with the appropriate organic parent body part; specialized species, external body rendering, and full inherited interaction systems remain open.
 
@@ -16,8 +16,10 @@ Neutron's actual native overdose path changes `internal_fluid_datum` on the thre
 
 The original source object sheets are copied unchanged from `modular_skyrat/master_files/icons/obj/genitals/{breasts,testicles,vagina}.dmi` into `modular_gs/icons/upstream/fluid_organs/`. Source breast-milk and reproductive-fluid IDs use native consumable reagents and neutral sample/glass descriptions.
 
-Thirteen integration tests cover default/serialized preferences, native creation/actions/artwork, source initial capacities/content, the real overdose threshold path and persistent state, absent organs, production gates, mixed and fractional-fluid capacity reduction, sampling/lids/ownership, the real timed item-action trigger, transplantation, DNA and physical-state separation, live preference edits, all available products, server configuration, and body deletion during collection. Native validation is pending.
+Thirteen integration tests cover default/serialized preferences, native creation/actions/artwork, source initial capacities/content, the real overdose threshold path and persistent state, absent organs, production gates, mixed and fractional-fluid capacity reduction, sampling/lids/ownership, the real timed item-action trigger, transplantation, DNA and physical-state separation, live preference edits, all available products, server configuration, and body deletion during collection. Checkpoint `92f78358cbdc7a083c098dbe15efa7d4d06042fc` passed 237 focused / 292 full native tests. The following combined checkpoint `123d45d8de36fab75ecdd92f65f2f4c738638b25` passed 246 focused / 301 full native tests, zero compiler errors/warnings, UI checks, and live MariaDB in [run 40166809588](https://github.com/bobatochaps/Paradisefunnything/actions/runs/40166809588).
 
 ## Remaining gates
 
 External organ rendering, full body-part size/color/layer customization, specialized species, unsupported source products, inherited arousal/release/interactions, and direct player SQL/client gameplay checks remain open. This record does not establish complete anatomy or GS13 parity.
+
+The [validated cloning adapter](persistence.md) additionally restores scan-time body policy and exercises the real staged limb-growth/ejection cycle while preserving native organ identity. Combined checkpoint `e3b038775cef81c76c0de22e92f77e7c96bcbe2c` passed 259 focused / 314 full native tests with clean compilation, UI checks, and live MariaDB in [run 40168066763](https://github.com/bobatochaps/Paradisefunnything/actions/runs/40168066763).
