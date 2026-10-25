@@ -382,8 +382,8 @@ GLOBAL_LIST_INIT(gs13_fat_slosh_sounds, list('modular_gs/sound/effects/inflation
 				var/mob/living/carbon/human/human_subject = subject
 				human_subject.apply_damage(mode == 2 ? 40 : 110, BRUTE, BODY_ZONE_CHEST)
 				if(injure_stomach)
-					var/obj/item/organ/internal/stomach = human_subject.get_organ_slot(GS13_ORGAN_STOMACH)
-					stomach?.receive_damage(mode == 2 ? 30 : 100)
+					var/obj/item/organ/internal/injured_stomach = human_subject.get_organ_slot(GS13_ORGAN_STOMACH)
+					injured_stomach?.receive_damage(mode == 2 ? 30 : 100)
 				if(injure_limbs)
 					for(var/zone in list(BODY_ZONE_L_ARM, BODY_ZONE_R_ARM, BODY_ZONE_L_LEG, BODY_ZONE_R_LEG))
 						human_subject.apply_damage(mode == 2 ? 5 : 10, BRUTE, zone)
