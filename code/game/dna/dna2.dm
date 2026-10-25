@@ -58,6 +58,9 @@ GLOBAL_LIST_EMPTY(bad_blocks)
 	var/chat_color
 	/// Physical starting scale, independent of temporary rendering effects.
 	var/gs13_body_size = RESIZE_DEFAULT_SIZE
+	/// Creation defaults only; active organ effects and fluid doses stay physical.
+	var/list/gs13_anatomy
+	var/gs13_anatomy_revision = 0
 
 // Make a copy of this strand.
 // USE THIS WHEN COPYING STUFF OR YOU'LL GET CORRUPTION!
@@ -72,6 +75,7 @@ GLOBAL_LIST_EMPTY(bad_blocks)
 	new_dna.flavor_text = flavor_text
 	new_dna.chat_color = chat_color
 	new_dna.gs13_body_size = gs13_body_size
+	new_dna.gs13_anatomy = gs13_anatomy?.Copy()
 
 	for(var/b = 1; b <= DNA_SE_LENGTH; b++)
 		new_dna.SE[b]=SE[b]
@@ -456,6 +460,7 @@ GLOBAL_LIST_EMPTY(bad_blocks)
 	data["real_name"] = real_name
 	data["flavor_text"] = flavor_text
 	data["gs13_body_size"] = gs13_body_size
+	data["gs13_anatomy"] = gs13_anatomy?.Copy()
 	return data
 
 /datum/dna/deserialize(data)
@@ -471,6 +476,8 @@ GLOBAL_LIST_EMPTY(bad_blocks)
 	real_name = data["real_name"]
 	flavor_text = data["flavor_text"]
 	gs13_body_size = gs13_sanitize_body_size(data["gs13_body_size"])
+	gs13_anatomy = gs13_anatomy_blueprint(data["gs13_anatomy"])
+	gs13_anatomy_revision++
 
 /datum/dna/proc/transfer_identity(mob/living/carbon/human/destination)
 	if(!istype(destination))

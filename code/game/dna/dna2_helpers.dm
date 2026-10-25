@@ -139,6 +139,7 @@
 		dna.check_integrity()
 		var/mob/living/carbon/human/H = src
 		H.set_gs13_body_size(dna.gs13_body_size)
+		H.sync_gs13_anatomy_from_dna()
 		var/obj/item/organ/external/head/head_organ = H.get_organ("head")
 		var/obj/item/organ/internal/eyes/eye_organ = H.get_int_organ(/obj/item/organ/internal/eyes)
 		if(istype(head_organ))

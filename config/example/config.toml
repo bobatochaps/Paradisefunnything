@@ -933,6 +933,10 @@ asset_simple_preload = true
 # Zero disables forcing. Nonzero values apply outside dorms/maintenance/afterlife
 # equivalents even if a character threshold is disabled. Hydraulic MOD support
 # grants immunity. These settings do not enable weight gain itself.
+[gs13_configuration]
+# Optional fluid anatomy requires separate per-character presence/production choices.
+fluid_anatomy_enabled = true
+
 [gs13_configuration.forced_helplessness]
 no_movement = 0
 clumsy = 0

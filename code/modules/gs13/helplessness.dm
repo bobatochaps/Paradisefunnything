@@ -135,8 +135,12 @@
 /// Server thresholds default off; omitted override keys preserve loaded values.
 /datum/configuration_section/gs13_configuration
 	var/list/forced_helplessness = list()
+	/// Optional anatomy still requires explicit per-character presence choices.
+	var/fluid_anatomy_enabled = TRUE
 
 /datum/configuration_section/gs13_configuration/load_data(list/data)
+	if("fluid_anatomy_enabled" in data)
+		fluid_anatomy_enabled = data["fluid_anatomy_enabled"] == TRUE
 	var/list/thresholds = data["forced_helplessness"]
 	if(!islist(thresholds))
 		return
@@ -168,4 +172,4 @@
 	)
 
 /proc/gs13_numeric_preference(setting)
-	return (setting in list("body_size", "starting_fatness", "weight_gain_rate", "weight_loss_rate", "max_weight")) || (setting in gs13_helplessness_labels()) || (setting in gs13_burst_numeric_preferences())
+	return (setting in list("body_size", "starting_fatness", "weight_gain_rate", "weight_loss_rate", "max_weight")) || (setting in gs13_helplessness_labels()) || (setting in gs13_burst_numeric_preferences()) || (setting in gs13_anatomy_numeric_preferences())

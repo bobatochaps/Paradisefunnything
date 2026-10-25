@@ -87,8 +87,20 @@
 		subject.remove_gs13_body_change(src)
 
 /datum/reagent/consumable/starshine/blue/overdose_start(mob/living/subject)
+	if(!ishuman(subject))
+		return
 	to_chat(subject, SPAN_WARNING("You have had too much Starshine Neutron."))
-	// The source's persistent fluid-organ changes require its anatomy adapters.
+	if(!GLOB.configuration.gs13?.fluid_anatomy_enabled)
+		return
+	var/mob/living/carbon/human/human_subject = subject
+	for(var/slot in list(GS13_ORGAN_BREASTS, GS13_ORGAN_TESTICLES, GS13_ORGAN_VAGINA))
+		var/obj/item/organ/internal/gs13_fluid_organ/organ = human_subject.get_organ_slot(slot)
+		if(!istype(organ))
+			continue
+		organ.internal_fluid_datum = type
+		if(istype(organ, /obj/item/organ/internal/gs13_fluid_organ/breasts))
+			var/obj/item/organ/internal/gs13_fluid_organ/breasts/breasts = organ
+			breasts.lactates = TRUE
 
 /datum/reagent/consumable/starshine/blue/addiction_act_stage2(mob/living/subject)
 	to_chat(subject, SPAN_NOTICE("You feel dim and miss Starshine Neutron."))

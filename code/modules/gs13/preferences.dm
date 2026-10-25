@@ -29,6 +29,7 @@
 	for(var/key in gs13_helplessness_labels())
 		.[key] = 0
 	. += gs13_burst_default_preferences()
+	. += gs13_anatomy_default_preferences()
 
 /proc/gs13_preference_labels()
 	. = list(
@@ -59,6 +60,7 @@
 	)
 	. += gs13_helplessness_labels()
 	. += gs13_burst_preference_labels()
+	. += gs13_anatomy_preference_labels()
 
 /proc/gs13_preference_choices(setting)
 	switch(setting)
@@ -66,6 +68,10 @@
 			return gs13_burst_modes()
 		if("weight_belly_shape")
 			return gs13_belly_styles()
+		if("breasts_type")
+			return list("Pair", "Quadruple", "Sextuple")
+		if("breast_produce")
+			return gs13_breast_products()
 
 /proc/gs13_sanitize_preferences(saved)
 	if(istext(saved))
@@ -84,6 +90,9 @@
 				result[pref] = value
 			continue
 		if(!isnum(value) || !GS13_IS_FINITE(value))
+			continue
+		if(pref in gs13_anatomy_numeric_preferences())
+			result[pref] = clamp(value, 0.5, 80)
 			continue
 		if(pref in gs13_burst_numeric_preferences())
 			result[pref] = clamp(value, 0, SHORT_REAL_LIMIT)
@@ -117,6 +126,7 @@
 		if(ishuman(character))
 			var/mob/living/carbon/human/human_character = character
 			human_character.set_gs13_body_size(gs13_preferences["body_size"])
+			human_character.initialize_gs13_anatomy(gs13_preferences)
 		character.fatness_real = gs13_preferences["master_wg_pref"] ? gs13_preferences["starting_fatness"] : 0
 	character.sync_gs13_transformations()
 	character.calculate_fatness()
@@ -153,6 +163,9 @@
 			if(setting == "body_size")
 				minimum = GS13_BODY_SIZE_MIN
 				maximum = GS13_BODY_SIZE_MAX
+			else if(setting in gs13_anatomy_numeric_preferences())
+				minimum = 0.5
+				maximum = 80
 			else if(setting == "starting_fatness")
 				maximum = FATNESS_LEVEL_BLOB
 			else if(setting in list("weight_gain_rate", "weight_loss_rate"))
