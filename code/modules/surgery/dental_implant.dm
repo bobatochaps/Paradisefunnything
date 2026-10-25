@@ -47,19 +47,31 @@
 /datum/action/item_action/hands_free/activate_pill
 	name = "Activate Pill"
 
-/datum/action/item_action/hands_free/activate_pill/New(Target, obj/item/tool)
-	button_icon = tool.icon
-	button_icon_state = tool.icon_state
+/datum/action/item_action/hands_free/activate_pill/New(obj/item/Target)
+	button_icon = Target.icon
+	button_icon_state = Target.icon_state
 	return ..()
 
 /datum/action/item_action/hands_free/activate_pill/Trigger(left_click = TRUE)
 	if(!..(left_click, FALSE))
-		return
+		return FALSE
+	var/mob/living/carbon/consumer = owner
+	var/obj/item/reagent_containers/pill/pill = target
+	if(!istype(consumer) || !istype(pill) || QDELETED(pill) || pill.loc != consumer || !pill.reagents)
+		return FALSE
+	if(ishuman(consumer))
+		var/mob/living/carbon/human/human_consumer = consumer
+		if(!human_consumer.check_has_mouth())
+			return FALSE
+	if(consumer.get_gs13_ingestion_free_space() < pill.reagents.total_volume)
+		to_chat(owner, SPAN_WARNING("There is not enough room to swallow the implanted pill."))
+		return FALSE
 	to_chat(owner, SPAN_CAUTION("You grit your teeth and burst the implanted [target]!"))
 	add_attack_logs(owner, owner, "Swallowed implanted [target]")
-	if(target.reagents.total_volume)
-		target.reagents.reaction(owner, REAGENT_INGEST)
-		target.reagents.trans_to(owner, target.reagents.total_volume)
+	if(pill.reagents.total_volume && !pill.reagents.gs13_ingest(consumer, pill.reagents.total_volume))
+		return FALSE
+	if(pill.reagents.total_volume > 0)
+		return FALSE
 	Remove(owner)
 	qdel(target)
 	return TRUE

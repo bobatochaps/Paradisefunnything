@@ -254,14 +254,17 @@
 		if(!human_user.check_has_mouth()) // I have no mouth but I must eat twimsts
 			break_cuffs = TRUE
 			return ..()
+	// Breaking free remains possible even without room to swallow the candy.
+	if(reagents && user.get_gs13_ingestion_free_space() < reagents.total_volume)
+		return ..(user, TRUE)
 
 	visible_message(SPAN_DANGER("[user] manages to eat through [src]!"), SPAN_NOTICE("You successfully eat through [src]."))
 
 	playsound(loc, 'sound/items/eatfood.ogg', 50, FALSE)
 	if(reagents && length(reagents.reagent_list))
 		user.taste(reagents)
-		reagents.reaction(user, REAGENT_INGEST)
-		reagents.trans_to(user, reagents.total_volume)
+		if(!reagents.gs13_ingest(user, reagents.total_volume))
+			return ..(user, TRUE)
 	qdel(src)
 
 //////////////////////////////

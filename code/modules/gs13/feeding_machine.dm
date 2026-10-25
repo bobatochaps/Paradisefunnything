@@ -154,6 +154,10 @@
 	SIGNAL_HANDLER
 	detach_iv()
 
+/// Oral effects can change the connection before the native fluid transfer.
+/obj/machinery/iv_drip/feeding_tube/proc/can_complete_gs13_feed(mob/living/carbon/physical_target, mob/living/carbon/consumer)
+	return !QDELETED(src) && connected_target == physical_target && can_feed(physical_target) && physical_target.get_gs13_food_recipient() == consumer
+
 /obj/machinery/iv_drip/feeding_tube/process(seconds_per_tick = 2)
 	var/datum/reagents/supply = get_reagents()
 	if(!can_feed(connected_target) || !supply || !is_operational())
@@ -166,7 +170,7 @@
 	if(amount <= 0)
 		return
 	// This machine feeds orally. Ordinary IVs continue to use the blood holder.
-	if(supply.gs13_ingest(consumer, amount, show_message = FALSE))
+	if(supply.gs13_ingest(consumer, amount, show_message = FALSE, validate = CALLBACK(src, PROC_REF(can_complete_gs13_feed), connected_target, consumer)))
 		if(consumer != connected_target && prob(10))
 			consumer.gs13_receiving_feedback()
 	update_icon()

@@ -2,6 +2,15 @@
 	id = "gs13_ingestion_timer_probe"
 	metabolization_rate = 0
 
+/datum/reagent/gs13_ingestion_probe/disconnect
+	id = "gs13_ingestion_disconnect_probe"
+
+/datum/reagent/gs13_ingestion_probe/disconnect/reaction_mob(mob/living/subject, method, volume)
+	..()
+	if(method == REAGENT_INGEST)
+		var/obj/machinery/iv_drip/feeding_tube/tube = data?["tube"]
+		tube?.detach_iv()
+
 /datum/game_test/room_test/gs13_native_oral_food/Run()
 	var/mob/living/carbon/human/subject = allocate(/mob/living/carbon/human)
 	subject.nutrition = 100
@@ -107,3 +116,61 @@
 	syringe.finish_injection(subject, subject)
 	TEST_ASSERT_EQUAL(subject.reagents.get_reagent_amount("gs13_ingestion_probe"), 5, "An actual native syringe still injects into the body holder")
 	TEST_ASSERT_EQUAL(stomach.total_volume, 0, "The reused chemical exposure flag cannot redirect injections into the stomach")
+
+/datum/game_test/room_test/gs13_native_dental_pill/Run()
+	var/mob/living/carbon/human/subject = allocate(/mob/living/carbon/human)
+	var/datum/reagents/stomach = gs13_ingested_reagents(subject)
+	var/obj/item/reagent_containers/pill/pill = allocate(/obj/item/reagent_containers/pill)
+	pill.reagents.add_reagent("gs13_ingestion_probe", 10)
+	subject.put_in_active_hand(pill)
+	var/datum/surgery_step/insert_pill/step = allocate(/datum/surgery_step/insert_pill)
+	TEST_ASSERT_EQUAL(step.end_step(subject, subject, BODY_ZONE_PRECISE_MOUTH, pill, null), SURGERY_STEP_CONTINUE, "Native dental surgery installs the real pill and its action")
+	var/datum/action/item_action/hands_free/activate_pill/action = locate() in pill.actions
+	TEST_ASSERT_NOTNULL(action, "The native implanted pill exposes its action")
+	TEST_ASSERT_EQUAL(action.owner, subject, "Dental surgery grants the action to the actual patient")
+	stomach.maximum_volume = 5
+	TEST_ASSERT_NOT(action.Trigger(), "An implanted pill needs space for the entire oral dose")
+	TEST_ASSERT_NOT(QDELETED(pill), "A refused dental pill and its action remain installed")
+	TEST_ASSERT_EQUAL(subject.gs13_test_oral_exposure, 0, "A refused dental pill cannot react")
+	stomach.maximum_volume = 20
+	pill.forceMove(get_turf(subject))
+	TEST_ASSERT_NOT(action.Trigger(), "An action cannot swallow a pill that has left its patient's body")
+	pill.forceMove(subject)
+	TEST_ASSERT(action.Trigger(), "The real native action swallows an installed pill")
+	TEST_ASSERT(QDELETED(pill), "Successful dental intake uses native pill cleanup")
+	TEST_ASSERT_EQUAL(stomach.total_volume, 10, "The implanted pill enters the stomach")
+	TEST_ASSERT_EQUAL(subject.reagents.total_volume, 0, "Dental medication waits for absorption")
+
+/datum/game_test/room_test/gs13_native_edible_restraints/Run()
+	var/mob/living/carbon/human/subject = allocate(/mob/living/carbon/human)
+	var/datum/reagents/stomach = gs13_ingested_reagents(subject)
+	var/obj/item/restraints/handcuffs/twimsts/cuffs = allocate(/obj/item/restraints/handcuffs/twimsts)
+	cuffs.create_reagents(20)
+	cuffs.reagents.add_reagent("gs13_ingestion_probe", 10)
+	cuffs.apply_cuffs(subject, subject)
+	cuffs.finish_resist_restraints(subject, FALSE)
+	TEST_ASSERT(QDELETED(cuffs), "Eating through the actual candy restraints removes them")
+	TEST_ASSERT_NULL(subject.handcuffed, "The native restraint lifecycle releases the wearer")
+	TEST_ASSERT_EQUAL(stomach.total_volume, 10, "Edible restraints use the oral compartment")
+	TEST_ASSERT_EQUAL(subject.reagents.total_volume, 0, "Candy restraints cannot inject their contents")
+	stomach.maximum_volume = 10
+	var/obj/item/restraints/handcuffs/twimsts/refused = allocate(/obj/item/restraints/handcuffs/twimsts)
+	refused.create_reagents(20)
+	refused.reagents.add_reagent("gs13_ingestion_probe", 10)
+	refused.apply_cuffs(subject, subject)
+	refused.finish_resist_restraints(subject, FALSE)
+	TEST_ASSERT_NULL(subject.handcuffed, "A full stomach cannot prevent escape from breakable candy restraints")
+	TEST_ASSERT_EQUAL(subject.gs13_test_oral_exposure, 10, "Breaking rather than swallowing applies no rejected dose")
+	TEST_ASSERT_EQUAL(stomach.total_volume, 10, "Breaking full-stomach restraints cannot overfill the gut")
+
+/datum/game_test/room_test/gs13_machine_reaction_disconnect/Run()
+	var/mob/living/carbon/human/subject = allocate(/mob/living/carbon/human)
+	var/datum/reagents/stomach = gs13_ingested_reagents(subject)
+	var/obj/machinery/iv_drip/feeding_tube/tube = allocate(/obj/machinery/iv_drip/feeding_tube, get_turf(subject))
+	var/datum/reagents/supply = tube.get_reagents()
+	supply.add_reagent("gs13_ingestion_disconnect_probe", 10, list("tube" = tube))
+	TEST_ASSERT(tube.attach_iv(subject, subject), "The real machine starts connected")
+	tube.process(2)
+	TEST_ASSERT_NULL(tube.connected_target, "Native oral effects can invalidate the physical connection")
+	TEST_ASSERT_EQUAL(stomach.total_volume, 0, "The post-reaction permission check prevents a disconnected transfer")
+	TEST_ASSERT_EQUAL(supply.total_volume, 10, "Canceled fluid remains in the actual machine")

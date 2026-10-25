@@ -15,17 +15,17 @@
 	return recipient?.reagents ? max(0, recipient.reagents.maximum_volume - recipient.reagents.total_volume) : 0
 
 /// Call only at an actual oral entry point, after feeding/routing permission.
-/datum/reagents/proc/gs13_ingest(mob/living/consumer, amount, show_message = TRUE)
+/datum/reagents/proc/gs13_ingest(mob/living/consumer, amount, show_message = TRUE, datum/callback/validate)
 	if(QDELETED(src) || !istype(consumer) || QDELETED(consumer) || !isnum(amount) || !GS13_IS_FINITE(amount) || amount <= 0 || total_volume <= 0)
 		return 0
 	var/atom/recipient = consumer.get_gs13_ingestion_target()
 	if(!recipient?.reagents)
 		return 0
 	amount = min(amount, total_volume, consumer.get_gs13_ingestion_free_space())
-	if(amount <= 0)
+	if(amount <= 0 || (validate && !validate.Invoke()))
 		return 0
 	reaction(consumer, REAGENT_INGEST, amount / total_volume, show_message = show_message)
-	if(QDELETED(src) || QDELETED(consumer) || QDELETED(recipient) || consumer.get_gs13_ingestion_target() != recipient)
+	if(QDELETED(src) || QDELETED(consumer) || QDELETED(recipient) || consumer.get_gs13_ingestion_target() != recipient || (validate && !validate.Invoke()))
 		return 0
 	return trans_to(recipient, min(amount, consumer.get_gs13_ingestion_free_space()))
 
