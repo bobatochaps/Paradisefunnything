@@ -129,8 +129,9 @@
 			gs13_add_weight_clothing(standing, uniform, "[breast_clothing]_NORTH", -UNIFORM_LAYER + 0.4, tint)
 			gs13_add_weight_clothing(standing, uniform, "[breast_clothing]_SOUTH", -UNIFORM_LAYER + 0.5, tint)
 		if(has_belly && belly_stage)
-			gs13_add_weight_clothing(standing, uniform, "belly_[shape]_[belly_stage][suffix]", -UNIFORM_LAYER + 0.1, tint)
-			gs13_add_weight_clothing(standing, uniform, "belly_[shape]_[belly_stage][suffix]_SOUTH", -UNIFORM_LAYER + 0.2, tint)
+			var/clothing_shape = uniform.gs13_clothing_belly_shape(shape)
+			gs13_add_weight_clothing(standing, uniform, "belly_[clothing_shape]_[belly_stage][suffix]", -UNIFORM_LAYER + 0.1, tint)
+			gs13_add_weight_clothing(standing, uniform, "belly_[clothing_shape]_[belly_stage][suffix]_SOUTH", -UNIFORM_LAYER + 0.2, tint)
 		if(has_hips && hip_size)
 			gs13_add_weight_clothing(standing, uniform, "butt_[hip_size]", -UNIFORM_LAYER + 0.1, tint)
 			gs13_add_weight_clothing(standing, uniform, "butt_[hip_size]_NORTH", -UNIFORM_LAYER + 0.2, tint)
@@ -151,10 +152,7 @@
 	return dna.species.skin_tone_to_hex(clamp(s_tone, 1, 13))
 
 /mob/living/carbon/human/proc/gs13_add_weight_clothing(list/standing, obj/item/clothing/under/uniform, state, draw_layer, tint)
-	if(!icon_exists(uniform.gs13_modular_icon, state))
-		return
-	var/mutable_appearance/panel = mutable_appearance(uniform.gs13_modular_icon, state, layer = draw_layer, alpha = uniform.alpha, color = tint)
-	standing += panel
+	uniform.gs13_add_modular_panels(standing, state, draw_layer, tint)
 
 /obj/item/clothing/under/proc/gs13_modular_color()
 	return color

@@ -64,8 +64,11 @@
 /// Merge before native inventory/refill construction, without changing shared
 /// type defaults or replacing any existing product, stock, or price.
 /obj/machinery/economy/vending/proc/add_gs13_uniform_stock()
-	if(!length(gs13_uniform_stock))
+	if(!length(gs13_uniform_stock) && !length(gs13_dual_tone_stock))
 		return
+	var/list/stock = length(gs13_uniform_stock) ? gs13_uniform_stock.Copy() : list()
+	for(var/uniform_path in gs13_dual_tone_stock)
+		stock[uniform_path] = max(stock[uniform_path], gs13_dual_tone_stock[uniform_path])
 	var/uniform_price = 0
 	for(var/native_path in products)
 		if(ispath(native_path, /obj/item/clothing/under))
@@ -73,9 +76,9 @@
 			break
 	products = products.Copy()
 	prices = prices.Copy()
-	for(var/uniform_path in gs13_uniform_stock)
+	for(var/uniform_path in stock)
 		var/current = products[uniform_path]
-		products[uniform_path] = isnum(current) ? max(current, gs13_uniform_stock[uniform_path]) : gs13_uniform_stock[uniform_path]
+		products[uniform_path] = isnum(current) ? max(current, stock[uniform_path]) : stock[uniform_path]
 		if(!(uniform_path in prices))
 			prices[uniform_path] = uniform_price
 
