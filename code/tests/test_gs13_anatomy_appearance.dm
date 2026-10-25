@@ -1,0 +1,126 @@
+/datum/game_test/room_test/gs13_anatomy_appearance_preferences/Run()
+	var/list/defaults = gs13_default_preferences()
+	TEST_ASSERT_NOT(defaults["anatomy_body_sprites"], "Existing characters do not acquire optional anatomy graphics automatically")
+	var/mob/living/carbon/human/subject = gs13_fluid_subject()
+	var/obj/item/organ/internal/gs13_fluid_organ/breasts/breasts = subject.get_organ_slot(GS13_ORGAN_BREASTS)
+	subject.update_gs13_weight_appearance(TRUE)
+	TEST_ASSERT_NULL(subject.overlays_standing[GS13_WEIGHT_BODY_LAYER], "Fluid production permission alone cannot enable anatomy graphics")
+	var/datum/character_save/character = allocate(/datum/character_save)
+	character.gs13_preferences = gs13_sanitize_preferences(json_encode(subject.gs13_preferences))
+	character.gs13_preferences["anatomy_body_sprites"] = TRUE
+	character.gs13_preferences["fluid_production"] = FALSE
+	character.gs13_preferences["weight_body_sprites"] = FALSE
+	character.apply_gs13_preferences(subject, FALSE)
+	TEST_ASSERT("m_breasts_pair_gs_smooth_2_FRONT" in gs13_weight_panel_states(subject), "The native live preference renders explicitly chosen anatomy independently of ordinary weight gain")
+	TEST_ASSERT_NOT(breasts.production_allowed(), "Showing anatomy cannot enable fluid production")
+	TEST_ASSERT_EQUAL(subject.get_organ_slot(GS13_ORGAN_BREASTS), breasts, "A visibility edit preserves the current physical organ")
+	TEST_ASSERT_NOT("anatomy_body_sprites" in subject.dna.gs13_anatomy, "Creation DNA cannot copy a body's live visual permission")
+	var/mob/living/carbon/human/recipient = allocate(/mob/living/carbon/human)
+	recipient.change_dna(subject.dna)
+	TEST_ASSERT_NOTNULL(recipient.get_organ_slot(GS13_ORGAN_BREASTS), "Native DNA copying still carries birth anatomy")
+	TEST_ASSERT_NULL(recipient.get_gs13_render_breasts(), "DNA alone cannot opt another body into anatomy graphics")
+
+/datum/game_test/room_test/gs13_anatomy_appearance_sizes_and_uniform/Run()
+	var/mob/living/carbon/human/subject = gs13_fluid_subject()
+	subject.gs13_preferences["anatomy_body_sprites"] = TRUE
+	var/obj/item/organ/internal/gs13_fluid_organ/breasts/breasts = subject.get_organ_slot(GS13_ORGAN_BREASTS)
+	for(var/size in list(0.5, 2, 6, 9, 15, 16, 17, 18, 19, 80))
+		breasts.gs13_base_size = size
+		breasts.update_size_from_weight(0)
+		subject.update_gs13_weight_appearance(TRUE)
+		var/frame_size = FLOOR(min(size, 18), 1)
+		TEST_ASSERT("m_breasts_pair_gs_smooth_[frame_size]_FRONT" in gs13_weight_panel_states(subject), "Every supported physical size selects real bounded source front artwork")
+		for(var/mutable_appearance/part as anything in subject.overlays_standing[GS13_WEIGHT_BODY_LAYER])
+			TEST_ASSERT(icon_exists(part.icon, part.icon_state), "Front/back selection cannot create a missing source state")
+		TEST_ASSERT_EQUAL(breasts.gs13_size, size, "Render bounds never rewrite actual organ size")
+		if(size == 2 || size == 9 || size == 18)
+			gs13_render_weight_preview(subject, "anatomy_smooth_pair_[size]")
+	var/icon/transparent_source = icon('modular_gs/icons/mob/human/genitals/breasts_smooth.dmi', "m_breasts_pair_gs_smooth_2_FRONT", SOUTH)
+	var/corner = transparent_source.GetPixel(1, 1)
+	TEST_ASSERT(!corner || (length(corner) == 9 && copytext(corner, 8, 10) == "00"), "The native engine preserves the unchanged source sheet's alpha transparency")
+	var/obj/item/clothing/under/color/grey/uniform = allocate(/obj/item/clothing/under/color/grey)
+	subject.equip_to_slot_if_possible(uniform, ITEM_SLOT_JUMPSUIT)
+	subject.update_gs13_weight_appearance(TRUE)
+	var/list/states = gs13_weight_panel_states(subject)
+	TEST_ASSERT("breasts_impossible" in states, "Extreme physical sizes use the largest available native uniform panel")
+	TEST_ASSERT("breasts_impossible_NORTH" in states, "Native uniform composition includes the source north layer")
+	TEST_ASSERT("breasts_impossible_SOUTH" in states, "Native uniform composition includes the source south layer")
+	TEST_ASSERT_NOT("m_breasts_pair_gs_smooth_18_FRONT" in states, "Covered anatomy cannot paint bare skin over a uniform")
+	gs13_render_weight_preview(subject, "anatomy_uniform_largest")
+	TEST_ASSERT_EQUAL(breasts.reagents.maximum_volume, 3500, "Graphic bounds preserve the source physical reservoir ceiling")
+	TEST_ASSERT(uniform.roll_undersuit(subject), "The real native uniform action can expose the chest")
+	states = gs13_weight_panel_states(subject)
+	TEST_ASSERT("m_breasts_pair_gs_smooth_18_FRONT" in states, "Rolling down the uniform reveals the current native anatomy")
+	TEST_ASSERT_NOT("breasts_impossible" in states, "Rolled clothing cannot repaint its upper panel over the exposed chest")
+	gs13_render_weight_preview(subject, "anatomy_uniform_rolled")
+
+/datum/game_test/room_test/gs13_anatomy_appearance_lifecycle/Run()
+	var/mob/living/carbon/human/donor = gs13_fluid_subject()
+	var/mob/living/carbon/human/recipient = gs13_fluid_subject()
+	donor.gs13_preferences["anatomy_body_sprites"] = TRUE
+	var/obj/item/organ/internal/gs13_fluid_organ/breasts/breasts = donor.get_organ_slot(GS13_ORGAN_BREASTS)
+	breasts.internal_fluid_datum = /datum/reagent/consumable/starshine/blue
+	donor.adjust_fatness(FATNESS_LEVEL_OBESE, FATTENING_TYPE_ALMIGHTY, TRUE)
+	TEST_ASSERT("m_breasts_pair_gs_smooth_6_FRONT" in gs13_weight_panel_states(donor), "Real native weight processing updates the installed organ's visible size")
+	breasts.remove(donor)
+	breasts.forceMove(get_turf(donor))
+	TEST_ASSERT_NULL(donor.overlays_standing[GS13_WEIGHT_BODY_LAYER], "Extraction immediately releases the old body's owned appearance")
+	var/obj/item/organ/internal/gs13_fluid_organ/breasts/replaced = recipient.get_organ_slot(GS13_ORGAN_BREASTS)
+	breasts.insert(recipient)
+	replaced.forceMove(get_turf(recipient))
+	TEST_ASSERT_NULL(recipient.overlays_standing[GS13_WEIGHT_BODY_LAYER], "A transplant cannot opt its recipient into graphics")
+	recipient.gs13_preferences["anatomy_body_sprites"] = TRUE
+	recipient.update_gs13_weight_appearance()
+	TEST_ASSERT("m_breasts_pair_gs_smooth_2_FRONT" in gs13_weight_panel_states(recipient), "The receiving body renders the actual transplant at its current weight")
+	TEST_ASSERT_EQUAL(breasts.fluid_id(), "starshine_blue", "Rendering and transfer preserve persistent Neutron chemistry")
+	recipient.death()
+	recipient.update_revive()
+	TEST_ASSERT_EQUAL(recipient.get_organ_slot(GS13_ORGAN_BREASTS), breasts, "Native revival keeps the same rendered physical organ")
+	TEST_ASSERT("m_breasts_pair_gs_smooth_2_FRONT" in gs13_weight_panel_states(recipient), "Revival retains the body's explicit visual choice")
+	qdel(breasts)
+	TEST_ASSERT_NULL(recipient.overlays_standing[GS13_WEIGHT_BODY_LAYER], "Organ deletion immediately releases its appearance")
+
+/datum/game_test/room_test/gs13_anatomy_appearance_gates/Run()
+	var/mob/living/carbon/human/subject = gs13_fluid_subject()
+	subject.gs13_preferences["anatomy_body_sprites"] = TRUE
+	var/obj/item/organ/internal/gs13_fluid_organ/breasts/breasts = subject.get_organ_slot(GS13_ORGAN_BREASTS)
+	subject.update_gs13_weight_appearance(TRUE)
+	breasts.gs13_arrangement_multiplier = 2.5
+	subject.update_gs13_weight_appearance()
+	TEST_ASSERT_NULL(subject.overlays_standing[GS13_WEIGHT_BODY_LAYER], "Unadapted multi-pair anatomy cannot silently select paired artwork")
+	TEST_ASSERT_EQUAL(breasts.produce_fluid(1), 1, "An unadapted visual arrangement retains its independent physical fluid support")
+	breasts.gs13_arrangement_multiplier = 2
+	var/obj/item/organ/external/chest = subject.get_organ(BODY_ZONE_CHEST)
+	chest.status |= ORGAN_ROBOT
+	subject.update_gs13_weight_appearance()
+	TEST_ASSERT_NULL(subject.overlays_standing[GS13_WEIGHT_BODY_LAYER], "The native graphic cannot paint flesh onto a prosthetic chest")
+	chest.status &= ~ORGAN_ROBOT
+	var/was_enabled = GLOB.configuration.gs13.fluid_anatomy_enabled
+	GLOB.configuration.gs13.fluid_anatomy_enabled = FALSE
+	subject.update_gs13_weight_appearance()
+	var/list/disabled_appearance = subject.overlays_standing[GS13_WEIGHT_BODY_LAYER]
+	GLOB.configuration.gs13.fluid_anatomy_enabled = was_enabled
+	subject.update_gs13_weight_appearance()
+	TEST_ASSERT_NULL(disabled_appearance, "The server anatomy switch also releases rendered anatomy")
+	TEST_ASSERT("m_breasts_pair_gs_smooth_2_FRONT" in gs13_weight_panel_states(subject), "Restoring supported organic anatomy and configuration restores the selected view")
+	var/obj/item/clothing/under/rank/medical/doctor/ordinary = allocate(/obj/item/clothing/under/rank/medical/doctor)
+	subject.equip_to_slot_if_possible(ordinary, ITEM_SLOT_JUMPSUIT)
+	TEST_ASSERT_NULL(subject.overlays_standing[GS13_WEIGHT_BODY_LAYER], "An ordinary unadapted uniform preserves its native chest coverage")
+	subject.drop_item_to_ground(ordinary)
+	TEST_ASSERT("m_breasts_pair_gs_smooth_2_FRONT" in gs13_weight_panel_states(subject), "Native unequipping restores the current physical anatomy")
+	var/obj/item/clothing/suit/space/cover = allocate(/obj/item/clothing/suit/space)
+	subject.equip_to_slot_if_possible(cover, ITEM_SLOT_OUTER_SUIT)
+	TEST_ASSERT_NULL(subject.overlays_standing[GS13_WEIGHT_BODY_LAYER], "A covering native outer suit also hides the chosen anatomy")
+	subject.drop_item_to_ground(cover)
+	breasts.gs13_max_size = 0
+	breasts.update_size_from_weight(0)
+	subject.update_gs13_weight_appearance()
+	TEST_ASSERT_NULL(subject.overlays_standing[GS13_WEIGHT_BODY_LAYER], "A zero physical size cannot leave a phantom body panel")
+	breasts.gs13_max_size = 80
+	breasts.update_size_from_weight(0)
+	subject.gs13_preferences["anatomy_body_sprites"] = FALSE
+	subject.update_gs13_weight_appearance()
+	TEST_ASSERT_NULL(subject.overlays_standing[GS13_WEIGHT_BODY_LAYER], "Live visual opt-out immediately clears the owned appearance")
+	subject.gs13_preferences["anatomy_body_sprites"] = TRUE
+	subject.set_species(/datum/species/skrell)
+	TEST_ASSERT_NULL(subject.overlays_standing[GS13_WEIGHT_BODY_LAYER], "Unsupported species retain their native anatomy rendering")

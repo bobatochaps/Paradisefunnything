@@ -61,17 +61,24 @@
 	return
 
 /mob/living/carbon/human/update_gs13_weight_appearance(force = FALSE)
-	if(!dna || !istype(dna.species, /datum/species/human) || !gs13_body_effects_enabled() || !gs13_preferences["weight_body_sprites"] || notransform || HAS_TRAIT(src, TRAIT_SKELETONIZED))
+	if(!dna || !istype(dna.species, /datum/species/human) || notransform || HAS_TRAIT(src, TRAIT_SKELETONIZED))
+		if(overlays_standing[GS13_WEIGHT_BODY_LAYER])
+			remove_overlay(GS13_WEIGHT_BODY_LAYER)
+		gs13_weight_appearance_key = null
+		return
+	var/body_enabled = gs13_body_effects_enabled() && gs13_preferences["weight_body_sprites"]
+	var/obj/item/organ/internal/gs13_fluid_organ/breasts/breasts = get_gs13_render_breasts()
+	if(!body_enabled && !breasts)
 		if(overlays_standing[GS13_WEIGHT_BODY_LAYER])
 			remove_overlay(GS13_WEIGHT_BODY_LAYER)
 		gs13_weight_appearance_key = null
 		return
 
 	// Use apparent weight, so belts and the pendant also conceal the silhouette.
-	var/stage = gs13_weight_stage(fatness)
-	var/belly_size = get_gs13_part_size("belly", stage)
-	var/hip_size = get_gs13_part_size("hips", stage)
-	var/current_fullness = get_fullness()
+	var/stage = body_enabled ? gs13_weight_stage(fatness) : 0
+	var/belly_size = body_enabled ? get_gs13_part_size("belly", stage) : 0
+	var/hip_size = body_enabled ? get_gs13_part_size("hips", stage) : 0
+	var/current_fullness = body_enabled ? get_fullness() : 0
 	var/belly_style = get_gs13_belly_style()
 	var/shape = current_fullness > FULLNESS_LEVEL_BLOATED ? "stuffed" : (gs13_preferences["weight_belly_shape"] == "Round" ? "round" : "soft")
 	var/belly_stage = belly_size
@@ -81,12 +88,14 @@
 		belly_stage++
 	// Fullness expands clothing independently of the underlying organ's cap.
 	belly_stage = min(belly_stage, 9)
-	var/render_key = "[belly_size]:[hip_size]:[shape]:[belly_stage]:[belly_style]:[HAS_TRAIT(src, TRAIT_HULK)]:[HAS_TRAIT(src, TRAIT_HUSK)]:[gs13_preferences["weight_belly_custom_color"]]:[gs13_preferences["weight_belly_color"]]:[gs13_preferences["weight_hips_custom_color"]]:[gs13_preferences["weight_hips_color"]]"
+	var/breast_size = breasts ? FLOOR(min(breasts.gs13_size, 18), 1) : null
+	var/breast_clothing = breasts ? gs13_breast_clothing_state(breasts.gs13_size) : null
+	var/render_key = "[belly_size]:[hip_size]:[shape]:[belly_stage]:[belly_style]:[breast_size]:[breast_clothing]:[HAS_TRAIT(src, TRAIT_HULK)]:[HAS_TRAIT(src, TRAIT_HUSK)]:[gs13_preferences["weight_belly_custom_color"]]:[gs13_preferences["weight_belly_color"]]:[gs13_preferences["weight_hips_custom_color"]]:[gs13_preferences["weight_hips_color"]]"
 	if(!force && render_key == gs13_weight_appearance_key)
 		return
 	gs13_weight_appearance_key = render_key
 	remove_overlay(GS13_WEIGHT_BODY_LAYER)
-	if(!belly_size && !hip_size && !belly_stage)
+	if(!belly_size && !hip_size && !belly_stage && isnull(breast_size))
 		return
 
 	var/list/standing = list()
@@ -100,6 +109,8 @@
 	var/suit_coverage = wear_suit?.gs13_shows_weight_body ? NONE : wear_suit?.body_parts_covered
 	var/chest_covered = (w_uniform?.body_parts_covered & UPPER_TORSO) || (suit_coverage & UPPER_TORSO)
 	var/hips_covered = (w_uniform?.body_parts_covered & (LOWER_TORSO | LEGS)) || (suit_coverage & (LOWER_TORSO | LEGS))
+	if(breasts && !chest_covered)
+		gs13_add_breast_body(standing, breast_size, chest)
 	if(has_belly && belly_size && !chest_covered)
 		var/mutable_appearance/belly = mutable_appearance(gs13_belly_style_icon(belly_style), "m_belly_[belly_style]_[belly_size]_FRONT", layer = -LIMBS_LAYER + 0.5)
 		belly.color = get_gs13_part_color("belly", chest, 18)
@@ -113,6 +124,10 @@
 	if(istype(uniform) && uniform.gs13_modular_icon && !(wear_suit?.flags_inv & HIDEJUMPSUIT) && !HAS_TRAIT(uniform, TRAIT_NO_WORN_ICON))
 		var/tint = uniform.gs13_modular_color()
 		var/suffix = uniform.rolled_down ? "_d" : ""
+		if(breasts && (uniform.body_parts_covered & UPPER_TORSO))
+			gs13_add_weight_clothing(standing, uniform, breast_clothing, -UNIFORM_LAYER + 0.3, tint)
+			gs13_add_weight_clothing(standing, uniform, "[breast_clothing]_NORTH", -UNIFORM_LAYER + 0.4, tint)
+			gs13_add_weight_clothing(standing, uniform, "[breast_clothing]_SOUTH", -UNIFORM_LAYER + 0.5, tint)
 		if(has_belly && belly_stage)
 			gs13_add_weight_clothing(standing, uniform, "belly_[shape]_[belly_stage][suffix]", -UNIFORM_LAYER + 0.1, tint)
 			gs13_add_weight_clothing(standing, uniform, "belly_[shape]_[belly_stage][suffix]_SOUTH", -UNIFORM_LAYER + 0.2, tint)

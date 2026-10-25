@@ -3798,6 +3798,7 @@
 #include "code\modules\gs13\digestion.dm"
 #include "code\modules\gs13\fluid_organs.dm"
 #include "code\modules\gs13\anatomy_preferences.dm"
+#include "code\modules\gs13\anatomy_appearance.dm"
 #include "code\modules\gs13\clothing_distribution.dm"
 #include "code\modules\gs13\antiburst_collar.dm"
 #include "code\modules\gs13\starshine.dm"
