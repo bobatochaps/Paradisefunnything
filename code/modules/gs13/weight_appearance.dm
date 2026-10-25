@@ -72,14 +72,15 @@
 	var/belly_size = get_gs13_part_size("belly", stage)
 	var/hip_size = get_gs13_part_size("hips", stage)
 	var/current_fullness = get_fullness()
-	var/shape = current_fullness > FULLNESS_LEVEL_BLOATED ? "stuffed" : "soft"
+	var/belly_style = get_gs13_belly_style()
+	var/shape = current_fullness > FULLNESS_LEVEL_BLOATED ? "stuffed" : (gs13_preferences["weight_belly_shape"] == "Round" ? "round" : "soft")
 	var/belly_stage = belly_size
 	if(current_fullness >= FULLNESS_LEVEL_NOMOREPLZ)
 		belly_stage += 2
 	else if(current_fullness >= FULLNESS_LEVEL_BEEG)
 		belly_stage++
-	belly_stage = min(belly_stage, get_gs13_part_size("belly", 9))
-	var/belly_style = get_gs13_belly_style()
+	// Fullness expands clothing independently of the underlying organ's cap.
+	belly_stage = min(belly_stage, 9)
 	var/render_key = "[belly_size]:[hip_size]:[shape]:[belly_stage]:[belly_style]:[HAS_TRAIT(src, TRAIT_HULK)]:[HAS_TRAIT(src, TRAIT_HUSK)]:[gs13_preferences["weight_belly_custom_color"]]:[gs13_preferences["weight_belly_color"]]:[gs13_preferences["weight_hips_custom_color"]]:[gs13_preferences["weight_hips_color"]]"
 	if(!force && render_key == gs13_weight_appearance_key)
 		return
