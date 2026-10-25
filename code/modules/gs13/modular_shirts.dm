@@ -3,7 +3,8 @@
 	name = "modular button-up shirt"
 	desc = "A button-up shirt with matching trousers and adjustable colors."
 	icon = 'modular_gs/icons/obj/clothing/modclothes/button_up.dmi'
-	icon_state = "button_up"
+	icon_state = "button_up_preview"
+	gs13_uniform_state = "button_up"
 	worn_icon = 'modular_gs/icons/mob/modclothes/button_up_worn.dmi'
 	gs13_modular_icon = 'modular_gs/icons/mob/modclothes/button_up.dmi'
 	gs13_uniform_colors = list("#ffffff", "#ffffff", "#ffffff")
@@ -13,7 +14,8 @@
 	name = "modular turtleneck shirt"
 	desc = "A turtleneck shirt with matching trousers and adjustable colors."
 	icon = 'modular_gs/icons/obj/clothing/modclothes/turtleneck.dmi'
-	icon_state = "turtleneck"
+	icon_state = "turtleneck_preview"
+	gs13_uniform_state = "turtleneck"
 	worn_icon = 'modular_gs/icons/mob/modclothes/turtleneck_worn.dmi'
 	gs13_modular_icon = 'modular_gs/icons/mob/modclothes/turtleneck.dmi'
 

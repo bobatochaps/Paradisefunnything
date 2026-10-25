@@ -30,6 +30,8 @@ GLOBAL_LIST_EMPTY(gs13_uniform_protection_cache)
 	inhand_icon_state = "w_suit"
 	sprite_sheets = null
 	gs13_modular_icon = 'modular_gs/icons/mob/modclothes/dual_tone_suit.dmi'
+	/// Static object previews stay valid before native initialization.
+	var/gs13_uniform_state = "dual_tone_jumpsuit"
 	var/list/gs13_uniform_colors = list("#ffffff", "#ffffff")
 	var/gs13_skin_masks = FALSE
 	var/gs13_recolorable = TRUE
@@ -55,7 +57,7 @@ GLOBAL_LIST_EMPTY(gs13_uniform_protection_cache)
 
 /// Match the source GAGS recipe: main mask, stripe mask, then fixed details.
 /obj/item/clothing/under/gs13_dual_tone/proc/gs13_compose_uniform_icon(source_icon)
-	var/state = initial(icon_state)
+	var/state = gs13_uniform_state
 	var/icon/composite
 	for(var/channel in 1 to length(gs13_uniform_colors))
 		var/icon/mask = icon(source_icon, "[state]-[channel]")
@@ -73,6 +75,7 @@ GLOBAL_LIST_EMPTY(gs13_uniform_protection_cache)
 /obj/item/clothing/under/gs13_dual_tone/proc/gs13_rebuild_uniform_icons()
 	icon = gs13_compose_uniform_icon(initial(icon))
 	worn_icon = gs13_compose_uniform_icon(initial(worn_icon))
+	icon_state = gs13_uniform_state
 	gs13_panel_icons = list()
 	update_slot_icon()
 
