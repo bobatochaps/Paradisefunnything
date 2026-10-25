@@ -156,6 +156,10 @@
 	var/mob/living/carbon/human/subject = target.puppet
 	subject.gs13_preferences["blueberry_inflation"] = TRUE
 	subject.reagents.add_reagent("blueberry_juice", 10)
+	// This test measures timed attack-chain collection, not native metabolism.
+	// A real Life tick during do_after must not consume part of its fixed dose.
+	var/datum/reagent/blueberry_juice/juice = locate() in subject.reagents.reagent_list
+	juice.metabolization_rate = 0
 	var/obj/item/reagent_containers/glass/beaker/beaker = player.spawn_obj_in_hand(/obj/item/reagent_containers/glass/beaker)
 	player.puppet.a_intent = INTENT_GRAB
 	player.click_on(target)
