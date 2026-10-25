@@ -9,6 +9,8 @@
 	subject.gs13_preferences["weight_belly_shape"] = "Round"
 	subject.gs13_preferences["weight_belly_base"] = 2
 	subject.gs13_preferences["weight_hips_max"] = 3
+	subject.gs13_preferences["weight_belly_custom_color"] = TRUE
+	subject.gs13_preferences["weight_belly_color"] = "#3366cc"
 	subject.gs13_preferences["body_size"] = 2
 	subject.set_gs13_body_size(1.5)
 	var/obj/machinery/clonescanner/scanner = allocate(/obj/machinery/clonescanner)
@@ -26,6 +28,8 @@
 	TEST_ASSERT_EQUAL(clone.gs13_preferences["weight_belly_shape"], "Round", "Cloning uses the independent scan-time body policy")
 	TEST_ASSERT_EQUAL(clone.gs13_preferences["weight_belly_base"], 2, "The cloned snapshot retains independent part size settings")
 	TEST_ASSERT_EQUAL(clone.gs13_preferences["weight_hips_max"], 3, "The cloned snapshot retains independent part growth limits")
+	TEST_ASSERT(clone.gs13_preferences["weight_belly_custom_color"], "The cloned policy retains explicit independent color selection")
+	TEST_ASSERT_EQUAL(clone.gs13_preferences["weight_belly_color"], "#3366cc", "The cloned policy retains the chosen part color")
 	TEST_ASSERT_EQUAL(clone.weight_gain_rate, 1.25, "Native weight consumers receive the restored rate")
 	TEST_ASSERT_EQUAL(clone.starting_size, 1.5, "Restoring policy does not apply next-spawn size over the actual DNA size")
 	TEST_ASSERT_NOT(clone.check_weight_prefs(FATTENING_TYPE_CHEM), "A scan-time chemical opt-out remains effective")

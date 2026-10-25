@@ -31,6 +31,9 @@
 	. += gs13_burst_default_preferences()
 	. += gs13_anatomy_default_preferences()
 	. += gs13_shape_default_preferences()
+	. += gs13_shape_color_preferences()
+	.["weight_belly_custom_color"] = FALSE
+	.["weight_hips_custom_color"] = FALSE
 
 /proc/gs13_preference_labels()
 	. = list(
@@ -91,6 +94,10 @@
 			if(value in choices)
 				result[pref] = value
 			continue
+		if(pref in gs13_shape_color_preferences())
+			if(istext(value) && length(value) == 7)
+				result[pref] = sanitize_hexcolor(value, result[pref])
+			continue
 		if(!isnum(value) || !GS13_IS_FINITE(value))
 			continue
 		if(pref in gs13_shape_default_preferences())
@@ -148,7 +155,7 @@
 	var/list/html = list("<h2>GS13 weight preferences</h2>", "<p>Enable weight gain and choose its allowed sources. Starting weight and body size apply on your next spawn. Body size also works with weight gain disabled. Save your character to keep these settings.</p><p>Helplessness thresholds use apparent fat minus muscle. Zero disables an effect. Related quirks and server settings can override thresholds. Hydraulic MOD assistance suspends threshold effects. Chair breakage and doorway squeezing use apparent fat, independently of muscle and hydraulic assistance.</p>")
 	for(var/pref in labels)
 		var/value = gs13_preferences[pref]
-		if(!gs13_numeric_preference(pref) && !gs13_preference_choices(pref))
+		if(!gs13_numeric_preference(pref) && !gs13_preference_choices(pref) && !(pref in gs13_shape_color_preferences()))
 			value = value ? "Enabled" : "Disabled"
 		html += "[labels[pref]]: <a href='byond://?_src_=prefs;preference=gs13;setting=[pref]'>[value]</a><br>"
 	var/datum/browser/popup = new(user, "gs13_preferences", "GS13 preferences", 520, 640)
@@ -164,6 +171,10 @@
 		var/list/choices = gs13_preference_choices(setting)
 		if(choices)
 			value = tgui_input_list(user, labels[setting], "GS13 preferences", choices, value)
+			if(isnull(value) || character != active_character)
+				return
+		else if(setting in gs13_shape_color_preferences())
+			value = tgui_input_color(user, labels[setting], "GS13 preferences", value)
 			if(isnull(value) || character != active_character)
 				return
 		else if(gs13_numeric_preference(setting))

@@ -43,6 +43,14 @@ Native modular uniform panels use the same independent part sizes; the belly's v
 
 Three additional integration tests cover numeric save/default/editor handling, live independent body sizes and limits without changing measured mass, real uniform/fullness/limb cleanup, and two additional native BYOND previews. The cloning snapshot fixture also checks both a base size and a maximum. Native validation is pending.
 
+## Independent human part-color candidate
+
+The belly and hips now each have a separate custom-color switch and native color picker. Both switches default off, preserving current limb skin shading. The adapter follows the reviewed inherited `ORGAN_COLOR_INHERIT` versus `ORGAN_COLOR_OVERRIDE` contract: an opted-in part uses its stored color, while a part using native skin follows the current body, including Hulk/husk shading. Global paint and transformation color effects still compose above these underlying part colors. Uniform panels retain their own native palette.
+
+Colors use validated six-digit native hexadecimal values, the existing character snapshot, live cache invalidation, and cloning capture. Turning a switch off reveals current native skin rather than restoring an old snapshot. Appearance opt-out, unsupported-species cleanup, and existing limb safety remain in force. Full source multi-channel color/layer controls and birth-anatomy DNA transfer remain open.
+
+Three additional integration tests cover saved color validation, real live appearance/cache changes and current-skin restoration, native uniform palette ownership, species/appearance cleanup, and one additional BYOND preview. The cloning fixture also checks explicit color permission and the chosen value. Native validation is pending.
+
 ## Client verification still required
 
 In Character Setup's GS13 editor, save and reload each Human belly shape, enable weight gain/body sprites, and test gaining/losing weight at different stages. Repeat with blueberry transformation independent of ordinary weight gain, native skin changes, clothing concealment, dyed/rolled modular uniforms, and an unsupported species. Verify live style changes update the current body's appearance and other saved character slots do not change it.

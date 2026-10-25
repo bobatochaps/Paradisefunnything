@@ -5,7 +5,17 @@
 	return list("weight_belly_base" = 0, "weight_belly_max" = 9, "weight_hips_base" = 0, "weight_hips_max" = 9)
 
 /proc/gs13_shape_preference_labels()
-	return list("weight_belly_base" = "Base belly sprite size (0 to 9)", "weight_belly_max" = "Maximum belly sprite size (0 to 9)", "weight_hips_base" = "Base hip sprite size (0 to 9)", "weight_hips_max" = "Maximum hip sprite size (0 to 9)")
+	return list("weight_belly_base" = "Base belly sprite size (0 to 9)", "weight_belly_max" = "Maximum belly sprite size (0 to 9)", "weight_hips_base" = "Base hip sprite size (0 to 9)", "weight_hips_max" = "Maximum hip sprite size (0 to 9)", "weight_belly_custom_color" = "Use a custom belly color", "weight_belly_color" = "Belly color", "weight_hips_custom_color" = "Use a custom hip color", "weight_hips_color" = "Hip color")
+
+/proc/gs13_shape_color_preferences()
+	return list("weight_belly_color" = "#fcccb3", "weight_hips_color" = "#fcccb3")
+
+/// Source ORGAN_COLOR_OVERRIDE supplies the chosen part color; inherited skin
+/// shading remains the compatible default. Global body color effects still mix.
+/mob/living/carbon/human/proc/get_gs13_part_color(part, obj/item/organ/external/limb, sample_y)
+	if(gs13_preferences["weight_[part]_custom_color"])
+		return sanitize_hexcolor(gs13_preferences["weight_[part]_color"], "#fcccb3")
+	return gs13_weight_skin_color(limb, sample_y)
 
 /// Source growth adds the current weight stage to each part's independent base,
 /// then applies its maximum. The native uniform adapter supports sizes 0 to 9.
@@ -70,7 +80,7 @@
 		belly_stage++
 	belly_stage = min(belly_stage, get_gs13_part_size("belly", 9))
 	var/belly_style = get_gs13_belly_style()
-	var/render_key = "[belly_size]:[hip_size]:[shape]:[belly_stage]:[belly_style]:[HAS_TRAIT(src, TRAIT_HULK)]:[HAS_TRAIT(src, TRAIT_HUSK)]"
+	var/render_key = "[belly_size]:[hip_size]:[shape]:[belly_stage]:[belly_style]:[HAS_TRAIT(src, TRAIT_HULK)]:[HAS_TRAIT(src, TRAIT_HUSK)]:[gs13_preferences["weight_belly_custom_color"]]:[gs13_preferences["weight_belly_color"]]:[gs13_preferences["weight_hips_custom_color"]]:[gs13_preferences["weight_hips_color"]]"
 	if(!force && render_key == gs13_weight_appearance_key)
 		return
 	gs13_weight_appearance_key = render_key
@@ -91,11 +101,11 @@
 	var/hips_covered = (w_uniform?.body_parts_covered & (LOWER_TORSO | LEGS)) || (suit_coverage & (LOWER_TORSO | LEGS))
 	if(has_belly && belly_size && !chest_covered)
 		var/mutable_appearance/belly = mutable_appearance(gs13_belly_style_icon(belly_style), "m_belly_[belly_style]_[belly_size]_FRONT", layer = -LIMBS_LAYER + 0.5)
-		belly.color = gs13_weight_skin_color(chest, 18)
+		belly.color = get_gs13_part_color("belly", chest, 18)
 		standing += belly
 	if(has_hips && hip_size && !hips_covered)
 		var/mutable_appearance/hips = mutable_appearance('modular_gs/icons/mob/human/genitals/butt.dmi', "m_butt_pair_gs_[hip_size]_ADJ_primary", layer = -LIMBS_LAYER + 0.4)
-		hips.color = gs13_weight_skin_color(groin, 10)
+		hips.color = get_gs13_part_color("hips", groin, 10)
 		standing += hips
 
 	var/obj/item/clothing/under/uniform = w_uniform
