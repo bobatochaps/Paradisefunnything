@@ -117,11 +117,7 @@
 
 /datum/character_save/proc/apply_gs13_preferences(mob/living/carbon/character, initialize_weight = TRUE)
 	gs13_preferences = gs13_sanitize_preferences(gs13_preferences)
-	character.gs13_preferences = gs13_preferences.Copy()
-	character.gs13_character_slot = slot_number
-	character.weight_gain_rate = gs13_preferences["weight_gain_rate"]
-	character.weight_loss_rate = gs13_preferences["weight_loss_rate"]
-	character.max_weight = gs13_preferences["max_weight"]
+	character.set_gs13_preference_snapshot(gs13_preferences, slot_number)
 	if(initialize_weight)
 		if(ishuman(character))
 			var/mob/living/carbon/human/human_character = character
@@ -132,6 +128,14 @@
 	character.calculate_fatness()
 	character.handle_weight_gain(0)
 	character.refresh_gs13_bursting()
+
+/// Apply body-owned policy without changing physical weight, size, DNA, or organs.
+/mob/living/carbon/proc/set_gs13_preference_snapshot(saved, character_slot = 0)
+	gs13_preferences = gs13_sanitize_preferences(saved)
+	gs13_character_slot = isnum(character_slot) && GS13_IS_FINITE(character_slot) ? max(0, round(character_slot)) : 0
+	weight_gain_rate = gs13_preferences["weight_gain_rate"]
+	weight_loss_rate = gs13_preferences["weight_loss_rate"]
+	max_weight = gs13_preferences["max_weight"]
 
 /datum/character_save/proc/show_gs13_preferences(mob/user)
 	gs13_preferences = gs13_sanitize_preferences(gs13_preferences)

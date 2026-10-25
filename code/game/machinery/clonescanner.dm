@@ -17,6 +17,9 @@
 	var/datum/dna/genetic_info
 	/// What quirks the patient has
 	var/list/quirks = list()
+	/// Body-owned policy is captured separately from physical DNA/anatomy.
+	var/list/gs13_preferences
+	var/gs13_character_slot = 0
 
 //The cloning scanner itself.
 /obj/machinery/clonescanner
@@ -132,6 +135,8 @@
 	scan_result.mindUID = scanned.mind.UID()
 	scan_result.genetic_info = scanned.dna.Clone()
 	scan_result.quirks = scanned.quirks.Copy()
+	scan_result.gs13_preferences = gs13_sanitize_preferences(scanned.gs13_preferences)
+	scan_result.gs13_character_slot = scanned.gs13_character_slot
 
 	for(var/limb in scanned.dna.species.has_limbs)
 		if(scanned.bodyparts_by_name[limb])
