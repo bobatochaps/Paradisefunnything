@@ -4894,8 +4894,11 @@
       "sha256": "f763862dd329cfaa86ebda04cec664a3407d67b81f98f22b317e891e432fa923",
       "domain": "body-and-appearance",
       "root_dme_entry": true,
-      "status": "needs-semantic-audit",
-      "target_adapters": [],
+      "status": "partial-adapter",
+      "target_adapters": [
+        "code/modules/gs13/modular_shirts.dm",
+        "code/modules/gs13/modular_clothing.dm"
+      ],
       "declarations": [
         "/datum/greyscale_config/button_up",
         "/datum/greyscale_config/button_up/worn",
@@ -4925,7 +4928,7 @@
         "modular_gs/icons/mob/modclothes/button_up_worn.dmi",
         "modular_gs/icons/obj/clothing/modclothes/button_up.dmi"
       ],
-      "remaining_gate": "Audit behavior, dependencies, assets, acquisition, preferences, lifecycle, and native integration tests."
+      "remaining_gate": "Original three-channel shirt palettes and skin masks, actual native loadout/item JSON, current body colors, source state-name adaptation, static previews, native protection/sensors, and normal stock in nine matching wardrobes pass 285 focused / 340 full native tests with four inspected previews. Full species/digitigrade/taur fits, missing source role/world acquisition, broader layer contracts, and direct client checks remain open."
     },
     {
       "source": "modular_gs/code/modules/clothing/under/dual_tone_jumpsuit.dm",
@@ -4975,8 +4978,12 @@
       "sha256": "b56f4385b9b6259eb9de16c936eb446a4324e4be3a70b4cffdd756d7dd213ea0",
       "domain": "body-and-appearance",
       "root_dme_entry": true,
-      "status": "needs-semantic-audit",
-      "target_adapters": [],
+      "status": "partial-adapter",
+      "target_adapters": [
+        "code/modules/gs13/modular_shirt_variants.dm",
+        "code/modules/gs13/modular_shirts.dm",
+        "code/modules/gs13/modular_clothing.dm"
+      ],
       "declarations": [
         "/obj/item/clothing/under/dual_tone/button_up/cargo",
         "/obj/item/clothing/under/dual_tone/button_up/cargo/quartermaster",
@@ -5010,7 +5017,7 @@
         "modular_zubbers/code/modules/clothing/under/security.dm"
       ],
       "asset_literals": [],
-      "remaining_gate": "Audit behavior, dependencies, assets, acquisition, preferences, lifecycle, and native integration tests."
+      "remaining_gate": "Original three-channel shirt palettes and skin masks, actual native loadout/item JSON, current body colors, source state-name adaptation, static previews, native protection/sensors, and normal stock in nine matching wardrobes pass 285 focused / 340 full native tests with four inspected previews. Full species/digitigrade/taur fits, missing source role/world acquisition, broader layer contracts, and direct client checks remain open."
     },
     {
       "source": "modular_gs/code/modules/clothing/under/jobs/modular_clothing/dual_tone.dm",
@@ -5091,8 +5098,12 @@
       "sha256": "8f3b504203b52ffff217c5d54add68254968d104cbf5a8f0bad34c55b2757d0e",
       "domain": "body-and-appearance",
       "root_dme_entry": true,
-      "status": "needs-semantic-audit",
-      "target_adapters": [],
+      "status": "partial-adapter",
+      "target_adapters": [
+        "code/modules/gs13/modular_shirt_variants.dm",
+        "code/modules/gs13/modular_shirts.dm",
+        "code/modules/gs13/modular_clothing.dm"
+      ],
       "declarations": [
         "/obj/item/clothing/under/dual_tone/button_up/turtleneck/cargo",
         "/obj/item/clothing/under/dual_tone/button_up/turtleneck/cargo/quartermaster",
@@ -5126,7 +5137,7 @@
         "modular_zubbers/code/modules/clothing/under/security.dm"
       ],
       "asset_literals": [],
-      "remaining_gate": "Audit behavior, dependencies, assets, acquisition, preferences, lifecycle, and native integration tests."
+      "remaining_gate": "Original three-channel shirt palettes and skin masks, actual native loadout/item JSON, current body colors, source state-name adaptation, static previews, native protection/sensors, and normal stock in nine matching wardrobes pass 285 focused / 340 full native tests with four inspected previews. Full species/digitigrade/taur fits, missing source role/world acquisition, broader layer contracts, and direct client checks remain open."
     },
     {
       "source": "modular_gs/code/modules/clothing/under/jobs/modular_items.dm",
@@ -5217,8 +5228,11 @@
       "sha256": "6aaf83c67b4299591a8e9bad72534f98fe9beee8f3679aeedea0c53b12e59585",
       "domain": "body-and-appearance",
       "root_dme_entry": true,
-      "status": "needs-semantic-audit",
-      "target_adapters": [],
+      "status": "partial-adapter",
+      "target_adapters": [
+        "code/modules/gs13/modular_shirts.dm",
+        "code/modules/gs13/modular_clothing.dm"
+      ],
       "declarations": [
         "/datum/greyscale_config/turtleneck",
         "/datum/greyscale_config/turtleneck/worn",
@@ -5245,7 +5259,7 @@
         "modular_gs/icons/mob/modclothes/turtleneck_worn.dmi",
         "modular_gs/icons/obj/clothing/modclothes/turtleneck.dmi"
       ],
-      "remaining_gate": "Audit behavior, dependencies, assets, acquisition, preferences, lifecycle, and native integration tests."
+      "remaining_gate": "Original three-channel shirt palettes and skin masks, actual native loadout/item JSON, current body colors, source state-name adaptation, static previews, native protection/sensors, and normal stock in nine matching wardrobes pass 285 focused / 340 full native tests with four inspected previews. Full species/digitigrade/taur fits, missing source role/world acquisition, broader layer contracts, and direct client checks remain open."
     },
     {
       "source": "modular_gs/code/modules/condos/condo_templates.dm",
