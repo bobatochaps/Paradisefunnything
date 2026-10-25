@@ -13,6 +13,7 @@
 #include "test_gs13_blueberry_sources.dm"
 #include "test_gs13_body_shapes.dm"
 #include "test_gs13_bursting.dm"
+#include "test_gs13_clothing_distribution.dm"
 #include "test_gs13_digestive_organs.dm"
 #include "test_gs13_digestion.dm"
 #include "test_gs13_door_stuckage.dm"

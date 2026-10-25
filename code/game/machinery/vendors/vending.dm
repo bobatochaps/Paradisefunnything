@@ -226,6 +226,7 @@
 
 /obj/machinery/economy/vending/Initialize(mapload)
 	. = ..()
+	add_gs13_uniform_stock()
 	var/build_inv = FALSE
 	if(!refill_canister)
 		build_inv = TRUE
