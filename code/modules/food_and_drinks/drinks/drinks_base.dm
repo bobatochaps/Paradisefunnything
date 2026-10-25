@@ -40,7 +40,8 @@
 			SPAN_NOTICE("You hear what sounds like gulping."))
 		chugging = TRUE
 		while(do_after_once(chugger, 4 SECONDS, TRUE, chugger, null, "You stop chugging [src]."))
-			chugger.drink(src, chugger, 25) //Half of a glass, quarter of a bottle.
+			if(!chugger.drink(src, chugger, 25)) //Half of a glass, quarter of a bottle.
+				break
 			if(!reagents.total_volume) //Finish in style.
 				chugger.emote("gasp")
 				chugger.visible_message(SPAN_NOTICE("[chugger] [pick("finishes","downs","polishes off","slams")] the entire [src], what a [pick("savage","monster","champ","beast")]!"),

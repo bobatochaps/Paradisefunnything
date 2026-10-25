@@ -79,3 +79,14 @@
 	if(!gs13_digesting && owner && !QDELETED(owner))
 		owner.update_gs13_weight_appearance()
 		owner.refresh_gs13_bursting()
+
+/// Generic glass gulps retain their native delay and recheck the real context.
+/obj/item/reagent_containers/glass/proc/finish_gs13_gulp(mob/living/carbon/subject, mob/living/feeder)
+	if(QDELETED(src) || QDELETED(subject) || QDELETED(feeder) || !reagents || !is_open_container() || feeder.get_active_hand() != src || !feeder.Adjacent(subject) || feeder.incapacitated() || subject.is_mouth_covered())
+		return 0
+	if(ishuman(subject))
+		var/mob/living/carbon/human/human_subject = subject
+		if(!human_subject.check_has_mouth())
+			return 0
+	var/mob/living/carbon/consumer = subject.get_gs13_food_recipient()
+	return reagents.gs13_ingest(consumer, 5)

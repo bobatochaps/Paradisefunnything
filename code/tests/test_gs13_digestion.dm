@@ -1,6 +1,10 @@
 /mob/living
 	var/gs13_test_oral_exposure = 0
 
+/datum/game_test/room_test/proc/gs13_ingested_reagents(mob/living/subject)
+	var/atom/target = subject.get_gs13_ingestion_target()
+	return target?.reagents
+
 /datum/reagent/gs13_ingestion_probe
 	name = "GS13 ingestion test reagent"
 	id = "gs13_ingestion_probe"

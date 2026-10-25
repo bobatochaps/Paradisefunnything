@@ -36,6 +36,9 @@
 			to_chat(user, SPAN_WARNING("[user == H ? "You" : H] can't ingest [src]!"))
 			return FALSE
 
+	if(C.get_gs13_ingestion_free_space() < reagents.total_volume)
+		to_chat(user, SPAN_WARNING("There is not enough room to swallow the pill."))
+		return FALSE
 	if(user == C)
 		to_chat(user, SPAN_NOTICE("You swallow [src]."))
 	else
@@ -46,8 +49,13 @@
 		C.forceFedAttackLog(src, user)
 		C.visible_message(SPAN_WARNING("[user] forces [C] to swallow [src]."))
 
-	reagents.reaction(C, REAGENT_INGEST)
-	reagents.trans_to(C, reagents.total_volume)
+	if(QDELETED(src) || !reagents || C.get_gs13_ingestion_free_space() < reagents.total_volume)
+		to_chat(user, SPAN_WARNING("There is not enough room to swallow the pill."))
+		return FALSE
+	if(!reagents.gs13_ingest(C, reagents.total_volume))
+		return FALSE
+	if(reagents.total_volume > 0)
+		return FALSE
 	qdel(src)
 	return TRUE
 

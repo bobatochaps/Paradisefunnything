@@ -1204,12 +1204,7 @@ GLOBAL_LIST_INIT(ventcrawl_machinery, list(/obj/machinery/atmospherics/unary/ven
 	if(!istype(to_eat))
 		return FALSE
 
-	var/fullness = nutrition + 10
-	if(gs13_weight_enabled())
-		fullness = get_fullness() + 10
-	else if(istype(to_eat, /obj/item/food))
-		for(var/datum/reagent/consumable/C in reagents.reagent_list) // We add the nutrition value of what we're currently digesting
-			fullness += C.nutriment_factor * C.volume / (C.metabolization_rate * metabolism_efficiency)
+	var/fullness = get_fullness() + 10
 
 	if(user == src)
 		if(!selfFeed(to_eat, fullness))
@@ -1225,15 +1220,17 @@ GLOBAL_LIST_INIT(ventcrawl_machinery, list(/obj/machinery/atmospherics/unary/ven
 		if(is_mouth_covered())
 			return FALSE
 		var/bite_size = bitesize_override ? bitesize_override : to_eat.bitesize
-		bite_size = min(bite_size, to_eat.reagents.total_volume, consumer.reagents.maximum_volume - consumer.reagents.total_volume)
+		bite_size = min(bite_size, to_eat.reagents.total_volume, consumer.get_gs13_ingestion_free_space())
 		if(bite_size <= 0)
 			to_chat(user, SPAN_WARNING("The linked receiver cannot accept any more food."))
 			return FALSE
 		add_attack_logs(user, consumer, "Bluespace-fed [to_eat] through [src]. Reagents: [to_eat.reagents.log_list()]", to_eat.reagents.harmless_helper() ? ATKLOG_ALMOSTALL : null)
-		consumer.consume(to_eat, bite_size)
+		if(!consumer.consume(to_eat, bite_size))
+			return FALSE
 		consumer.gs13_receiving_feedback()
 	else
-		consume(to_eat, bitesize_override)
+		if(!consume(to_eat, bitesize_override))
+			return FALSE
 
 	SSticker.score.score_food_eaten++
 	return consumer
@@ -1254,17 +1251,15 @@ GLOBAL_LIST_INIT(ventcrawl_machinery, list(/obj/machinery/atmospherics/unary/ven
 		var/drink_size = max(initial(to_drink.amount_per_transfer_from_this), 5)
 		if(drinksize_override)
 			drink_size = drinksize_override
-		var/fraction = 1
+		drink_size = min(drink_size, to_drink.reagents.total_volume, consumer.get_gs13_ingestion_free_space())
+		if(drink_size <= 0)
+			to_chat(user, SPAN_WARNING("The recipient cannot swallow any more right now."))
+			return FALSE
 		if(consumer != src)
-			drink_size = min(drink_size, to_drink.reagents.total_volume, consumer.reagents.maximum_volume - consumer.reagents.total_volume)
-			if(drink_size <= 0)
-				to_chat(user, SPAN_WARNING("The linked receiver cannot accept any more drink."))
-				return FALSE
-			fraction = drink_size / to_drink.reagents.total_volume
 			add_attack_logs(user, consumer, "Bluespace-fed [to_drink] through [src]. Reagents: [to_drink.reagents.log_list()]", to_drink.reagents.harmless_helper() ? ATKLOG_ALMOSTALL : null)
 		consumer.taste(to_drink.reagents)
-		to_drink.reagents.reaction(consumer, REAGENT_INGEST, fraction)
-		to_drink.reagents.trans_to(consumer, drink_size)
+		if(!to_drink.reagents.gs13_ingest(consumer, drink_size))
+			return FALSE
 		if(consumer != src)
 			if(length(consumer.viruses))
 				to_drink.AddComponent(/datum/component/viral_contamination, consumer.viruses)
@@ -1332,21 +1327,22 @@ GLOBAL_LIST_INIT(ventcrawl_machinery, list(/obj/machinery/atmospherics/unary/ven
 /mob/living/carbon/proc/forceFedAttackLog(obj/item/reagent_containers/to_eat, mob/user)
 	add_attack_logs(user, src, "Fed [to_eat]. Reagents: [to_eat.reagents.log_list(to_eat)]", to_eat.reagents.harmless_helper() ? ATKLOG_ALMOSTALL : null)
 
-/*TO DO - If/when stomach organs are introduced, override this at the human level sending the item to the stomach
-so that different stomachs can handle things in different ways VB*/
+/// Actual oral intake uses the recipient's current stomach, where available.
 /mob/living/carbon/proc/consume(obj/item/food/to_eat, bitesize_override)
 	var/this_bite = bitesize_override ? bitesize_override : to_eat.bitesize
 	if(!to_eat.reagents)
-		return
+		return FALSE
+	this_bite = min(this_bite, to_eat.reagents.total_volume, get_gs13_ingestion_free_space())
+	if(this_bite <= 0)
+		return FALSE
 	if(satiety > -200)
 		satiety -= to_eat.junkiness
 	if(to_eat.consume_sound)
 		playsound(loc, to_eat.consume_sound, rand(10, 50), TRUE)
 	if(to_eat.reagents.total_volume)
 		taste(to_eat.reagents)
-		var/fraction = min(this_bite / to_eat.reagents.total_volume, 1)
-		to_eat.reagents.reaction(src, REAGENT_INGEST, fraction)
-		to_eat.reagents.trans_to(src, this_bite)
+		if(!to_eat.reagents.gs13_ingest(src, this_bite))
+			return FALSE
 
 	if(HAS_TRAIT(src, TRAIT_GLUTTONOUS_GLORY))
 		if(istype(to_eat, /obj/item/food/burger/superbite))
@@ -1361,6 +1357,7 @@ so that different stomachs can handle things in different ways VB*/
 		// Don't let them eat enough to OD themselves.
 		reagents.check_and_add("kelotane", 20, 1)
 		reagents.check_and_add("bicaridine", 20, 1)
+	return TRUE
 
 /mob/living/carbon/get_access()
 	. = ..()

@@ -68,10 +68,8 @@
 				add_attack_logs(user, carb_mob, "Fed with [name] containing [contained]", !!carb_mob.ckey ? null : ATKLOG_ALL)
 			else
 				to_chat(user, SPAN_NOTICE("You swallow a gulp of [src]."))
-			var/fraction = min(5 / reagents.total_volume, 1)
 			carb_mob.taste(reagents) // yummy
-			reagents.reaction(carb_mob, REAGENT_INGEST, fraction)
-			addtimer(CALLBACK(reagents, TYPE_PROC_REF(/datum/reagents, trans_to), carb_mob, 5), 5)
+			addtimer(CALLBACK(src, PROC_REF(finish_gs13_gulp), carb_mob, user), 5)
 			playsound(target.loc,'sound/items/drink.ogg', rand(10,50), TRUE)
 			// Add viruses where needed
 			if(length(carb_mob.viruses))

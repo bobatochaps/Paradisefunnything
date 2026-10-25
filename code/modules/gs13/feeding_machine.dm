@@ -104,6 +104,9 @@
 /obj/machinery/iv_drip/feeding_tube/proc/can_feed(mob/living/carbon/target)
 	if(!istype(target) || QDELETED(target) || !isturf(target.loc) || !isturf(loc) || !Adjacent(target) || !target.reagents || target.is_mouth_covered())
 		return FALSE
+	var/mob/living/carbon/consumer = target.get_gs13_food_recipient()
+	if(!consumer?.get_gs13_ingestion_target())
+		return FALSE
 	if(ishuman(target))
 		var/mob/living/carbon/human/human = target
 		return human.check_has_mouth()
@@ -159,14 +162,11 @@
 	if(!transfer_rate || !GS13_IS_FINITE(seconds_per_tick) || seconds_per_tick <= 0)
 		return
 	var/mob/living/carbon/consumer = connected_target.get_gs13_food_recipient()
-	var/amount = min(transfer_rate * seconds_per_tick, supply.total_volume, consumer.reagents.maximum_volume - consumer.reagents.total_volume)
+	var/amount = min(transfer_rate * seconds_per_tick, supply.total_volume, consumer.get_gs13_ingestion_free_space())
 	if(amount <= 0)
 		return
-	// Paradise uses one body holder. Apply native ingestion to exactly the dose
-	// that fits, then let native metabolism handle nutrition and GS13 preferences.
-	supply.reaction(consumer, REAGENT_INGEST, amount / supply.total_volume, show_message = FALSE)
-	if(!QDELETED(supply) && !QDELETED(consumer) && can_feed(connected_target) && connected_target.get_gs13_food_recipient() == consumer)
-		supply.trans_to(consumer, amount)
+	// This machine feeds orally. Ordinary IVs continue to use the blood holder.
+	if(supply.gs13_ingest(consumer, amount, show_message = FALSE))
 		if(consumer != connected_target && prob(10))
 			consumer.gs13_receiving_feedback()
 	update_icon()

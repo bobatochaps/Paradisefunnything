@@ -60,9 +60,8 @@
 			return // The condiment might be empty after the delay.
 		user.visible_message(SPAN_WARNING("[user] feeds [target] from [src]."))
 		add_attack_logs(user, target, "Fed [src] containing [reagents.log_list()]", reagents.harmless_helper() ? ATKLOG_ALMOSTALL : null)
-	var/fraction = min(10/reagents.total_volume, 1)
-	reagents.reaction(target, REAGENT_INGEST, fraction)
-	reagents.trans_to(target, 10)
+	if(!reagents.gs13_ingest(target, 10))
+		return
 	playsound(target.loc,'sound/items/drink.ogg', rand(10,50), TRUE)
 
 /obj/item/reagent_containers/condiment/normal_act(atom/target, mob/living/user) // Proc is true if any of the if checks go through. Preserves tapping behaviour on certain machinery.
