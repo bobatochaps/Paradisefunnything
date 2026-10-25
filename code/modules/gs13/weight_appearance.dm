@@ -152,7 +152,14 @@
 	return dna.species.skin_tone_to_hex(clamp(s_tone, 1, 13))
 
 /mob/living/carbon/human/proc/gs13_add_weight_clothing(list/standing, obj/item/clothing/under/uniform, state, draw_layer, tint)
-	uniform.gs13_add_modular_panels(standing, state, draw_layer, tint)
+	var/skin_tint
+	if(findtext(state, "belly_") == 1)
+		skin_tint = get_gs13_part_color("belly", get_organ(BODY_ZONE_CHEST), 18)
+	else if(findtext(state, "butt_") == 1)
+		skin_tint = get_gs13_part_color("hips", get_organ(BODY_ZONE_PRECISE_GROIN), 10)
+	else if(findtext(state, "breasts_") == 1)
+		skin_tint = gs13_weight_skin_color(get_organ(BODY_ZONE_CHEST), 18)
+	uniform.gs13_add_modular_panels(standing, state, draw_layer, tint, skin_tint)
 
 /obj/item/clothing/under/proc/gs13_modular_color()
 	return color

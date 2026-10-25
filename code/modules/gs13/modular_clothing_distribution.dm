@@ -142,13 +142,13 @@
 	var/list/gs13_dual_tone_stock
 
 /obj/machinery/economy/vending/clothing
-	gs13_dual_tone_stock = list(/obj/item/clothing/under/gs13_dual_tone = 5)
+	gs13_dual_tone_stock = list(/obj/item/clothing/under/gs13_dual_tone = 5, /obj/item/clothing/under/gs13_dual_tone/button_up = 5, /obj/item/clothing/under/gs13_dual_tone/button_up/turtleneck = 5)
 
 /obj/machinery/economy/vending/secdrobe
 	gs13_dual_tone_stock = list(/obj/item/clothing/under/gs13_dual_tone/security = 3)
 
 /obj/machinery/economy/vending/medidrobe
-	gs13_dual_tone_stock = list(/obj/item/clothing/under/gs13_dual_tone/medbay = 3, /obj/item/clothing/under/gs13_dual_tone/medbay/paramedic = 3, /obj/item/clothing/under/gs13_dual_tone/medbay/psychologist = 3)
+	gs13_dual_tone_stock = list(/obj/item/clothing/under/gs13_dual_tone/medbay = 3, /obj/item/clothing/under/gs13_dual_tone/medbay/paramedic = 3, /obj/item/clothing/under/gs13_dual_tone/medbay/psychologist = 3, /obj/item/clothing/under/gs13_dual_tone/button_up/psychologist = 3, /obj/item/clothing/under/gs13_dual_tone/button_up/turtleneck/psychologist = 3)
 
 /obj/machinery/economy/vending/engidrobe
 	gs13_dual_tone_stock = list(/obj/item/clothing/under/gs13_dual_tone/engineering = 3, /obj/item/clothing/under/gs13_dual_tone/engineering/tcomms = 3)
@@ -157,31 +157,31 @@
 	gs13_dual_tone_stock = list(/obj/item/clothing/under/gs13_dual_tone/engineering/atmos = 3)
 
 /obj/machinery/economy/vending/cargodrobe
-	gs13_dual_tone_stock = list(/obj/item/clothing/under/gs13_dual_tone/cargo = 3, /obj/item/clothing/under/gs13_dual_tone/cargo/bitrunner = 3, /obj/item/clothing/under/gs13_dual_tone/cargo/miner = 3)
+	gs13_dual_tone_stock = list(/obj/item/clothing/under/gs13_dual_tone/cargo = 3, /obj/item/clothing/under/gs13_dual_tone/button_up/cargo = 3, /obj/item/clothing/under/gs13_dual_tone/button_up/turtleneck/cargo = 3, /obj/item/clothing/under/gs13_dual_tone/cargo/bitrunner = 3, /obj/item/clothing/under/gs13_dual_tone/cargo/miner = 3)
 
 /obj/machinery/economy/vending/robodrobe
 	gs13_dual_tone_stock = list(/obj/item/clothing/under/gs13_dual_tone/science/roboticist = 3)
 
 /obj/machinery/economy/vending/scidrobe
-	gs13_dual_tone_stock = list(/obj/item/clothing/under/gs13_dual_tone/science = 3)
+	gs13_dual_tone_stock = list(/obj/item/clothing/under/gs13_dual_tone/science = 3, /obj/item/clothing/under/gs13_dual_tone/button_up/science = 3, /obj/item/clothing/under/gs13_dual_tone/button_up/turtleneck/science = 3)
 
 /obj/machinery/economy/vending/hydrodrobe
 	gs13_dual_tone_stock = list(/obj/item/clothing/under/gs13_dual_tone/service/hydroponics = 3)
 
 /obj/machinery/economy/vending/bardrobe
-	gs13_dual_tone_stock = list(/obj/item/clothing/under/gs13_dual_tone/service/bartender = 3)
+	gs13_dual_tone_stock = list(/obj/item/clothing/under/gs13_dual_tone/service/bartender = 3, /obj/item/clothing/under/gs13_dual_tone/button_up/service/bartender = 3, /obj/item/clothing/under/gs13_dual_tone/button_up/turtleneck/service/bartender = 3)
 
 /obj/machinery/economy/vending/chefdrobe
-	gs13_dual_tone_stock = list(/obj/item/clothing/under/gs13_dual_tone/service/chef = 3)
+	gs13_dual_tone_stock = list(/obj/item/clothing/under/gs13_dual_tone/service/chef = 3, /obj/item/clothing/under/gs13_dual_tone/button_up/service/chef = 3, /obj/item/clothing/under/gs13_dual_tone/button_up/turtleneck/service/chef = 3)
 
 /obj/machinery/economy/vending/janidrobe
 	gs13_dual_tone_stock = list(/obj/item/clothing/under/gs13_dual_tone/service/janitor = 3)
 
 /obj/machinery/economy/vending/lawdrobe
-	gs13_dual_tone_stock = list(/obj/item/clothing/under/gs13_dual_tone/service/lawyer = 3, /obj/item/clothing/under/gs13_dual_tone/medbay/psychologist = 3)
+	gs13_dual_tone_stock = list(/obj/item/clothing/under/gs13_dual_tone/service/lawyer = 3, /obj/item/clothing/under/gs13_dual_tone/medbay/psychologist = 3, /obj/item/clothing/under/gs13_dual_tone/button_up/service/lawyer = 3, /obj/item/clothing/under/gs13_dual_tone/button_up/turtleneck/service/lawyer = 3)
 
 /obj/machinery/economy/vending/chapdrobe
-	gs13_dual_tone_stock = list(/obj/item/clothing/under/gs13_dual_tone/service/chaplain = 3)
+	gs13_dual_tone_stock = list(/obj/item/clothing/under/gs13_dual_tone/service/chaplain = 3, /obj/item/clothing/under/gs13_dual_tone/button_up/service/chaplain = 3, /obj/item/clothing/under/gs13_dual_tone/button_up/turtleneck/service/chaplain = 3)
 
 /obj/machinery/economy/vending/chemdrobe
 	gs13_dual_tone_stock = list(/obj/item/clothing/under/gs13_dual_tone/medbay/chemist = 3)
@@ -193,4 +193,4 @@
 	gs13_dual_tone_stock = list(/obj/item/clothing/under/gs13_dual_tone/medbay/virologist = 3)
 
 /obj/machinery/economy/vending/detdrobe
-	gs13_dual_tone_stock = list(/obj/item/clothing/under/gs13_dual_tone/security/detective = 3)
+	gs13_dual_tone_stock = list(/obj/item/clothing/under/gs13_dual_tone/security/detective = 3, /obj/item/clothing/under/gs13_dual_tone/button_up/security/detective = 3, /obj/item/clothing/under/gs13_dual_tone/button_up/turtleneck/security/detective = 3)

@@ -16,7 +16,7 @@ GLOBAL_LIST_EMPTY(gs13_uniform_protection_cache)
 /obj/item/clothing/under/proc/gs13_clothing_belly_shape(shape)
 	return shape
 
-/obj/item/clothing/under/proc/gs13_add_modular_panels(list/standing, state, draw_layer, tint)
+/obj/item/clothing/under/proc/gs13_add_modular_panels(list/standing, state, draw_layer, tint, skin_tint)
 	if(!icon_exists(gs13_modular_icon, state))
 		return
 	standing += mutable_appearance(gs13_modular_icon, state, layer = draw_layer, alpha = alpha, color = tint)
@@ -31,6 +31,7 @@ GLOBAL_LIST_EMPTY(gs13_uniform_protection_cache)
 	sprite_sheets = null
 	gs13_modular_icon = 'modular_gs/icons/mob/modclothes/dual_tone_suit.dmi'
 	var/list/gs13_uniform_colors = list("#ffffff", "#ffffff")
+	var/gs13_skin_masks = FALSE
 	var/gs13_recolorable = TRUE
 	/// A native uniform supplies ratings instead of importing TG armor units.
 	var/gs13_protection_template
@@ -54,24 +55,29 @@ GLOBAL_LIST_EMPTY(gs13_uniform_protection_cache)
 
 /// Match the source GAGS recipe: main mask, stripe mask, then fixed details.
 /obj/item/clothing/under/gs13_dual_tone/proc/gs13_compose_uniform_icon(source_icon)
-	var/icon/composite = icon(source_icon, "dual_tone_jumpsuit-1")
-	composite.Blend(gs13_uniform_colors[1], ICON_MULTIPLY)
-	var/icon/stripe = icon(source_icon, "dual_tone_jumpsuit-2")
-	stripe.Blend(gs13_uniform_colors[2], ICON_MULTIPLY)
-	composite.Blend(stripe, ICON_OVERLAY)
-	composite.Blend(icon(source_icon, "dual_tone_jumpsuit"), ICON_OVERLAY)
+	var/state = initial(icon_state)
+	var/icon/composite
+	for(var/channel in 1 to length(gs13_uniform_colors))
+		var/icon/mask = icon(source_icon, "[state]-[channel]")
+		mask.Blend(gs13_uniform_colors[channel], ICON_MULTIPLY)
+		if(composite)
+			composite.Blend(mask, ICON_OVERLAY)
+		else
+			composite = mask
+	if(icon_exists(source_icon, state))
+		composite.Blend(icon(source_icon, state), ICON_OVERLAY)
 	var/icon/named = icon()
-	named.Insert(composite, "dual_tone_jumpsuit")
+	named.Insert(composite, state)
 	return named
 
 /obj/item/clothing/under/gs13_dual_tone/proc/gs13_rebuild_uniform_icons()
-	icon = gs13_compose_uniform_icon('modular_gs/icons/obj/clothing/modclothes/dual_tone_suit.dmi')
-	worn_icon = gs13_compose_uniform_icon('modular_gs/icons/mob/modclothes/dual_tone_suit_worn.dmi')
+	icon = gs13_compose_uniform_icon(initial(icon))
+	worn_icon = gs13_compose_uniform_icon(initial(worn_icon))
 	gs13_panel_icons = list()
 	update_slot_icon()
 
 /obj/item/clothing/under/gs13_dual_tone/proc/set_gs13_uniform_color(channel, value)
-	if(!gs13_recolorable || !(channel in list(1, 2)) || !istext(value) || length(value) != 7)
+	if(!gs13_recolorable || !isnum(channel) || !GS13_IS_FINITE(channel) || channel != round(channel) || channel < 1 || channel > length(gs13_uniform_colors) || !istext(value) || length(value) != 7)
 		return FALSE
 	var/clean = sanitize_hexcolor(value, "invalid")
 	if(clean == "invalid")
@@ -91,7 +97,9 @@ GLOBAL_LIST_EMPTY(gs13_uniform_protection_cache)
 	var/mob/living/user = usr
 	if(!can_customize_gs13_colors(user))
 		return
-	var/list/channels = list("Main fabric" = 1, "Stripes" = 2)
+	var/list/channels = list("Main fabric" = 1, "Secondary fabric" = 2)
+	if(length(gs13_uniform_colors) == 3)
+		channels["Trim"] = 3
 	var/choice = tgui_input_list(user, "Choose a color channel.", "Uniform colors", channels)
 	if(!can_customize_gs13_colors(user) || !(choice in channels))
 		return
@@ -104,7 +112,7 @@ GLOBAL_LIST_EMPTY(gs13_uniform_protection_cache)
 /obj/item/clothing/under/gs13_dual_tone/examine(mob/user)
 	. = ..()
 	if(gs13_recolorable)
-		. += SPAN_NOTICE("Use Set uniform colors while holding or wearing it to change its fabric and stripes.")
+		. += SPAN_NOTICE("Use Set uniform colors while holding or wearing it to change its separate color channels.")
 
 /obj/item/clothing/under/gs13_dual_tone/serialize()
 	var/list/data = ..()
@@ -119,8 +127,8 @@ GLOBAL_LIST_EMPTY(gs13_uniform_protection_cache)
 /obj/item/clothing/under/gs13_dual_tone/deserialize(list/data)
 	. = ..()
 	var/list/saved = data["gs13_uniform_colors"]
-	if(islist(saved) && length(saved) == 2)
-		for(var/channel in 1 to 2)
+	if(islist(saved) && length(saved) == length(gs13_uniform_colors))
+		for(var/channel in 1 to length(gs13_uniform_colors))
 			set_gs13_uniform_color(channel, saved[channel])
 	gs13_rebuild_uniform_icons()
 
@@ -128,21 +136,31 @@ GLOBAL_LIST_EMPTY(gs13_uniform_protection_cache)
 	// This family deliberately uses soft panels even on Round/stuffed bodies.
 	return "soft"
 
-/obj/item/clothing/under/gs13_dual_tone/gs13_add_modular_panels(list/standing, state, draw_layer, tint)
-	for(var/channel in 0 to 2)
-		var/mask_state = channel ? "[state]-[channel]" : state
+/obj/item/clothing/under/gs13_dual_tone/proc/gs13_uniform_mask_state(state, channel)
+	return channel ? "[state]-[channel]" : state
+
+/obj/item/clothing/under/gs13_dual_tone/gs13_add_modular_panels(list/standing, state, draw_layer, tint, skin_tint)
+	var/list/channels = list(0)
+	if(gs13_skin_masks && skin_tint)
+		channels += 4 // Source cutout skin precedes the garment's color masks.
+	for(var/index in 1 to length(gs13_uniform_colors))
+		channels += index
+	for(var/channel in channels)
+		var/mask_state = gs13_uniform_mask_state(state, channel)
 		if(!icon_exists(gs13_modular_icon, mask_state))
 			continue
 		var/panel_icon = gs13_modular_icon
 		if(channel)
-			panel_icon = gs13_panel_icons[mask_state]
+			var/mask_color = channel == 4 ? skin_tint : gs13_uniform_colors[channel]
+			var/cache_key = channel == 4 ? "[mask_state]:[mask_color]" : mask_state
+			panel_icon = gs13_panel_icons[cache_key]
 			if(!panel_icon)
 				var/icon/mask = icon(gs13_modular_icon, mask_state)
-				mask.Blend(gs13_uniform_colors[channel], ICON_MULTIPLY)
+				mask.Blend(mask_color, ICON_MULTIPLY)
 				var/icon/named = icon()
 				named.Insert(mask, mask_state)
 				panel_icon = named
-				gs13_panel_icons[mask_state] = panel_icon
+				gs13_panel_icons[cache_key] = panel_icon
 		// Palette colors are baked into the owned icon; native tint/alpha still
 		// apply to every layer, including arbitrary color matrices.
 		standing += mutable_appearance(panel_icon, mask_state, layer = draw_layer, alpha = alpha, color = color)
@@ -153,7 +171,13 @@ GLOBAL_LIST_EMPTY(gs13_uniform_protection_cache)
 	var/channel
 
 /datum/gear_tweak/gs13_uniform_color/New()
-	display_type = channel == 1 ? "Fabric color" : "Stripe color"
+	switch(channel)
+		if(1)
+			display_type = "Primary color"
+		if(2)
+			display_type = "Secondary color"
+		if(3)
+			display_type = "Trim color"
 	info = "Choose this uniform color channel."
 	return ..()
 
@@ -162,6 +186,9 @@ GLOBAL_LIST_EMPTY(gs13_uniform_protection_cache)
 
 /datum/gear_tweak/gs13_uniform_color/stripes
 	channel = 2
+
+/datum/gear_tweak/gs13_uniform_color/trim
+	channel = 3
 
 /datum/gear_tweak/gs13_uniform_color/get_default()
 	return "#ffffff"
