@@ -30,6 +30,7 @@
 		.[key] = 0
 	. += gs13_burst_default_preferences()
 	. += gs13_anatomy_default_preferences()
+	. += gs13_shape_default_preferences()
 
 /proc/gs13_preference_labels()
 	. = list(
@@ -61,6 +62,7 @@
 	. += gs13_helplessness_labels()
 	. += gs13_burst_preference_labels()
 	. += gs13_anatomy_preference_labels()
+	. += gs13_shape_preference_labels()
 
 /proc/gs13_preference_choices(setting)
 	switch(setting)
@@ -90,6 +92,9 @@
 				result[pref] = value
 			continue
 		if(!isnum(value) || !GS13_IS_FINITE(value))
+			continue
+		if(pref in gs13_shape_default_preferences())
+			result[pref] = clamp(round(value), 0, 9)
 			continue
 		if(pref in gs13_anatomy_numeric_preferences())
 			result[pref] = clamp(value, 0.5, 80)
@@ -167,6 +172,8 @@
 			if(setting == "body_size")
 				minimum = GS13_BODY_SIZE_MIN
 				maximum = GS13_BODY_SIZE_MAX
+			else if(setting in gs13_shape_default_preferences())
+				maximum = 9
 			else if(setting in gs13_anatomy_numeric_preferences())
 				minimum = 0.5
 				maximum = 80

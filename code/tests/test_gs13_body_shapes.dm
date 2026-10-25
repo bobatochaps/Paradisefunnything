@@ -9,6 +9,78 @@
 		var/list/saved = gs13_sanitize_preferences(list("weight_belly_shape" = invalid))
 		TEST_ASSERT_EQUAL(saved["weight_belly_shape"], "Smooth without arms", "Malformed style values fall back to the compatible original style")
 
+/datum/game_test/room_test/gs13_part_size_preferences/Run()
+	var/list/defaults = gs13_default_preferences()
+	TEST_ASSERT_EQUAL(defaults["weight_belly_base"], 0, "Older characters retain their existing belly appearance")
+	TEST_ASSERT_EQUAL(defaults["weight_hips_base"], 0, "Older characters retain their existing hip appearance")
+	TEST_ASSERT_EQUAL(defaults["weight_belly_max"], 9, "Default belly growth retains every native weight stage")
+	TEST_ASSERT_EQUAL(defaults["weight_hips_max"], 9, "Default hip growth retains every native weight stage")
+	var/list/saved = gs13_sanitize_preferences(json_encode(list("weight_belly_base" = 3.2, "weight_belly_max" = 2, "weight_hips_base" = -10, "weight_hips_max" = 999)))
+	TEST_ASSERT_EQUAL(saved["weight_belly_base"], 3, "Native sprite sizes persist as whole numbers")
+	TEST_ASSERT_EQUAL(saved["weight_belly_max"], 2, "A maximum below the base remains an intentional cap")
+	TEST_ASSERT_EQUAL(saved["weight_hips_base"], 0, "Negative base sizes cannot select invalid art")
+	TEST_ASSERT_EQUAL(saved["weight_hips_max"], 9, "The native uniform palette bounds part growth")
+	for(var/key in gs13_shape_default_preferences())
+		TEST_ASSERT(gs13_numeric_preference(key), "The actual character editor treats part size settings as numbers")
+		var/list/invalid = gs13_sanitize_preferences(list(key = INFINITY))
+		TEST_ASSERT_EQUAL(invalid[key], defaults[key], "Invalid numeric saves use the compatible part default")
+
+/datum/game_test/room_test/gs13_part_size_live_body/Run()
+	var/mob/living/carbon/human/subject = allocate(/mob/living/carbon/human)
+	subject.fatness_real = FATNESS_LEVEL_OBESE
+	var/before_mass = subject.calculate_weight_in_pounds()
+	var/datum/character_save/character = allocate(/datum/character_save)
+	character.gs13_preferences = gs13_sanitize_preferences(list("master_wg_pref" = TRUE, "weight_belly_base" = 2, "weight_belly_max" = 5, "weight_hips_base" = 1, "weight_hips_max" = 2))
+	character.apply_gs13_preferences(subject, FALSE)
+	var/list/states = gs13_weight_panel_states(subject)
+	TEST_ASSERT("m_belly_smoothnoarms_5_FRONT" in states, "The belly adds its own base to the actual weight stage and applies its cap")
+	TEST_ASSERT("m_butt_pair_gs_2_ADJ_primary" in states, "Hip size is independent of the belly")
+	TEST_ASSERT_EQUAL(subject.fatness_real, FATNESS_LEVEL_OBESE, "Part appearance cannot rewrite physical body fat")
+	TEST_ASSERT_EQUAL(subject.calculate_weight_in_pounds(), before_mass, "Visual part sizes cannot change measured body mass")
+	character.gs13_preferences["weight_belly_max"] = 1
+	character.gs13_preferences["weight_hips_max"] = 0
+	character.apply_gs13_preferences(subject, FALSE)
+	states = gs13_weight_panel_states(subject)
+	TEST_ASSERT("m_belly_smoothnoarms_1_FRONT" in states, "A live cap edit invalidates the cache within the same weight stage")
+	TEST_ASSERT_NOT("m_butt_pair_gs_2_ADJ_primary" in states, "A zero part maximum removes that part's extra overlay")
+	character.gs13_preferences["weight_belly_max"] = 0
+	character.apply_gs13_preferences(subject, FALSE)
+	TEST_ASSERT_NULL(subject.overlays_standing[GS13_WEIGHT_BODY_LAYER], "Zero caps release the complete owned overlay without changing the native body")
+	subject.fatness_real = 0
+	character.gs13_preferences["weight_belly_base"] = 3
+	character.gs13_preferences["weight_belly_max"] = 9
+	character.gs13_preferences["weight_hips_base"] = 2
+	character.gs13_preferences["weight_hips_max"] = 9
+	character.apply_gs13_preferences(subject, FALSE)
+	states = gs13_weight_panel_states(subject)
+	TEST_ASSERT("m_belly_smoothnoarms_3_FRONT" in states, "The independent base remains visible at zero added fat")
+	TEST_ASSERT("m_butt_pair_gs_2_ADJ_primary" in states, "The hip base also remains independent of added fat")
+
+/datum/game_test/room_test/gs13_part_size_uniform_and_limbs/Run()
+	var/mob/living/carbon/human/subject = allocate(/mob/living/carbon/human)
+	subject.gs13_preferences = gs13_sanitize_preferences(list("master_wg_pref" = TRUE, "weight_belly_shape" = "Round", "weight_belly_base" = 2, "weight_belly_max" = 5, "weight_hips_max" = 2))
+	subject.fatness_real = FATNESS_LEVEL_OBESE
+	subject.calculate_fatness()
+	gs13_render_weight_preview(subject, "body_independent_part_sizes")
+	var/obj/item/clothing/under/color/grey/uniform = allocate(/obj/item/clothing/under/color/grey)
+	subject.equip_to_slot_if_possible(uniform, ITEM_SLOT_JUMPSUIT)
+	subject.nutrition = FULLNESS_LEVEL_NOMOREPLZ
+	subject.update_gs13_weight_appearance(TRUE)
+	var/list/states = gs13_weight_panel_states(subject)
+	TEST_ASSERT("belly_stuffed_5" in states, "Fullness clothing respects the independent belly maximum")
+	TEST_ASSERT("butt_2" in states, "The native uniform uses the actual hip size")
+	TEST_ASSERT_NOT("belly_stuffed_7" in states, "Fullness cannot bypass the selected visible part cap")
+	for(var/mutable_appearance/panel as anything in subject.overlays_standing[GS13_WEIGHT_BODY_LAYER])
+		TEST_ASSERT(icon_exists(panel.icon, panel.icon_state), "Every selected body and clothing panel has real source artwork")
+	gs13_render_weight_preview(subject, "uniform_independent_part_sizes")
+	var/obj/item/organ/external/leg = subject.get_organ(BODY_ZONE_L_LEG)
+	leg.status |= ORGAN_ROBOT
+	subject.update_gs13_weight_appearance(TRUE)
+	TEST_ASSERT_NOT("butt_2" in gs13_weight_panel_states(subject), "Independent hip growth cannot paint flesh over a prosthetic leg")
+	subject.gs13_preferences["weight_body_sprites"] = FALSE
+	subject.update_gs13_weight_appearance()
+	TEST_ASSERT_NULL(subject.overlays_standing[GS13_WEIGHT_BODY_LAYER], "Body appearance opt-out clears the customized parts and uniform panels")
+
 /datum/game_test/room_test/gs13_body_shape_live_character/Run()
 	var/mob/living/carbon/human/subject = allocate(/mob/living/carbon/human)
 	subject.adjust_fatness(FATNESS_LEVEL_OBESE, FATTENING_TYPE_ALMIGHTY, TRUE)

@@ -172,4 +172,4 @@
 	)
 
 /proc/gs13_numeric_preference(setting)
-	return (setting in list("body_size", "starting_fatness", "weight_gain_rate", "weight_loss_rate", "max_weight")) || (setting in gs13_helplessness_labels()) || (setting in gs13_burst_numeric_preferences()) || (setting in gs13_anatomy_numeric_preferences())
+	return (setting in list("body_size", "starting_fatness", "weight_gain_rate", "weight_loss_rate", "max_weight")) || (setting in gs13_helplessness_labels()) || (setting in gs13_burst_numeric_preferences()) || (setting in gs13_anatomy_numeric_preferences()) || (setting in gs13_shape_default_preferences())
