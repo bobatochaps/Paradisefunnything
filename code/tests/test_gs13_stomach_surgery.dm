@@ -48,7 +48,7 @@
 
 /datum/game_test/room_test/gs13_stomach_surgery_interruption/Run()
 	var/mob/living/carbon/human/surgeon = allocate(/mob/living/carbon/human)
-	var/obj/item/organ/internal/gs13_stomach/stomach = allocate(/obj/item/organ/internal/gs13_stomach)
+	var/obj/item/organ/internal/gs13_stomach/stomach = allocate(/obj/item/organ/internal/gs13_stomach, get_turf(surgeon))
 	var/obj/item/coin/silver/coin = allocate(/obj/item/coin/silver)
 	stomach.consume_gs13_item(coin)
 	var/obj/item/scalpel/scalpel = allocate(/obj/item/scalpel)

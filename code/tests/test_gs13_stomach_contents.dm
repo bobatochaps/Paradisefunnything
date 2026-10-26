@@ -2,7 +2,7 @@
 	var/mob/living/carbon/human/subject = allocate(/mob/living/carbon/human)
 	subject.nutrition = 100
 	var/obj/item/organ/internal/gs13_stomach/stomach = subject.get_organ_slot(GS13_ORGAN_STOMACH)
-	var/obj/item/food/sliceable/meal = allocate(/obj/item/food/sliceable)
+	var/obj/item/food/sliceable/meal = allocate(/obj/item/food/sliceable, get_turf(subject))
 	meal.bitesize = 1
 	meal.reagents.add_reagent("gs13_ingestion_probe", 2)
 	var/obj/item/coin/silver/coin = allocate(/obj/item/coin/silver)
