@@ -13,6 +13,7 @@
 	subject.gs13_preferences["weight_belly_color"] = "#3366cc"
 	subject.gs13_preferences["anatomy_body_sprites"] = TRUE
 	subject.gs13_preferences["body_size"] = 2
+	subject.update_gs13_shape_dna(subject.gs13_preferences)
 	subject.set_gs13_body_size(1.5)
 	var/obj/machinery/clonescanner/scanner = allocate(/obj/machinery/clonescanner)
 	var/datum/cloning_data/scan = scanner.scan(subject)
@@ -31,6 +32,8 @@
 	TEST_ASSERT_EQUAL(clone.gs13_preferences["weight_hips_max"], 3, "The cloned snapshot retains independent part growth limits")
 	TEST_ASSERT(clone.gs13_preferences["weight_belly_custom_color"], "The cloned policy retains explicit independent color selection")
 	TEST_ASSERT_EQUAL(clone.gs13_preferences["weight_belly_color"], "#3366cc", "The cloned policy retains the chosen part color")
+	TEST_ASSERT_EQUAL(clone.get_gs13_shape_setting("weight_belly_shape"), "Round", "Real native clone creation also restores independent physical shape DNA")
+	TEST_ASSERT_EQUAL(clone.get_gs13_shape_setting("weight_belly_base"), 2, "The native cloned body receives its actual inherited part size")
 	TEST_ASSERT(clone.gs13_preferences["anatomy_body_sprites"], "Cloning retains the source body's explicit visual permission separately from DNA")
 	TEST_ASSERT_EQUAL(clone.weight_gain_rate, 1.25, "Native weight consumers receive the restored rate")
 	TEST_ASSERT_EQUAL(clone.starting_size, 1.5, "Restoring policy does not apply next-spawn size over the actual DNA size")
@@ -38,6 +41,8 @@
 	var/obj/item/organ/internal/gs13_fluid_organ/breasts/breasts = clone.get_organ_slot(GS13_ORGAN_BREASTS)
 	TEST_ASSERT(breasts.produce_fluid(5) > 0, "The cloned policy can actually authorize its native fluid organ")
 	clone.gs13_preferences["weight_belly_shape"] = "Smooth"
+	clone.dna.gs13_body_shape["weight_belly_shape"] = "Smooth"
+	TEST_ASSERT_EQUAL(subject.dna.gs13_body_shape["weight_belly_shape"], "Round", "The clone's DNA traits cannot alias its source's body")
 	TEST_ASSERT_EQUAL(scan.gs13_preferences["weight_belly_shape"], "Round", "Live clone edits cannot rewrite the saved scan")
 	TEST_ASSERT_EQUAL(subject.gs13_preferences["weight_belly_shape"], "Classic", "The clone cannot alias its source body's policy")
 

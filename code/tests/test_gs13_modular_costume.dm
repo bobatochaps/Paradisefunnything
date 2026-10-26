@@ -51,11 +51,13 @@
 	subject.gs13_preferences["weight_belly_base"] = 5
 	subject.gs13_preferences["weight_belly_custom_color"] = TRUE
 	subject.gs13_preferences["weight_belly_color"] = "#ff0000"
+	subject.update_gs13_shape_dna(subject.gs13_preferences)
 	subject.update_gs13_weight_appearance(TRUE)
 	var/skin = gs13_clothing_panel_pixel(subject, "belly_soft_9_SOUTH-1", 12, 23)
 	TEST_ASSERT_NOTNULL(skin, "The expanded costume has actual source cutout pixels")
 	TEST_ASSERT(color2R(skin) > 0 && color2G(skin) == 0 && color2B(skin) == 0, "The separate first mask follows current body color, independently of garment channel one")
 	subject.gs13_preferences["weight_belly_color"] = "#aa6633"
+	subject.update_gs13_shape_dna(subject.gs13_preferences)
 	subject.update_gs13_weight_appearance(TRUE)
 	gs13_render_weight_preview(subject, "costume_cutout_9")
 	for(var/mutable_appearance/part as anything in subject.overlays_standing[GS13_WEIGHT_BODY_LAYER])

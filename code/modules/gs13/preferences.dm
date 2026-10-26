@@ -129,9 +129,11 @@
 
 /datum/character_save/proc/apply_gs13_preferences(mob/living/carbon/character, initialize_weight = TRUE)
 	gs13_preferences = gs13_sanitize_preferences(gs13_preferences)
+	var/list/previous_policy = character.gs13_preferences?.Copy()
 	character.set_gs13_preference_snapshot(gs13_preferences, slot_number)
 	if(ishuman(character))
 		var/mob/living/carbon/human/human_character = character
+		human_character.update_gs13_shape_dna(gs13_preferences, initialize_weight ? null : previous_policy)
 		if(initialize_weight)
 			human_character.set_gs13_body_size(gs13_preferences["body_size"])
 			human_character.initialize_gs13_anatomy(gs13_preferences)

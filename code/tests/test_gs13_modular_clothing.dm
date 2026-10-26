@@ -89,6 +89,7 @@
 	subject.gs13_preferences["master_wg_pref"] = TRUE
 	subject.gs13_preferences["anatomy_body_sprites"] = TRUE
 	subject.gs13_preferences["weight_belly_shape"] = "Round"
+	subject.update_gs13_shape_dna(subject.gs13_preferences)
 	subject.fatness_real = FATNESS_LEVEL_OBESE
 	subject.calculate_fatness()
 	var/obj/item/clothing/under/gs13_dual_tone/uniform = allocate(/obj/item/clothing/under/gs13_dual_tone)

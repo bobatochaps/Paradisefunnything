@@ -85,6 +85,7 @@
 		subject.gs13_preferences["weight_belly_base"] = 5
 		subject.gs13_preferences["weight_belly_custom_color"] = TRUE
 		subject.gs13_preferences["weight_belly_color"] = "#aa6633"
+		subject.update_gs13_shape_dna(subject.gs13_preferences)
 		subject.update_gs13_weight_appearance(TRUE)
 		gs13_render_weight_preview(subject, "shirt_[label]_cutout_9")
 		for(var/mutable_appearance/part as anything in subject.overlays_standing[GS13_WEIGHT_BODY_LAYER])

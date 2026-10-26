@@ -13,15 +13,15 @@
 /// Source ORGAN_COLOR_OVERRIDE supplies the chosen part color; inherited skin
 /// shading remains the compatible default. Global body color effects still mix.
 /mob/living/carbon/human/proc/get_gs13_part_color(part, obj/item/organ/external/limb, sample_y)
-	if(gs13_preferences["weight_[part]_custom_color"])
-		return sanitize_hexcolor(gs13_preferences["weight_[part]_color"], "#fcccb3")
+	if(get_gs13_shape_setting("weight_[part]_custom_color"))
+		return sanitize_hexcolor(get_gs13_shape_setting("weight_[part]_color"), "#fcccb3")
 	return gs13_weight_skin_color(limb, sample_y)
 
 /// Source growth adds the current weight stage to each part's independent base,
 /// then applies its maximum. The native uniform adapter supports sizes 0 to 9.
 /mob/living/carbon/human/proc/get_gs13_part_size(part, weight_stage)
-	var/base = gs13_preferences["weight_[part]_base"]
-	var/maximum = gs13_preferences["weight_[part]_max"]
+	var/base = get_gs13_shape_setting("weight_[part]_base")
+	var/maximum = get_gs13_shape_setting("weight_[part]_max")
 	base = isnum(base) && GS13_IS_FINITE(base) ? clamp(round(base), 0, 9) : 0
 	maximum = isnum(maximum) && GS13_IS_FINITE(maximum) ? clamp(round(maximum), 0, 9) : 9
 	return min(clamp(weight_stage + base, 0, 9), maximum)
@@ -41,7 +41,7 @@
 
 /mob/living/carbon/human/proc/get_gs13_belly_style()
 	var/style = "smoothnoarms"
-	switch(gs13_preferences["weight_belly_shape"])
+	switch(get_gs13_shape_setting("weight_belly_shape"))
 		if("Classic")
 			style = "belly"
 		if("Round")
@@ -80,7 +80,7 @@
 	var/hip_size = body_enabled ? get_gs13_part_size("hips", stage) : 0
 	var/current_fullness = body_enabled ? get_fullness() : 0
 	var/belly_style = get_gs13_belly_style()
-	var/shape = current_fullness > FULLNESS_LEVEL_BLOATED ? "stuffed" : (gs13_preferences["weight_belly_shape"] == "Round" ? "round" : "soft")
+	var/shape = current_fullness > FULLNESS_LEVEL_BLOATED ? "stuffed" : (get_gs13_shape_setting("weight_belly_shape") == "Round" ? "round" : "soft")
 	var/belly_stage = belly_size
 	if(current_fullness >= FULLNESS_LEVEL_NOMOREPLZ)
 		belly_stage += 2
@@ -90,7 +90,7 @@
 	belly_stage = min(belly_stage, 9)
 	var/breast_size = breasts ? FLOOR(min(breasts.gs13_size, 18), 1) : null
 	var/breast_clothing = breasts ? gs13_breast_clothing_state(breasts.gs13_size) : null
-	var/render_key = "[belly_size]:[hip_size]:[shape]:[belly_stage]:[belly_style]:[breast_size]:[breast_clothing]:[HAS_TRAIT(src, TRAIT_HULK)]:[HAS_TRAIT(src, TRAIT_HUSK)]:[gs13_preferences["weight_belly_custom_color"]]:[gs13_preferences["weight_belly_color"]]:[gs13_preferences["weight_hips_custom_color"]]:[gs13_preferences["weight_hips_color"]]"
+	var/render_key = "[belly_size]:[hip_size]:[shape]:[belly_stage]:[belly_style]:[breast_size]:[breast_clothing]:[HAS_TRAIT(src, TRAIT_HULK)]:[HAS_TRAIT(src, TRAIT_HUSK)]:[get_gs13_shape_setting("weight_belly_custom_color")]:[get_gs13_shape_setting("weight_belly_color")]:[get_gs13_shape_setting("weight_hips_custom_color")]:[get_gs13_shape_setting("weight_hips_color")]"
 	if(!force && render_key == gs13_weight_appearance_key)
 		return
 	gs13_weight_appearance_key = render_key
