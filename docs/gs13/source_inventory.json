@@ -19736,7 +19736,7 @@
         "code/modules/gs13/coated_pills.dm",
         "code/modules/gs13/specialized_stomachs.dm"
       ],
-      "remaining_gate": "Physical native fluid contents/oral routing/absorption, source satiety healing, benign hidden-item ownership/vomiting/incision recovery, coated-pill production/manual coating/taste, source bone/crystal layouts/traits and three researched electronic stomach tiers have partial adapters validated through 321 focused / 376 full tests with UI/live SQL checks. Advanced prosthetic object acid is a saved candidate pending native validation. Other specialized organs/species, strong-stomach and organ-food consumers, sharp-item/embedding/incision/cavity/wound behavior, inherited disgust/mood/hunger details, progressive EMP failure, map/admin aliases and client checks remain open."
+      "remaining_gate": "Physical native fluid contents/oral routing/absorption, source satiety healing, benign hidden-item ownership/vomiting/incision recovery, coated-pill production/manual coating/taste, source bone/crystal layouts/traits and three researched electronic stomach tiers have partial adapters validated through 321 focused / 376 full tests with UI/live SQL checks. Advanced prosthetic object acid is a saved candidate pending native validation. Other specialized organs/species, strong-stomach and organ-food consumers, sharp-item/embedding/incision/cavity/wound behavior, inherited disgust/mood/hunger details, progressive EMP failure, map/admin aliases and client checks remain open. Advanced acid and progressive EMP failure validated at e09e29625701aef643908b80de91030c3858706f (325 focused / 380 full); Strong Stomach, sharp trauma and native cavity migration saved at 231be2f50bd62685c4f071459c6e58e90e64925f pending validation. High-force biting/embedding, critical wounds and remaining specialized consumers stay open."
     },
     {
       "source": "modular_skyrat/modules/customization/modules/surgery/organs/genitals.dm",
@@ -19933,6 +19933,17 @@
         "code/modules/gs13/specialized_stomachs.dm"
       ],
       "remaining_gate": "Only the three source cybernetic-stomach designs are adapted through native medical research levels, Medical catalogs/material units and actual R&D production callbacks, validated in the combined 321 focused / 376 full checkpoint. Other source designs, source map/admin aliases, full acquisition/client workflows and inherited research behavior remain open."
+    },
+    {
+      "source": "code/datums/quirks/positive_quirks/strong_stomach.dm",
+      "git_blob_sha": "3cfcc085233379d9f088c7d2a238f60218cbe6f4",
+      "status": "partial-adapter",
+      "target_adapters": [
+        "code/modules/gs13/quirks.dm",
+        "code/modules/gs13/stomach_contents.dm",
+        "code/modules/gs13/stomach_surgery.dm"
+      ],
+      "remaining_gate": "Native selectable trait with source acid/retained-item trauma consumers saved at 231be2f50bd62685c4f071459c6e58e90e64925f, pending native validation. Source dirty-food, vomiting/alcohol and mail behavior remain open."
     }
   ]
 }
