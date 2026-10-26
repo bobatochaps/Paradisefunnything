@@ -118,3 +118,7 @@
 #define FULLNESS_LEVEL_NOMOREPLZ 1350
 #define FULLNESS_REDUCTION_COOLDOWN (5 SECONDS)
 #define GS13_IS_FINITE(VALUE) ((VALUE) < INFINITY && (VALUE) > -INFINITY)
+
+// Pinned inherited organ recovery and native food-quality scale.
+#define GS13_STANDARD_ORGAN_HEALING (50 / 100000)
+#define GS13_MAX_SATIETY 600
