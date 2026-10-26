@@ -41,6 +41,53 @@
 	status = ORGAN_ROBOT
 	max_damage = 50
 	gs13_digestive_efficiency = 0.035
+	var/gs13_emp_vulnerability = 80
+	var/gs13_emp_failure = FALSE
+	var/gs13_emp_damage_remainder = 0
+	var/gs13_emp_decay_factor = GS13_STANDARD_ORGAN_DECAY * 1.15
+
+/obj/item/organ/internal/gs13_stomach/cybernetic/emp_act(severity)
+	if(emp_proof || !isnum(severity) || !GS13_IS_FINITE(severity) || severity < EMP_HEAVY || severity > EMP_WEAKENED)
+		return
+	. = ..()
+	if(QDELETED(src) || !isnum(gs13_emp_vulnerability) || !GS13_IS_FINITE(gs13_emp_vulnerability))
+		return
+	// Preserve source heavy/light severity 1/2 across native levels 1/3;
+	// native resisted/weakened levels occupy intermediate/fainter strengths.
+	var/source_severity = 1 + (severity - EMP_HEAVY) / (EMP_LIGHT - EMP_HEAVY)
+	if(prob(clamp(gs13_emp_vulnerability / source_severity, 0, 100)))
+		gs13_emp_failure = TRUE
+
+/obj/item/organ/internal/gs13_stomach/cybernetic/on_life()
+	advance_gs13_emp_failure(2)
+	return ..()
+
+/// Carry native hundredth-health rounding forward so repeated small source
+/// decay ticks neither lose damage nor accumulate a systematic timing error.
+/obj/item/organ/internal/gs13_stomach/cybernetic/proc/advance_gs13_emp_failure(seconds)
+	if(!gs13_emp_failure || !owner || QDELETED(owner) || owner.stat == DEAD || owner.get_organ_slot(slot) != src || (status & ORGAN_DEAD) || tough)
+		return 0
+	if(!isnum(seconds) || !GS13_IS_FINITE(seconds) || seconds <= 0 || !isnum(max_damage) || !GS13_IS_FINITE(max_damage) || max_damage <= 0 || !isnum(gs13_emp_decay_factor) || !GS13_IS_FINITE(gs13_emp_decay_factor) || gs13_emp_decay_factor <= 0)
+		return 0
+	var/requested = gs13_emp_decay_factor * max_damage * seconds + gs13_emp_damage_remainder
+	if(requested <= 0)
+		gs13_emp_damage_remainder = requested
+		return 0
+	var/before = damage
+	receive_damage(requested, TRUE)
+	var/applied = max(0, damage - before)
+	gs13_emp_damage_remainder = requested - applied
+	return applied
+
+/obj/item/organ/internal/gs13_stomach/cybernetic/rejuvenate()
+	. = ..()
+	gs13_emp_failure = FALSE
+	gs13_emp_damage_remainder = 0
+
+/obj/item/organ/internal/gs13_stomach/cybernetic/examine(mob/user)
+	. = ..()
+	if(gs13_emp_failure)
+		. += SPAN_WARNING("An electrical fault is causing progressive internal damage.")
 
 /obj/item/organ/internal/gs13_stomach/cybernetic/tier2
 	name = "cybernetic stomach"
@@ -49,6 +96,7 @@
 	max_damage = 150
 	gs13_digestive_efficiency = 0.07
 	gs13_item_acid_power = 20
+	gs13_emp_vulnerability = 40
 
 /obj/item/organ/internal/gs13_stomach/cybernetic/tier3
 	name = "upgraded cybernetic stomach"
@@ -57,6 +105,7 @@
 	max_damage = 200
 	gs13_digestive_efficiency = 0.1
 	gs13_item_acid_power = 35
+	gs13_emp_vulnerability = 20
 
 /datum/design/gs13_cybernetic_stomach
 	name = "Basic Cybernetic Stomach"

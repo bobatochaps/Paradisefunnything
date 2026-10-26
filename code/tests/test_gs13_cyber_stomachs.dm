@@ -56,3 +56,64 @@
 	TEST_ASSERT_EQUAL(lathe.materials.amount(MAT_METAL), 500, "All three native designs consume their required metal exactly once")
 	TEST_ASSERT_EQUAL(lathe.materials.amount(MAT_GLASS), 500, "All three native designs consume their required glass exactly once")
 	TEST_ASSERT_EQUAL(lathe.materials.amount(MAT_SILVER), 1500, "Only the source highest tier consumes its additional silver")
+
+/datum/game_test/room_test/gs13_cyber_stomach_emp_progress_and_repair/Run()
+	var/mob/living/carbon/human/subject = allocate(/mob/living/carbon/human)
+	subject.notransform = TRUE
+	var/obj/item/organ/internal/gs13_stomach/replaced = subject.get_organ_slot(GS13_ORGAN_STOMACH)
+	var/obj/item/organ/internal/gs13_stomach/cybernetic/stomach = allocate(/obj/item/organ/internal/gs13_stomach/cybernetic)
+	stomach.insert(subject)
+	replaced.forceMove(get_turf(subject))
+	stomach.gs13_emp_vulnerability = 100 // Deterministic exposure; production defaults retain source probabilities.
+	stomach.emp_act(EMP_HEAVY)
+	TEST_ASSERT(stomach.gs13_emp_failure, "An actual native EMP can mark the physical prosthesis with source progressive failure")
+	TEST_ASSERT_EQUAL(stomach.damage, 20, "The adapter preserves native acute electronic-organ EMP injury")
+	var/before = stomach.damage
+	for(var/i in 1 to 10)
+		stomach.on_life()
+	TEST_ASSERT(abs(stomach.damage - before - 1.2765) < 0.011, "Ten real native life callbacks retain the exact source fractional decay rate within native health precision")
+	TEST_ASSERT_EQUAL(stomach.heal_gs13_tissue(2), 0, "A progressive electronic fault cannot invoke organic repair")
+	before = stomach.damage
+	for(var/bad_time in list(0, -1, INFINITY))
+		TEST_ASSERT_EQUAL(stomach.advance_gs13_emp_failure(bad_time), 0, "Invalid elapsed time cannot change actual electronic damage")
+	stomach.advance_gs13_emp_failure(0.0001)
+	TEST_ASSERT(stomach.damage >= before, "Rounding debt and tiny elapsed intervals cannot heal a failing prosthesis")
+	var/obj/item/stack/nanopaste/paste = allocate(/obj/item/stack/nanopaste)
+	stomach.item_interaction(subject, paste, list())
+	TEST_ASSERT_NOT(stomach.gs13_emp_failure, "Actual native nanopaste rejuvenation repairs the persistent electronic fault")
+	TEST_ASSERT_EQUAL(stomach.gs13_emp_damage_remainder, 0, "Real electronic rejuvenation clears fractional pending damage")
+	stomach.on_life()
+	TEST_ASSERT_EQUAL(stomach.damage, 0, "A repaired organ cannot resume an obsolete fault on its next native life tick")
+
+/datum/game_test/room_test/gs13_cyber_stomach_emp_protection_and_ownership/Run()
+	var/mob/living/carbon/human/donor = allocate(/mob/living/carbon/human)
+	var/mob/living/carbon/human/recipient = allocate(/mob/living/carbon/human)
+	donor.notransform = TRUE
+	recipient.notransform = TRUE
+	var/obj/item/organ/internal/gs13_stomach/replaced = donor.get_organ_slot(GS13_ORGAN_STOMACH)
+	var/obj/item/organ/internal/gs13_stomach/cybernetic/tier2/stomach = allocate(/obj/item/organ/internal/gs13_stomach/cybernetic/tier2)
+	stomach.insert(donor)
+	replaced.forceMove(get_turf(donor))
+	TEST_ASSERT_EQUAL(stomach.gs13_emp_vulnerability, 40, "The standard source tier retains its distinct malfunction vulnerability")
+	stomach.gs13_emp_vulnerability = 100
+	stomach.emp_proof = TRUE
+	stomach.emp_act(EMP_HEAVY)
+	TEST_ASSERT_NOT(stomach.gs13_emp_failure, "Native EMP-proof protection excludes source progressive failure")
+	TEST_ASSERT_EQUAL(stomach.damage, 0, "Native protection also preserves its ordinary acute-injury behavior")
+	stomach.emp_proof = FALSE
+	stomach.emp_act(EMP_HEAVY)
+	donor.death()
+	var/before = stomach.damage
+	stomach.on_life()
+	TEST_ASSERT_EQUAL(stomach.damage, before, "A dead body cannot advance active prosthetic failure")
+	stomach.remove(donor)
+	stomach.forceMove(get_turf(donor))
+	TEST_ASSERT_EQUAL(stomach.advance_gs13_emp_failure(2), 0, "An extracted fault cannot borrow the former owner's life processing")
+	replaced = recipient.get_organ_slot(GS13_ORGAN_STOMACH)
+	stomach.insert(recipient)
+	replaced.forceMove(get_turf(recipient))
+	TEST_ASSERT(stomach.gs13_emp_failure, "Actual transplantation retains the same physical organ's persistent malfunction")
+	stomach.on_life()
+	TEST_ASSERT(stomach.damage > before, "Native processing resumes the real fault only in its new living owner")
+	qdel(stomach)
+	TEST_ASSERT_NULL(recipient.get_organ_slot(GS13_ORGAN_STOMACH), "Actual faulty-organ deletion still releases native ownership and event hooks")
