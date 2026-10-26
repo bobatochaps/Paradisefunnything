@@ -104,6 +104,7 @@
 	var/obj/item/organ/internal/gs13_stomach/stomach = consumer.get_organ_slot(GS13_ORGAN_STOMACH)
 	if(!istype(stomach) || stomach.owner != consumer || !stomach.consume_gs13_item(src))
 		return FALSE
-	consumer.losebreath += 2
+	// Two source breathing cycles become the native timed breath-loss effect.
+	consumer.AdjustLoseBreath(4 SECONDS)
 	to_chat(consumer, SPAN_WARNING("You swallow something small with your food."))
 	return TRUE
