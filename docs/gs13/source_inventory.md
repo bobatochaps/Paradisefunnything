@@ -1029,3 +1029,4 @@ Pinned identified partial providers are separate from modular counts and lexical
 | `code/modules/mob/living/carbon/human/species_types/skeletons.dm` | `ad5ef52c4f6fa6b9930fb9ac7a807a0d7f119d9b` | partial-adapter | `code/modules/gs13/specialized_stomachs.dm`, `code/modules/gs13/digestive_organs.dm` |
 | `code/modules/mob/living/carbon/human/species_types/plasmamen.dm` | `65ae620cf980272a2e0e76463877eea7d83dac64` | partial-adapter | `code/modules/gs13/specialized_stomachs.dm` |
 | `code/modules/mob/living/carbon/human/_species.dm` | `9e992d41d5c35f2f08d859f75f3ddeb5f88e41f7` | partial-adapter | `code/modules/gs13/stomach_contents.dm` |
+| `code/modules/research/designs/medical_designs.dm` | `f75fc158b34055ac8d5349c89432b0098d8183ae` | partial-adapter | `code/modules/gs13/specialized_stomachs.dm` |

@@ -127,6 +127,7 @@ INHERITED_ADAPTERS = {
     "code/__DEFINES/reagents.dm": ["coated_pills"],
     "code/modules/reagents/reagent_containers/pill.dm": ["coated_pills", "stomach_contents", "digestion"],
     "code/modules/reagents/chemistry/machinery/chem_master.dm": ["coated_pills"],
+    "code/modules/research/designs/medical_designs.dm": ["specialized_stomachs"],
     "modular_skyrat/modules/customization/modules/surgery/organs/genitals.dm": ["fluid_organs", "anatomy_preferences", "weight_appearance", "anatomy_appearance", "body_shape_dna"],
     "modular_skyrat/modules/modular_items/lewd_items/code/lewd_organs/_genital.dm": ["fluid_organs"],
     "modular_skyrat/modules/modular_items/lewd_items/code/lewd_organs/breasts.dm": ["fluid_organs", "anatomy_appearance"],

@@ -56,21 +56,21 @@ Bone-organ transplantation grants no-hunger under that organ's unique native tra
 
 Three added native integration tests cover actual species layouts and return to human/synthetic bodies, real oral compartment/data-conserving absorption at both rates, and actual transplant/deletion trait ownership. Checkpoint `28df46b0adb85bf8d1d3d45fa45a5126f37ecb93` passed 313 focused / 368 full native tests, clean compilation, UI and live MariaDB checks in [run 40413394679](https://github.com/bobatochaps/Paradisefunnything/actions/runs/40413394679). Other specialized organs, source organ-food/trait consumers and complete Ethereal/Protean dependencies remain open.
 
-## Unarmed-hit ejection candidate
+## Unarmed-hit ejection
 
 The pinned source human unarmed-hit emitter (`code/modules/mob/living/carbon/human/_species.dm`, Git blob `9e992d41d5c35f2f08d859f75f3ddeb5f88e41f7`) supplies resolved raw damage, final armor blocking and kicking to the inherited stomach. Its receiver forces vomiting when retained items exist, damage is at least nine, no armor blocks and the attack is not a kick. It does not impose a chest-zone-only or sharpness restriction.
 
 The native adapter emits a separate event after ordinary unarmed damage resolution, preserving native damage, armor, martial-art handling and knockdown. Native unarmed variants with a kick verb supply the source exclusion. A qualifying stomach requests forced physical-content vomiting, which can recover at least one object even when normal nutrition-based vomiting would dry-heave. Ordinary vomiting retains its existing nutrition guard and sixty-percent per-item chance. Native dead/unsupported synthetic bodies still cannot vomit; extraction disconnects both stomach events. Source specialized combat variants outside the ordinary native unarmed path remain separate integration gates.
 
-Two integration tests exercise actual native harm resolution with fixed damage, a starving target and a real retained object; then real full-body armor, sub-threshold damage, kick variants, extraction and native death. Static checks pass; native validation is pending. General acid/sharp-item digestion, incision wound/cavity migration and other species/organs remain open.
+Two integration tests exercise actual native harm resolution with fixed damage, a starving target and a real retained object; then real full-body armor, sub-threshold damage, kick variants, extraction and native death. Checkpoint `e05ac531ce3ebc8e97aed1ecdd9ed239d1d23bf6` passed 315 focused / 370 full native tests, clean compilation, UI and live MariaDB checks in run 40414171810. General acid/sharp-item digestion, incision wound/cavity migration and other species/organs remain open.
 
-## Coating taste-feedback candidate
+## Coating taste feedback
 
 Accepted coated pills now use Paradise's existing taste cooldown, text and hallucination handling. Ordinary source coatings report starchy sugar; the exact pinned source formula `max(0, 100 * (layers - 20))` reveals the payload flavor above its twenty-layer threshold. This preserves the source's formula rather than assuming a thicker shell always hides flavor. The twenty-layer constant comes from the already reviewed pinned reagent defines. Uncoated medicine retains the existing oral route, rejected intake produces no accepted-intake flavor, and native species without taste do not receive coating feedback.
 
-A single native integration test exercises actual consumption at default, above-threshold and zero coating, real full-stomach refusal, and the specialized native skeleton's absent taste sense. It passes in the focused suite. The ordinary native medical-container click/self-activation fixture now verifies both the swallow message and actual current-pill retention; additional source flavor feedback can follow the swallow message. Combined full native validation is pending. Direct client feedback and other inherited taste consumers remain open.
+A single native integration test exercises actual consumption at default, above-threshold and zero coating, real full-stomach refusal, and the specialized native skeleton's absent taste sense. It passes in the focused suite. The ordinary native medical-container click/self-activation fixture now verifies both the swallow message and actual current-pill retention; additional source flavor feedback can follow the swallow message. Combined checkpoint `2643fc38de57c72a97c4757ced1442d5242b42d6` passed 318 focused / 373 full native tests, clean compilation, UI and live MariaDB checks in [run 40415922680](https://github.com/bobatochaps/Paradisefunnything/actions/runs/40415922680). Direct client feedback and other inherited taste consumers remain open.
 
-## Researched cybernetic-stomach candidates
+## Researched cybernetic stomachs
 
 The pinned inherited stomach file supplies three normally researched prostheses with these distinct physical properties:
 
@@ -84,7 +84,7 @@ The native adapter uses actual electronic internal organs and shared oral storag
 
 Pinned `code/modules/research/designs/medical_designs.dm` (Git blob `f75fc158b34055ac8d5349c89432b0098d8183ae`) supplies the three source designs and the extra silver for the highest tier. Native designs use the existing Medical protolathe/mech-fabricator catalogs. Native biotech/materials requirements are 4/4, then 5/5 with engineering 5, then 6/6 with engineering 6. Costs follow existing native electronic-organ units: 500 metal and 500 glass, plus 500 silver for the upgraded tier. This adapts source relative material roles and progression to Paradise's existing research and fabrication units. Normal source map/admin aliases and other acquisition remain separate gates.
 
-Two integration tests cover actual transplantation, oral data/volume-preserving absorption at all three rates, native EMP/organic-repair exclusion/nanopaste, and ordinary research unlock/material accounting/native R&D production-callback construction for all three designs. Static checks pass; native validation is pending. Full client R&D interaction remains unperformed.
+Two integration tests cover actual transplantation, oral data/volume-preserving absorption at all three rates, native EMP/organic-repair exclusion/nanopaste, and ordinary research unlock/material accounting/native R&D production-callback construction for all three designs. Combined checkpoint `2643fc38de57c72a97c4757ced1442d5242b42d6` passed 318 focused / 373 full native tests with clean compilation, UI and live MariaDB checks. Full client R&D interaction remains unperformed.
 
 ## Advanced prosthetic item-acid candidate
 
