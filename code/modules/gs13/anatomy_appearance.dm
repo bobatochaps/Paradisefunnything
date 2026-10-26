@@ -1,4 +1,4 @@
-// First native external-anatomy adapter: the original smooth paired sheet.
+// Native paired anatomy using the unchanged source Smooth/Classic sheets.
 /mob/living/carbon/human/proc/get_gs13_render_breasts()
 	if(!gs13_preferences["anatomy_body_sprites"] || !GLOB.configuration.gs13?.fluid_anatomy_enabled || !dna || !istype(dna.species, /datum/species/human))
 		return null
@@ -23,13 +23,15 @@
 			return "breasts_impossible"
 	return "breasts_[size]"
 
-/mob/living/carbon/human/proc/gs13_add_breast_body(list/standing, size, obj/item/organ/external/chest)
+/mob/living/carbon/human/proc/gs13_add_breast_body(list/standing, size, obj/item/organ/external/chest, style = "Smooth")
+	var/source_icon = style == "Classic" ? 'modular_gs/icons/mob/human/genitals/breasts_classic.dmi' : 'modular_gs/icons/mob/human/genitals/breasts_smooth.dmi'
+	var/prefix = style == "Classic" ? "pair_gs" : "pair_gs_smooth"
 	for(var/side in list("BEHIND", "FRONT"))
-		var/state = "m_breasts_pair_gs_smooth_[size]_[side]"
-		if(!icon_exists('modular_gs/icons/mob/human/genitals/breasts_smooth.dmi', state))
+		var/state = "m_breasts_[prefix]_[size]_[side]"
+		if(!icon_exists(source_icon, state))
 			continue
 		var/draw_layer = side == "BEHIND" ? -LIMBS_LAYER - 0.1 : -LIMBS_LAYER + 0.7
-		var/mutable_appearance/part = mutable_appearance('modular_gs/icons/mob/human/genitals/breasts_smooth.dmi', state, layer = draw_layer)
+		var/mutable_appearance/part = mutable_appearance(source_icon, state, layer = draw_layer)
 		part.color = gs13_weight_skin_color(chest, 18)
 		standing += part
 

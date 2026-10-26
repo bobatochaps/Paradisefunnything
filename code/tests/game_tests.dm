@@ -16,6 +16,7 @@
 #include "test_gs13_body_shape_dna.dm"
 #include "test_gs13_bursting.dm"
 #include "test_gs13_clothing_distribution.dm"
+#include "test_gs13_classic_anatomy.dm"
 #include "test_gs13_coated_pills.dm"
 #include "test_gs13_cyber_stomachs.dm"
 #include "test_gs13_modular_clothing.dm"

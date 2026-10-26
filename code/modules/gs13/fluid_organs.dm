@@ -153,8 +153,10 @@
 	var/gs13_size = 1
 	var/gs13_max_size = 80
 	var/gs13_arrangement_multiplier = 2
+	var/gs13_visual_style = "Smooth"
 
 /obj/item/organ/internal/gs13_fluid_organ/breasts/configure_from_blueprint(list/blueprint)
+	gs13_visual_style = blueprint["breasts_style"] == "Classic" ? "Classic" : "Smooth"
 	gs13_base_size = isnum(blueprint["breasts_size"]) && GS13_IS_FINITE(blueprint["breasts_size"]) ? clamp(blueprint["breasts_size"], 0.5, 80) : 1
 	gs13_max_size = isnum(blueprint["max_breast_size"]) && GS13_IS_FINITE(blueprint["max_breast_size"]) ? clamp(blueprint["max_breast_size"], 0, 80) : 80
 	gs13_arrangement_multiplier = blueprint["breasts_type"] == "Sextuple" ? 3 : (blueprint["breasts_type"] == "Quadruple" ? 2.5 : 2)

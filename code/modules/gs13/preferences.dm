@@ -75,6 +75,8 @@
 			return gs13_belly_styles()
 		if("breasts_type")
 			return list("Pair", "Quadruple", "Sextuple")
+		if("breasts_style")
+			return list("Smooth", "Classic")
 		if("breast_produce")
 			return gs13_breast_products()
 

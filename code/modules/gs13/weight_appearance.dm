@@ -97,7 +97,7 @@
 	belly_stage = min(belly_stage, 9)
 	var/breast_size = breasts ? FLOOR(min(breasts.gs13_size, 18), 1) : null
 	var/breast_clothing = breasts ? gs13_breast_clothing_state(breasts.gs13_size) : null
-	var/render_key = "[belly_size]:[hip_size]:[shape]:[belly_stage]:[belly_style]:[breast_size]:[breast_clothing]:[HAS_TRAIT(src, TRAIT_HULK)]:[HAS_TRAIT(src, TRAIT_HUSK)]:[get_gs13_shape_setting("weight_belly_custom_color")]:[get_gs13_shape_setting("weight_belly_color")]:[get_gs13_shape_setting("weight_hips_custom_color")]:[get_gs13_shape_setting("weight_hips_color")]"
+	var/render_key = "[belly_size]:[hip_size]:[shape]:[belly_stage]:[belly_style]:[breast_size]:[breasts?.gs13_visual_style]:[breast_clothing]:[HAS_TRAIT(src, TRAIT_HULK)]:[HAS_TRAIT(src, TRAIT_HUSK)]:[get_gs13_shape_setting("weight_belly_custom_color")]:[get_gs13_shape_setting("weight_belly_color")]:[get_gs13_shape_setting("weight_hips_custom_color")]:[get_gs13_shape_setting("weight_hips_color")]"
 	if(!force && render_key == gs13_weight_appearance_key)
 		return
 	gs13_weight_appearance_key = render_key
@@ -117,7 +117,7 @@
 	var/chest_covered = (w_uniform?.body_parts_covered & UPPER_TORSO) || (suit_coverage & UPPER_TORSO)
 	var/hips_covered = (w_uniform?.body_parts_covered & (LOWER_TORSO | LEGS)) || (suit_coverage & (LOWER_TORSO | LEGS))
 	if(breasts && !chest_covered)
-		gs13_add_breast_body(standing, breast_size, chest)
+		gs13_add_breast_body(standing, breast_size, chest, breasts.gs13_visual_style)
 	if(has_belly && belly_size && !chest_covered)
 		var/mutable_appearance/belly = mutable_appearance(gs13_belly_style_icon(belly_style), "m_belly_[belly_style]_[belly_size]_FRONT", layer = -LIMBS_LAYER + 0.5)
 		belly.color = get_gs13_part_color("belly", chest, 18)
