@@ -38,6 +38,9 @@
 		return
 	heal_gs13_tissue(2)
 	digest_gs13_reagents(2)
+	process_gs13_stomach_items(2)
+	if(QDELETED(src) || !owner || owner.stat == DEAD)
+		return
 	if(damage < min_bruised_damage || !get_turf(owner))
 		return
 	var/datum/reagent/consumable/nutriment/food = locate(/datum/reagent/consumable/nutriment) in reagents?.reagent_list

@@ -29,6 +29,18 @@
 	LAZYREMOVE(gs13_stomach_contents, item)
 	UnregisterSignal(item, list(COMSIG_MOVABLE_MOVED, COMSIG_PARENT_QDELETING))
 
+/// Item callbacks use elapsed native seconds. The separate native swallowed-
+/// mob subsystem continues to own its own lifecycle and digestion rules.
+/obj/item/organ/internal/gs13_stomach/proc/process_gs13_stomach_items(seconds = 2)
+	if(!owner || QDELETED(owner) || owner.stat == DEAD || owner.get_organ_slot(slot) != src || !isnum(seconds) || !GS13_IS_FINITE(seconds) || seconds <= 0)
+		return
+	var/mob/living/carbon/holder = owner
+	for(var/obj/item/item as anything in gs13_stomach_contents?.Copy())
+		if(QDELETED(src) || owner != holder || QDELETED(holder) || holder.stat == DEAD || holder.get_organ_slot(slot) != src)
+			break
+		if(!QDELETED(item) && item.loc == holder)
+			SEND_SIGNAL(item, COMSIG_GS13_STOMACH_DIGEST_ITEM, src, holder, seconds)
+
 /obj/item/organ/internal/gs13_stomach/proc/on_gs13_content_deleted(obj/item/source)
 	SIGNAL_HANDLER
 	forget_gs13_content(source)

@@ -10,11 +10,15 @@
 	possible_transfer_amounts = null
 	visible_transfer_rate = FALSE
 	volume = 100
+	/// Each source coating layer delays release by one second of digestion.
+	var/gs13_layers_remaining = GS13_DEFAULT_PILL_COATING
+	var/gs13_coating_timer
 
 /obj/item/reagent_containers/pill/Initialize(mapload)
 	. = ..()
 	if(!icon_state)
 		icon_state = "pill[rand(1, 28)]"
+	RegisterSignal(src, COMSIG_GS13_STOMACH_DIGEST_ITEM, PROC_REF(on_gs13_stomach_digestion))
 
 /obj/item/reagent_containers/pill/activate_self(mob/user)
 	if(..())
@@ -52,6 +56,10 @@
 	if(QDELETED(src) || !reagents || C.get_gs13_ingestion_free_space() < reagents.total_volume)
 		to_chat(user, SPAN_WARNING("There is not enough room to swallow the pill."))
 		return FALSE
+	var/atom/destination = C.get_gs13_ingestion_target()
+	if(gs13_sanitize_pill_coating(gs13_layers_remaining) > 0 && istype(destination, /obj/item/organ/internal/gs13_stomach))
+		var/obj/item/organ/internal/gs13_stomach/stomach = destination
+		return stomach.consume_gs13_item(src)
 	if(!reagents.gs13_ingest(C, reagents.total_volume))
 		return FALSE
 	if(reagents.total_volume > 0)

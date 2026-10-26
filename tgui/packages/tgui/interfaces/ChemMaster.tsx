@@ -70,6 +70,8 @@ interface NonStaticProductionData {
   set_items_amount: number;
   set_sprite?: number;
   placeholder_name?: string;
+  coating_duration?: number;
+  max_coating_duration?: number;
 }
 
 type ProductionData = StaticProductionData & NonStaticProductionData & { id: string };
@@ -433,7 +435,7 @@ const SpriteStyleButton = (props: { icon: string; selected: boolean } & BoxProps
 
 const ChemMasterProductionGeneric = (props: { productionData: ProductionData }) => {
   const { act } = useBackend<ChemMasterData>();
-  const { id: modeId, set_sprite, sprites } = props.productionData;
+  const { id: modeId, set_sprite, sprites, coating_duration, max_coating_duration } = props.productionData;
   let style_buttons;
   if (sprites && sprites.length > 0) {
     style_buttons = sprites.map(({ id, sprite }) => (
@@ -448,6 +450,16 @@ const ChemMasterProductionGeneric = (props: { productionData: ProductionData }) 
   return (
     <ChemMasterProductionCommon productionData={props.productionData}>
       {style_buttons && <LabeledList.Item label="Style">{style_buttons}</LabeledList.Item>}
+      {coating_duration !== undefined && (
+        <LabeledList.Item label="Coating delay (seconds)">
+          <Slider
+            value={coating_duration}
+            minValue={0}
+            maxValue={max_coating_duration ?? 30}
+            onChange={(e, value) => act('set_pill_duration', { duration: value })}
+          />
+        </LabeledList.Item>
+      )}
     </ChemMasterProductionCommon>
   );
 };

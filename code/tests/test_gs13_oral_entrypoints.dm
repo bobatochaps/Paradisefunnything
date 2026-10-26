@@ -50,6 +50,7 @@
 	var/datum/reagents/stomach = gs13_ingested_reagents(subject)
 	stomach.maximum_volume = 5
 	var/obj/item/reagent_containers/pill/pill = allocate(/obj/item/reagent_containers/pill)
+	pill.gs13_layers_remaining = 0 // This fixture tests the uncoated oral route.
 	pill.reagents.add_reagent("gs13_ingestion_probe", 10)
 	subject.put_in_active_hand(pill)
 	TEST_ASSERT_NOT(pill.apply(subject, subject), "A pill requires space for its entire dose")

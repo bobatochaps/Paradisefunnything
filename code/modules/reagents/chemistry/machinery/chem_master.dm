@@ -266,6 +266,8 @@
 			if(isnull(M))
 				return
 			production_mode = new_production_mode
+		if("set_pill_duration")
+			set_gs13_pill_coating(params["duration"])
 
 		if("set_sprite_style")
 			var/production_mode_key = params["production_mode"]
@@ -436,6 +438,10 @@
 				mode_data["placeholder_name"] = M.get_placeholder_name(reagents)
 		if(M.sprites)
 			mode_data["set_sprite"] = M.set_sprite
+		if(istype(M, /datum/chemical_production_mode/pills))
+			var/datum/chemical_production_mode/pills/pill_mode = M
+			mode_data["coating_duration"] = pill_mode.gs13_coating_duration
+			mode_data["max_coating_duration"] = GS13_MAX_PRINTABLE_PILL_COATING
 		production_data[M.mode_id] = mode_data
 	data["production_data"] = production_data
 
