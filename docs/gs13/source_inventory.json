@@ -19953,6 +19953,16 @@
         "code/modules/gs13/quirks.dm"
       ],
       "remaining_gate": "Strong Stomach oral infection guard is adapted through native viral_contamination eat/drink callbacks, pending validation. Native contamination component is the implementation site; source mood, weak exposure, feeder protection, infectious-organ filtering and other infective behaviors remain open."
+    },
+    {
+      "source": "code/modules/mob/living/carbon/carbon.dm",
+      "git_blob_sha": "73e656d3f12d46829bc1b6242324eecfd097eba8",
+      "status": "partial-adapter",
+      "target_adapters": [
+        "code/modules/gs13/quirks.dm",
+        "code/modules/gs13/stomach_contents.dm"
+      ],
+      "remaining_gate": "Only Strong Stomach ordinary vomit nutrition discount and the previously reviewed stomach ejection signal are adapted through native carbon_procs. Nutrition candidate pending CI. Source status-duration changes, mood, complete purge/force contracts and other inherited carbon behavior remain open."
     }
   ]
 }

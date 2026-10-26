@@ -98,6 +98,9 @@
 	if(stat == DEAD || (ismachineperson(src) && !locate(/obj/item/organ/internal/appendix/corrupt) in internal_organs)) // Dead people and IPCs do not vomit particulates
 		return FALSE
 
+	if(!blood && !gs13_force_contents && HAS_TRAIT(src, TRAIT_GS13_STRONG_STOMACH))
+		lost_nutrition *= 0.5
+
 	if(should_confuse)
 		if(blood)
 			KnockDown(10 SECONDS)

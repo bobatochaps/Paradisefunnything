@@ -169,3 +169,27 @@
 	SEND_SIGNAL(contact, COMSIG_MOB_REAGENT_EXCHANGE, drinker)
 	TEST_ASSERT_EQUAL(length(drinker.viruses), 1, "The native contamination callback still infects through a nonoral container despite Strong Stomach")
 	REMOVE_TRAIT(drinker, TRAIT_GS13_STRONG_STOMACH, "gs13_test_oral_infection")
+
+/datum/game_test/room_test/gs13_native_strong_stomach_vomit_cost/Run()
+	var/mob/living/carbon/human/subject = allocate(/mob/living/carbon/human)
+	subject.notransform = TRUE
+	subject.nutrition = 300
+	var/datum/quirk/gs13_strong_stomach/quirk = new
+	quirk.apply_quirk_effects(subject)
+	LAZYADD(allocated, quirk)
+	subject.vomit(lost_nutrition = 24, should_confuse = FALSE, message = FALSE)
+	TEST_ASSERT_EQUAL(subject.nutrition, 288, "Actual native ordinary vomiting halves nutrition cost with the real source quirk")
+	subject.vomit(lost_nutrition = 24, should_confuse = FALSE, message = FALSE, gs13_force_contents = TRUE)
+	TEST_ASSERT_EQUAL(subject.nutrition, 264, "Forced native vomiting preserves the source exception to the nutrition discount")
+	var/before_blood = subject.blood_volume
+	subject.vomit(lost_nutrition = 24, blood = TRUE, should_confuse = FALSE, message = FALSE)
+	TEST_ASSERT_EQUAL(before_blood - subject.blood_volume, 24, "The nutrition consumer cannot alter native bloody-vomit loss")
+	TEST_ASSERT_EQUAL(subject.nutrition, 264, "Bloody vomiting retains its native separate nutrition behavior")
+	qdel(quirk)
+	subject.vomit(lost_nutrition = 24, should_confuse = FALSE, message = FALSE)
+	TEST_ASSERT_EQUAL(subject.nutrition, 240, "Actual native quirk removal restores the original ordinary nutrition cost")
+	subject.nutrition = 50
+	subject.vomit(lost_nutrition = 24, should_confuse = FALSE, message = FALSE)
+	TEST_ASSERT_EQUAL(subject.nutrition, 50, "Native dry heaves remain unable to spend nutrition")
+	subject.death()
+	TEST_ASSERT_NOT(subject.vomit(lost_nutrition = 24, should_confuse = FALSE, message = FALSE), "Native death guard still rejects vomiting")

@@ -1032,3 +1032,4 @@ Pinned identified partial providers are separate from modular counts and lexical
 | `code/modules/research/designs/medical_designs.dm` | `f75fc158b34055ac8d5349c89432b0098d8183ae` | partial-adapter | `code/modules/gs13/specialized_stomachs.dm` |
 | `code/datums/quirks/positive_quirks/strong_stomach.dm` | `3cfcc085233379d9f088c7d2a238f60218cbe6f4` | partial-adapter | `code/modules/gs13/quirks.dm`, `code/modules/gs13/stomach_contents.dm`, `code/modules/gs13/stomach_surgery.dm` |
 | `code/datums/components/infective.dm` | `83a56890e85046d25b443da5e7a73e7e2f063bbc` | partial-adapter | `code/modules/gs13/quirks.dm` |
+| `code/modules/mob/living/carbon/carbon.dm` | `73e656d3f12d46829bc1b6242324eecfd097eba8` | partial-adapter | `code/modules/gs13/quirks.dm`, `code/modules/gs13/stomach_contents.dm` |

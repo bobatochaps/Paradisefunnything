@@ -112,6 +112,7 @@ ADAPTERS = {
 }
 
 INHERITED_ADAPTERS = {
+    "code/modules/mob/living/carbon/carbon.dm": ["quirks", "stomach_contents"],
     "code/datums/components/infective.dm": ["quirks"],
     "code/datums/quirks/positive_quirks/strong_stomach.dm": ["quirks", "stomach_contents", "stomach_surgery"],
     "code/datums/components/fov_handler.dm": ["field_of_view"],
