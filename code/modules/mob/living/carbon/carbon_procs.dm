@@ -141,6 +141,7 @@
 		T = get_step(T, dir)
 		if(T.is_blocked_turf())
 			break
+	SEND_SIGNAL(src, COMSIG_GS13_CARBON_VOMITED, distance)
 
 /mob/living/carbon/gib()
 	. = death(1)

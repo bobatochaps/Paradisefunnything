@@ -124,3 +124,4 @@
 #define GS13_MAX_SATIETY 600
 #define GS13_BELLY_SIZE_MAX 9
 #define GS13_HIP_SIZE_MAX 10
+#define COMSIG_GS13_CARBON_VOMITED "gs13_carbon_vomited"

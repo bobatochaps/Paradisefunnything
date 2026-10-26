@@ -165,6 +165,9 @@
 		user.visible_message(SPAN_NOTICE("[M] finishes eating [src]."))
 		user.unequip(src)	//so icons update :[
 		Post_Consume(M)
+		if(iscarbon(M))
+			for(var/obj/item/item in contents.Copy())
+				item.try_gs13_accidental_swallow(M)
 		var/obj/item/trash_item = generate_trash(user)
 		user.put_in_hands(trash_item)
 		qdel(src)
