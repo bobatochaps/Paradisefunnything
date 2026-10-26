@@ -32,16 +32,19 @@
 	var/datum/character_save/character = allocate(/datum/character_save)
 	character.gs13_preferences = gs13_sanitize_preferences(list("master_wg_pref" = TRUE, "weight_belly_shape" = "Round", "weight_belly_base" = 3, "weight_hips_base" = 1, "weight_hips_max" = 2, "weight_belly_custom_color" = TRUE, "weight_belly_color" = "#3366cc"))
 	character.apply_gs13_preferences(donor)
-	recipient.gs13_preferences["weight_belly_shape"] = "Classic"
-	recipient.gs13_character_slot = 7
+	recipient.set_gs13_preference_snapshot(list("weight_belly_shape" = "Classic", "weight_body_sprites" = FALSE), 7)
 	donor.dna.transfer_identity(recipient)
 	TEST_ASSERT_EQUAL(recipient.get_gs13_shape_setting("weight_belly_shape"), "Round", "The real native identity transfer carries the DNA's physical shape")
 	TEST_ASSERT_EQUAL(recipient.gs13_preferences["weight_belly_shape"], "Classic", "DNA transfer preserves the destination's saved policy")
 	TEST_ASSERT_EQUAL(recipient.gs13_character_slot, 7, "DNA transfer cannot change the destination's character-slot association")
 	TEST_ASSERT_NOT(recipient.gs13_preferences["master_wg_pref"], "The donor cannot opt another body into weight rendering")
+	TEST_ASSERT_NOT(recipient.gs13_preferences["weight_body_sprites"], "The donor also cannot change the separate native body-sprite permission")
 	TEST_ASSERT_NULL(recipient.overlays_standing[GS13_WEIGHT_BODY_LAYER], "Inherited shape alone cannot bypass the destination visual gate")
 	recipient.gs13_preferences["master_wg_pref"] = TRUE
 	recipient.fatness_real = FATNESS_LEVEL_FATTER
+	recipient.calculate_fatness()
+	TEST_ASSERT_NULL(recipient.overlays_standing[GS13_WEIGHT_BODY_LAYER], "Enabling weight gain alone cannot bypass a separate sprite opt-out")
+	recipient.gs13_preferences["weight_body_sprites"] = TRUE
 	recipient.calculate_fatness()
 	TEST_ASSERT_EQUAL(recipient.fatness, FATNESS_LEVEL_FATTER, "Identity transfer preserves the destination's actual weight calculation")
 	TEST_ASSERT_EQUAL(recipient.get_gs13_part_size("belly", gs13_weight_stage(recipient.fatness)), 5, "The inherited base and current stage select the intended physical part size")
