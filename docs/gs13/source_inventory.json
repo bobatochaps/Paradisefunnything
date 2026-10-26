@@ -8532,7 +8532,7 @@
         "code/modules/surgery/organs/internal/stomach/_stomach.dm"
       ],
       "asset_literals": [],
-      "remaining_gate": "Weight conversion, calorite processing, fullness, physical stomach fluid contents, drip absorption, explicit oral routes, source-rate satiety healing, benign tiny-item ownership/vomiting and native incision/cautery recovery have adapters validated through 304 focused / 359 full native tests. Coated pills and normal ChemMaster duration production are a saved candidate pending native/UI validation. Specialized species, acid/item digestion, sharp-item embedding, incision wound/cavity behavior, inherited disgust/mood details and direct client checks remain pending."
+      "remaining_gate": "Weight conversion, calorite processing, fullness, physical stomach fluid contents, drip absorption, explicit oral routes, source-rate satiety healing, benign tiny-item ownership/vomiting and native incision/cautery recovery have adapters validated through 304 focused / 359 full native tests. Coated pills, normal ChemMaster duration production and manual sugar/water coating pass 310 focused / 365 full native tests with UI/live SQL checks. Specialized species, acid/item digestion, sharp-item embedding, incision wound/cavity behavior, inherited disgust/mood details and direct client checks remain pending."
     },
     {
       "source": "modular_gs/code/modules/surgery/organs/internal/stomach/stomach_ethereal.dm",
@@ -19734,7 +19734,7 @@
         "code/modules/gs13/stomach_surgery.dm",
         "code/modules/gs13/coated_pills.dm"
       ],
-      "remaining_gate": "Native anatomy, surgery/transplantation, burst trauma/food response, fluid contents/drip absorption/oral routing, source-rate tissue recovery and initial item ownership/vomiting/incision recovery pass 304 focused / 359 full tests. Coated-pill callbacks are pending native/UI validation. General acid/item digestion, sharp-item embedding, incision wound/cavity behavior, punch-triggered ejection, specialized organs, inherited disgust/mood feedback and client checks remain pending."
+      "remaining_gate": "Native anatomy, surgery/transplantation, burst trauma/food response, fluid contents/drip absorption/oral routing, source-rate tissue recovery and initial item ownership/vomiting/incision recovery pass 304 focused / 359 full tests. Coated-pill callbacks, normal ChemMaster production and manual coating pass 310 focused / 365 full native tests with UI/live SQL checks. General acid/item digestion, sharp-item embedding, incision wound/cavity behavior, punch-triggered ejection, specialized organs, inherited disgust/mood feedback and client checks remain pending."
     },
     {
       "source": "modular_skyrat/modules/customization/modules/surgery/organs/genitals.dm",
@@ -19873,7 +19873,7 @@
       "target_adapters": [
         "code/modules/gs13/coated_pills.dm"
       ],
-      "remaining_gate": "Only default-compatible pill maximum coating (60) and printable coating (30) constants are adapted; coated-pill/native UI validation is pending. Taste masking, manual coating and other chemistry constants/consumers remain open."
+      "remaining_gate": "Only default-compatible pill maximum coating (60) and printable coating (30) constants are adapted; coated-pill/native UI validation passes 310 focused / 365 full tests. Taste masking and other chemistry constants/consumers remain open."
     },
     {
       "source": "code/modules/reagents/reagent_containers/pill.dm",
@@ -19884,7 +19884,7 @@
         "code/modules/gs13/stomach_contents.dm",
         "code/modules/gs13/digestion.dm"
       ],
-      "remaining_gate": "Default coating, physical stomach storage, guarded release and native oral routing are a saved candidate pending native/UI validation. Manual coating/dissolution, taste masking, inherited item callbacks, other pill families, payload persistence and direct client checks remain open."
+      "remaining_gate": "Default coating, physical stomach storage, guarded release and native oral routing and manual coating/dissolution pass 310 focused / 365 full native tests with UI/live SQL checks. Taste masking, inherited item callbacks, other pill families, payload persistence and direct client checks remain open."
     },
     {
       "source": "code/modules/reagents/chemistry/machinery/chem_master.dm",
@@ -19893,7 +19893,7 @@
       "target_adapters": [
         "code/modules/gs13/coated_pills.dm"
       ],
-      "remaining_gate": "Only normal pill coating-duration production is adapted through the existing native machine UI and synthesis APIs; native/UI validation is pending. Other source printing/container/chemistry behavior, plumbing production and direct client checks remain open."
+      "remaining_gate": "Only normal pill coating-duration production is adapted through the existing native machine UI and synthesis APIs; native/UI validation passes 310 focused / 365 full tests. Other source printing/container/chemistry behavior, plumbing production and direct client checks remain open."
     }
   ]
 }
