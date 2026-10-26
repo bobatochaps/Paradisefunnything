@@ -125,3 +125,19 @@ One integration test uses actual native quirk application, contaminated-food bit
 ## Strong Stomach vomiting nutrition candidate
 
 Pinned `code/modules/mob/living/carbon/carbon.dm` (Git blob `73e656d3f12d46829bc1b6242324eecfd097eba8`) halves lost nutrition for non-forced vomiting with Strong Stomach. The adapter applies that fraction to native ordinary vomiting; forced ejection, bloody-vomit blood loss, dry heaves and dead-body rejection preserve their native behavior. One integration test exercises these real paths and native quirk cleanup. Native validation is pending. The source stun-duration consumer has no direct equivalent in Paradise's vomiting confusion/slowdown/knockdown mixture and remains an explicit gate; no status duration is silently substituted.
+
+## Remaining specialized stomach dependencies
+
+The pinned inherited stomach provider contains these additional variants. They remain open rather than being treated as complete merely because their scalar properties are known.
+
+| Source variant | Reviewed contract | Dependency before implementation can be closed |
+|---|---|---|
+| Moth | Ordinary stomach rate/health, `spinner-x` art and organ-owned cloth-eating trait | Actual cloth-eating consumers and source species rules. Paradise Nian has its own native organs/cocoon/wings and does not supply this trait; its name is insufficient evidence for automatic substitution. |
+| Surplus prosthesis | 35 maximum health, coefficient 0.025, EMP vulnerability 100, `stomach-c-s` art | Native distinction between surgical removal and ordinary extraction/transplant, source failure/EMP exemption, explosion and surgeon injury, plus reviewed normal acquisition. |
+| Pod chloroplast | Plant food-type contract and lime organ tint | Complete plant food/species dependencies; native Diona is not automatically equivalent to source Podpeople. |
+| Ghost | Phasing organ and ghost-specific organ flag | Source ghost anatomy/species/physical ownership and acquisition; no ordinary organic substitute. |
+| Evolved | 120 maximum health, coefficient 0.08, disgust metabolism 2.5 | Actual source mutation/acquisition and disgust consumers; scalar-only organ creation would leave those contracts incomplete. |
+
+Pinned `code/datums/elements/dangerous_surgical_removal.dm` (Git blob `ce78ba92b4c7a28f4b0af25754899cda8ea4d47d`) supplies the surplus removal dependency. Its surgical mode ignores organs already failing or EMP-faulted, injures an adjacent remover for 15 body damage, makes a one-tile light-impact explosion and normally deletes the organ. It listens to a surgical-removal signal distinct from general removal. Paradise's ordinary internal-organ `remove()` is shared by extraction, transplantation and other cleanup; attaching this hazard indiscriminately there would change those behaviors. This provider has been reviewed for dependency planning, with no native adapter or validation claimed.
+
+Ethereal and Protean remain separate earlier gates requiring their actual power/overcharge and MOD/metal-food behavior. Complete those dependencies before changing their native species anatomy or claiming source parity.
