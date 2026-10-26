@@ -4710,7 +4710,7 @@
         "modular_skyrat/modules/modular_items/lewd_items/code/lewd_organs/breasts.dm"
       ],
       "asset_literals": [],
-      "remaining_gate": "A native body-shape DNA adapter adds independent inherited belly/hip sizes, style and color modes, with changed-trait-only live edits and body-owned render gates. Four new integration tests and extended real-cloning coverage pass 292 focused / 347 full native tests with UI/live SQL checks. Optional smooth paired body/clothing layers with separate live visibility, source assets, native coverage/rolling, and organ lifecycle pass native tests and inspected previews. Saved fluid products and optional anatomy, live breast maxima with creation-DNA persistence, and independent human belly/hip sizes/colors have partial native adapters. Body/uniform sizes use the native 0-to-9 palette. Full source part-size DNA/ranges, unsupported products/species, and player SQL/client checks remain pending. Source-commented preference blocks are not active features."
+      "remaining_gate": "A native body-shape DNA adapter adds independent inherited belly/hip sizes, style and color modes, with changed-trait-only live edits and body-owned render gates. Four new integration tests and extended real-cloning coverage pass 292 focused / 347 full native tests with UI/live SQL checks. Optional smooth paired body/clothing layers with separate live visibility, source assets, native coverage/rolling, and organ lifecycle pass native tests and inspected previews. Saved fluid products and optional anatomy, live breast maxima with creation-DNA persistence, and independent human belly/hip sizes/colors have partial native adapters. Human belly 0-to-9 and hips 0-to-10 source ranges now pass native DNA/editor/body/all-five-uniform-family tests and six inspected previews. Remaining part-size DNA and multi-channel colors, unsupported products/species, and player SQL/client checks remain pending. Source-commented preference blocks are not active features."
     },
     {
       "source": "modular_gs/code/modules/client/preferences/helplessness_prefs.dm",
@@ -7269,7 +7269,7 @@
         "modular_gs/icons/obj/genitals/breasts_smooth_onmob.dmi",
         "modular_gs/icons/obj/genitals/teshbreasts.dmi"
       ],
-      "remaining_gate": "A native body-shape DNA adapter adds independent inherited belly/hip sizes, style and color modes, with changed-trait-only live edits and body-owned render gates. Four new integration tests and extended real-cloning coverage pass 292 focused / 347 full native tests with UI/live SQL checks. Optional smooth paired body/clothing layers with separate live visibility, source assets, native coverage/rolling, and organ lifecycle pass native tests and inspected previews. Native breast reservoir capacity, bounded lactation, persistent products, apparent-weight growth and live maxima, physical lifecycle, and human belly/hip bases/caps have partial adapters. Full source part-size DNA/ranges, specialized species, inherited interactions, and client checks remain pending."
+      "remaining_gate": "A native body-shape DNA adapter adds independent inherited belly/hip sizes, style and color modes, with changed-trait-only live edits and body-owned render gates. Four new integration tests and extended real-cloning coverage pass 292 focused / 347 full native tests with UI/live SQL checks. Optional smooth paired body/clothing layers with separate live visibility, source assets, native coverage/rolling, and organ lifecycle pass native tests and inspected previews. Native breast reservoir capacity, bounded lactation, persistent products, apparent-weight growth and live maxima, physical lifecycle, and human belly/hip bases/caps have partial adapters. Human belly/hip source limits are validated through 297 focused / 352 full tests. Remaining part-size DNA/multi-channel colors, specialized species, inherited interactions, and client checks remain pending."
     },
     {
       "source": "modular_gs/code/modules/mob/living/species.dm",
@@ -8520,7 +8520,10 @@
         "code/modules/gs13/weight.dm",
         "code/modules/gs13/fullness.dm",
         "code/modules/gs13/digestive_organs.dm",
-        "code/modules/gs13/digestion.dm"
+        "code/modules/gs13/digestion.dm",
+        "code/modules/gs13/stomach_contents.dm",
+        "code/modules/gs13/stomach_surgery.dm",
+        "code/modules/gs13/coated_pills.dm"
       ],
       "declarations": [
         "/obj/item/organ/stomach/proc/handle_gaining_weight"
@@ -8529,7 +8532,7 @@
         "code/modules/surgery/organs/internal/stomach/_stomach.dm"
       ],
       "asset_literals": [],
-      "remaining_gate": "Weight conversion, calorite processing, fullness, physical stomach contents, drip absorption, and explicit oral versus injection routes have native adapters. Specialized species, swallowed-item digestion, source mood/timing details, automatic tissue healing, and direct client checks remain pending."
+      "remaining_gate": "Weight conversion, calorite processing, fullness, physical stomach fluid contents, drip absorption, explicit oral routes, source-rate satiety healing, benign tiny-item ownership/vomiting and native incision/cautery recovery have adapters validated through 304 focused / 359 full native tests. Coated pills and normal ChemMaster duration production are a saved candidate pending native/UI validation. Specialized species, acid/item digestion, sharp-item embedding, incision wound/cavity behavior, inherited disgust/mood details and direct client checks remain pending."
     },
     {
       "source": "modular_gs/code/modules/surgery/organs/internal/stomach/stomach_ethereal.dm",
@@ -19726,9 +19729,12 @@
         "code/modules/gs13/digestive_organs.dm",
         "code/modules/gs13/digestion.dm",
         "code/modules/gs13/weight.dm",
-        "code/modules/gs13/fullness.dm"
+        "code/modules/gs13/fullness.dm",
+        "code/modules/gs13/stomach_contents.dm",
+        "code/modules/gs13/stomach_surgery.dm",
+        "code/modules/gs13/coated_pills.dm"
       ],
-      "remaining_gate": "Native anatomy, surgery, transplantation, burst trauma, food response, physical fluid contents, drip absorption, explicit oral routing, and cleanup have adapters. Swallowed-item digestion, specialized organs, automatic tissue healing, inherited disgust/mood behavior, and client checks remain pending."
+      "remaining_gate": "Native anatomy, surgery/transplantation, burst trauma/food response, fluid contents/drip absorption/oral routing, source-rate tissue recovery and initial item ownership/vomiting/incision recovery pass 304 focused / 359 full tests. Coated-pill callbacks are pending native/UI validation. General acid/item digestion, sharp-item embedding, incision wound/cavity behavior, punch-triggered ejection, specialized organs, inherited disgust/mood feedback and client checks remain pending."
     },
     {
       "source": "modular_skyrat/modules/customization/modules/surgery/organs/genitals.dm",
@@ -19741,7 +19747,7 @@
         "code/modules/gs13/anatomy_appearance.dm",
         "code/modules/gs13/body_shape_dna.dm"
       ],
-      "remaining_gate": "A native body-shape DNA adapter adds independent inherited belly/hip sizes, style and color modes, with changed-trait-only live edits and body-owned render gates. Four new integration tests and extended real-cloning coverage pass 292 focused / 347 full native tests with UI/live SQL checks. Optional smooth paired body/clothing layers with separate live visibility, source assets, native coverage/rolling, and organ lifecycle pass native tests and inspected previews. Optional fluid creation/storage/production, birth DNA separation, and independent human belly/hip sizes/colors have partial native adapters. Full source organ-size DNA/ranges, multi-channel rendering, remaining parts/species, inherited interactions/products, and player SQL/client checks remain pending."
+      "remaining_gate": "A native body-shape DNA adapter adds independent inherited belly/hip sizes, style and color modes, with changed-trait-only live edits and body-owned render gates. Four new integration tests and extended real-cloning coverage pass 292 focused / 347 full native tests with UI/live SQL checks. Optional smooth paired body/clothing layers with separate live visibility, source assets, native coverage/rolling, and organ lifecycle pass native tests and inspected previews. Optional fluid creation/storage/production, birth DNA separation, and independent human belly/hip sizes/colors have partial native adapters. Human belly 0-to-9 and hips 0-to-10 limits now pass native DNA/editor/body/uniform tests and six inspected previews. Remaining organ-size DNA and multi-channel colors, multi-channel rendering, remaining parts/species, inherited interactions/products, and player SQL/client checks remain pending."
     },
     {
       "source": "modular_skyrat/modules/modular_items/lewd_items/code/lewd_organs/_genital.dm",
@@ -19792,7 +19798,7 @@
         "code/modules/gs13/anatomy_appearance.dm",
         "code/modules/gs13/body_shape_dna.dm"
       ],
-      "remaining_gate": "A native body-shape DNA adapter adds independent inherited belly/hip sizes, style and color modes, with changed-trait-only live edits and body-owned render gates. Four new integration tests and extended real-cloning coverage pass 292 focused / 347 full native tests with UI/live SQL checks. Optional smooth paired body/clothing layers with separate live visibility, source assets, native coverage/rolling, and organ lifecycle pass native tests and inspected previews. Optional fluid creation/storage/production, birth DNA separation, and independent human belly/hip sizes/colors have partial native adapters. Full source organ-size DNA/ranges, multi-channel rendering, remaining parts/species, inherited interactions/products, and player SQL/client checks remain pending."
+      "remaining_gate": "A native body-shape DNA adapter adds independent inherited belly/hip sizes, style and color modes, with changed-trait-only live edits and body-owned render gates. Four new integration tests and extended real-cloning coverage pass 292 focused / 347 full native tests with UI/live SQL checks. Optional smooth paired body/clothing layers with separate live visibility, source assets, native coverage/rolling, and organ lifecycle pass native tests and inspected previews. Optional fluid creation/storage/production, birth DNA separation, and independent human belly/hip sizes/colors have partial native adapters. Human belly 0-to-9 and hips 0-to-10 limits now pass native DNA/editor/body/uniform tests and six inspected previews. Remaining organ-size DNA and multi-channel colors, multi-channel rendering, remaining parts/species, inherited interactions/products, and player SQL/client checks remain pending."
     },
     {
       "source": "modular_skyrat/modules/modular_items/lewd_items/code/lewd_chemistry/reagents/breast_milk.dm",
@@ -19811,6 +19817,83 @@
         "code/modules/gs13/fluid_organs.dm"
       ],
       "remaining_gate": "Native consumable IDs, ordinary nutrition, fluid production, and neutral sample/container descriptions have partial adapters. Inherited reagent-specific interactions, complete source chemistry dependencies, distribution, and client checks remain pending."
+    },
+    {
+      "source": "code/__DEFINES/DNA.dm",
+      "git_blob_sha": "0a95e9780925445b96c082eedc90094582eee7cf",
+      "status": "partial-adapter",
+      "target_adapters": [
+        "code/modules/gs13/digestive_organs.dm"
+      ],
+      "remaining_gate": "Only STANDARD_ORGAN_HEALING is adapted for the actual native stomach; other DNA/organ constants and their inherited consumers require semantic review."
+    },
+    {
+      "source": "code/__DEFINES/stat.dm",
+      "git_blob_sha": "0e285fde3abf4ff477da9b3849e23468143aaf28",
+      "status": "partial-adapter",
+      "target_adapters": [
+        "code/modules/gs13/digestive_organs.dm"
+      ],
+      "remaining_gate": "Only MAX_SATIETY is reviewed against the existing native 600-point food-quality scale for tissue recovery. Other stat constants and consumers remain open."
+    },
+    {
+      "source": "code/__DEFINES/~~bubber_defines/DNA.dm",
+      "git_blob_sha": "476b474d41b7f0b6760e5eca3906fa3055623b59",
+      "status": "partial-adapter",
+      "target_adapters": [
+        "code/modules/gs13/weight_appearance.dm",
+        "code/modules/gs13/preferences.dm",
+        "code/modules/gs13/body_shape_dna.dm"
+      ],
+      "remaining_gate": "Pinned belly 0-to-9 and hip 0-to-10 limits are validated in native preferences/DNA/body/clothing. Other anatomical limits, shapes, species and consumers remain open."
+    },
+    {
+      "source": "code/modules/surgery/organs/_organ.dm",
+      "git_blob_sha": "86b03d4da72550b5c62be3b5fd5bfa1385267181",
+      "status": "partial-adapter",
+      "target_adapters": [
+        "code/modules/gs13/digestive_organs.dm",
+        "code/modules/gs13/stomach_surgery.dm"
+      ],
+      "remaining_gate": "Only natural healing rate/positive-satiety scaling and repair ordering required by the stomach are adapted. Other organ classes, decay/storage, failure feedback, infection/EMP/trait contracts and client checks remain open."
+    },
+    {
+      "source": "code/game/objects/items.dm",
+      "git_blob_sha": "d64fa19c53d66c58bcbf73ba9cfd9a73d9aaab5d",
+      "status": "partial-adapter",
+      "target_adapters": [
+        "code/modules/gs13/stomach_contents.dm"
+      ],
+      "remaining_gate": "Only the benign tiny hidden-item stomach entry point is adapted through native food insertion and final accepted bites. General accidental-consumption discovery, sharp-item bite/embedding behavior, other item helpers and client checks remain open."
+    },
+    {
+      "source": "code/__DEFINES/reagents.dm",
+      "git_blob_sha": "1e3b65dc760b4f583d1911e8fa6d411335e44b39",
+      "status": "partial-adapter",
+      "target_adapters": [
+        "code/modules/gs13/coated_pills.dm"
+      ],
+      "remaining_gate": "Only default-compatible pill maximum coating (60) and printable coating (30) constants are adapted; coated-pill/native UI validation is pending. Taste masking, manual coating and other chemistry constants/consumers remain open."
+    },
+    {
+      "source": "code/modules/reagents/reagent_containers/pill.dm",
+      "git_blob_sha": "22bd3c3d05703eaef2c2427fd792ca6f71202eb6",
+      "status": "partial-adapter",
+      "target_adapters": [
+        "code/modules/gs13/coated_pills.dm",
+        "code/modules/gs13/stomach_contents.dm",
+        "code/modules/gs13/digestion.dm"
+      ],
+      "remaining_gate": "Default coating, physical stomach storage, guarded release and native oral routing are a saved candidate pending native/UI validation. Manual coating/dissolution, taste masking, inherited item callbacks, other pill families, payload persistence and direct client checks remain open."
+    },
+    {
+      "source": "code/modules/reagents/chemistry/machinery/chem_master.dm",
+      "git_blob_sha": "e1486cd65f02f74ffebeeeed8636a29d8db5d498",
+      "status": "partial-adapter",
+      "target_adapters": [
+        "code/modules/gs13/coated_pills.dm"
+      ],
+      "remaining_gate": "Only normal pill coating-duration production is adapted through the existing native machine UI and synthesis APIs; native/UI validation is pending. Other source printing/container/chemistry behavior, plumbing production and direct client checks remain open."
     }
   ]
 }
