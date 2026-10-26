@@ -141,9 +141,13 @@
 	return emptied
 
 /// Tiny objects hidden through native food insertion can be swallowed with
-/// the final accepted bite. High-force sharp items retain native discovery.
+/// the final accepted bite. Source high-force sharp objects injure and embed.
 /obj/item/proc/try_gs13_accidental_swallow(mob/living/carbon/consumer)
-	if(!istype(consumer) || QDELETED(consumer) || w_class > WEIGHT_CLASS_TINY || (sharp && force >= 5))
+	if(!istype(consumer) || QDELETED(consumer) || consumer.stat == DEAD)
+		return FALSE
+	if(sharp && isnum(force) && GS13_IS_FINITE(force) && force >= 5)
+		return bite_gs13_sharp_object(consumer)
+	if(w_class > WEIGHT_CLASS_TINY)
 		return FALSE
 	var/obj/item/organ/internal/gs13_stomach/stomach = consumer.get_organ_slot(GS13_ORGAN_STOMACH)
 	if(!istype(stomach) || stomach.owner != consumer || !stomach.consume_gs13_item(src))
@@ -151,4 +155,24 @@
 	// Two source breathing cycles become the native timed breath-loss effect.
 	consumer.AdjustLoseBreath(4 SECONDS)
 	to_chat(consumer, SPAN_WARNING("You swallow something small with your food."))
+	return TRUE
+
+/// Source forceful bites use the native physical limb's embedded-item lifecycle.
+/// Strong Stomach protects retained objects, not the initial sharp bite.
+/obj/item/proc/bite_gs13_sharp_object(mob/living/carbon/consumer)
+	consumer.visible_message(SPAN_WARNING("[consumer] bites into something sharp!"), SPAN_USERDANGER("You bite into something sharp!"))
+	consumer.apply_damage(max(15, force), BRUTE, BODY_ZONE_HEAD, sharp = TRUE)
+	consumer.AdjustLoseBreath(4 SECONDS)
+	if(QDELETED(src) || QDELETED(consumer) || !ishuman(consumer))
+		return FALSE
+	var/mob/living/carbon/human/body = consumer
+	var/obj/item/organ/external/chest = body.get_organ(BODY_ZONE_CHEST)
+	if(!chest || HAS_TRAIT(body, TRAIT_PIERCEIMMUNE))
+		return FALSE
+	chest.add_embedded_object(src)
+	if(QDELETED(src) || QDELETED(body) || loc != body)
+		return FALSE
+	add_mob_blood(body)
+	body.apply_damage(max(25, force * 1.5), BRUTE, BODY_ZONE_CHEST, sharp = TRUE)
+	body.AdjustLoseBreath(12 SECONDS)
 	return TRUE
