@@ -198,13 +198,16 @@
 /datum/game_test/room_test/attack_chain_medcontainers/Run()
 	var/datum/test_puppeteer/player = new(src)
 	var/datum/test_puppeteer/target = player.spawn_puppet_nearby()
+	var/mob/living/carbon/human/consumer = player.puppet
+	var/obj/item/organ/internal/gs13_stomach/stomach = consumer.get_organ_slot(GS13_ORGAN_STOMACH)
 
 	var/obj/structure/table/table = player.spawn_obj_nearby(/obj/structure/table)
 
 	// Pills
 	var/obj/pill = player.spawn_obj_in_hand(/obj/item/reagent_containers/pill/salicylic)
 	player.click_on_self()
-	TEST_ASSERT_LAST_CHATLOG(player, "You swallow [pill].")
+	TEST_ASSERT_ANY_CHATLOG(player, "You swallow [pill].")
+	TEST_ASSERT(pill in stomach.gs13_stomach_contents, "The actual native click swallows the current coated pill into its physical stomach")
 	var/obj/beaker = player.spawn_obj_nearby(/obj/item/reagent_containers/glass/beaker)
 	player.puppet.swap_hand()
 	pill = player.spawn_obj_in_hand(/obj/item/reagent_containers/pill/salicylic)
@@ -215,7 +218,8 @@
 	TEST_ASSERT_LAST_CHATLOG(player, "You dissolve [pill] in [beaker].")
 	pill = player.spawn_obj_in_hand(/obj/item/reagent_containers/pill/salicylic)
 	player.use_item_in_hand()
-	TEST_ASSERT_LAST_CHATLOG(player, "You swallow [pill].")
+	TEST_ASSERT_ANY_CHATLOG(player, "You swallow [pill].")
+	TEST_ASSERT(pill in stomach.gs13_stomach_contents, "Actual native self-activation swallows this newly held pill")
 	pill = player.spawn_obj_in_hand(/obj/item/reagent_containers/pill/salicylic)
 	player.click_on(table)
 	TEST_ASSERT(pill in get_turf(table), "pill not placed on table")

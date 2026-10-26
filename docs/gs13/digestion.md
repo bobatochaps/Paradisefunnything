@@ -68,7 +68,7 @@ Two integration tests exercise actual native harm resolution with fixed damage, 
 
 Accepted coated pills now use Paradise's existing taste cooldown, text and hallucination handling. Ordinary source coatings report starchy sugar; the exact pinned source formula `max(0, 100 * (layers - 20))` reveals the payload flavor above its twenty-layer threshold. This preserves the source's formula rather than assuming a thicker shell always hides flavor. The twenty-layer constant comes from the already reviewed pinned reagent defines. Uncoated medicine retains the existing oral route, rejected intake produces no accepted-intake flavor, and native species without taste do not receive coating feedback.
 
-A single native integration test exercises actual consumption at default, above-threshold and zero coating, real full-stomach refusal, and the specialized native skeleton's absent taste sense. Static checks pass; native validation is pending. Direct client feedback and other inherited taste consumers remain open.
+A single native integration test exercises actual consumption at default, above-threshold and zero coating, real full-stomach refusal, and the specialized native skeleton's absent taste sense. It passes in the focused suite. The ordinary native medical-container click/self-activation fixture now verifies both the swallow message and actual current-pill retention; additional source flavor feedback can follow the swallow message. Combined full native validation is pending. Direct client feedback and other inherited taste consumers remain open.
 
 ## Researched cybernetic-stomach candidates
 
