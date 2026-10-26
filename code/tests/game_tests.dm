@@ -24,6 +24,7 @@
 #include "test_gs13_stomach_healing.dm"
 #include "test_gs13_stomach_contents.dm"
 #include "test_gs13_stomach_surgery.dm"
+#include "test_gs13_stomach_unarmed.dm"
 #include "test_gs13_digestion.dm"
 #include "test_gs13_door_stuckage.dm"
 #include "test_gs13_fov.dm"

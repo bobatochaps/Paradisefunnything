@@ -92,7 +92,7 @@
 	return FALSE
 
 
-/mob/living/carbon/proc/vomit(lost_nutrition = 10, blood = 0, should_confuse = TRUE, distance = 0, message = 1, vomit_type_overide = null)
+/mob/living/carbon/proc/vomit(lost_nutrition = 10, blood = 0, should_confuse = TRUE, distance = 0, message = 1, vomit_type_overide = null, gs13_force_contents = FALSE)
 	. = TRUE
 
 	if(stat == DEAD || (ismachineperson(src) && !locate(/obj/item/organ/internal/appendix/corrupt) in internal_organs)) // Dead people and IPCs do not vomit particulates
@@ -104,7 +104,7 @@
 		AdjustConfused(8 SECONDS)
 		Slowed(8 SECONDS, 1)
 
-	if(!blood && nutrition < 100) // Nutrition vomiting while already starving
+	if(!blood && nutrition < 100 && !gs13_force_contents) // Nutrition vomiting while already starving
 		if(message)
 			visible_message(SPAN_WARNING("[src] dry heaves!"), \
 							SPAN_USERDANGER("You try to throw up, but there's nothing in your stomach!"))
@@ -141,7 +141,7 @@
 		T = get_step(T, dir)
 		if(T.is_blocked_turf())
 			break
-	SEND_SIGNAL(src, COMSIG_GS13_CARBON_VOMITED, distance)
+	SEND_SIGNAL(src, COMSIG_GS13_CARBON_VOMITED, distance, gs13_force_contents)
 
 /mob/living/carbon/gib()
 	. = death(1)

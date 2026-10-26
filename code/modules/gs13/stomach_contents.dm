@@ -57,12 +57,13 @@
 	if(!owner || QDELETED(owner) || owner == old_owner)
 		return
 	RegisterSignal(owner, COMSIG_GS13_CARBON_VOMITED, PROC_REF(on_gs13_owner_vomit))
+	RegisterSignal(owner, COMSIG_GS13_HUMAN_UNARMED_HIT, PROC_REF(on_gs13_owner_unarmed_hit))
 	for(var/obj/item/item as anything in gs13_stomach_contents?.Copy())
 		item.forceMove(owner)
 
 /obj/item/organ/internal/gs13_stomach/remove(mob/living/carbon/previous_owner, special = 0)
 	if(owner)
-		UnregisterSignal(owner, COMSIG_GS13_CARBON_VOMITED)
+		UnregisterSignal(owner, list(COMSIG_GS13_CARBON_VOMITED, COMSIG_GS13_HUMAN_UNARMED_HIT))
 	// Move before native removal clears owner, preserving the source's accepted
 	// owner-or-organ locations during each real movement signal.
 	for(var/obj/item/item as anything in gs13_stomach_contents?.Copy())
@@ -78,10 +79,19 @@
 
 /// Source ordinary vomiting ejects each retained item with a sixty-percent
 /// chance and chest trauma proportional to its native weight class.
-/obj/item/organ/internal/gs13_stomach/proc/on_gs13_owner_vomit(mob/living/carbon/vomiter, distance)
+/obj/item/organ/internal/gs13_stomach/proc/on_gs13_owner_vomit(mob/living/carbon/vomiter, distance, forced = FALSE)
 	SIGNAL_HANDLER
 	if(vomiter == owner)
-		empty_gs13_contents(60, TRUE)
+		empty_gs13_contents(60, TRUE, forced ? 1 : 0)
+
+/// The pinned receiver uses raw resolved damage >= 9, no armor block and no
+/// kicking. Native unarmed variants with a kick verb supply that exclusion.
+/obj/item/organ/internal/gs13_stomach/proc/on_gs13_owner_unarmed_hit(mob/living/carbon/hit_body, mob/living/carbon/human/attacker, damage, armor_block, kicking)
+	SIGNAL_HANDLER
+	if(hit_body != owner || !owner || QDELETED(owner) || owner.get_organ_slot(slot) != src || !length(gs13_stomach_contents) || !isnum(damage) || !GS13_IS_FINITE(damage) || damage < 9 || armor_block || kicking)
+		return
+	if(owner.vomit(gs13_force_contents = TRUE))
+		owner.visible_message(SPAN_WARNING("[owner] reels from [attacker]'s strike and vomits up swallowed contents!"))
 
 /obj/item/organ/internal/gs13_stomach/proc/empty_gs13_contents(chance = 100, damaging = FALSE, min_amount = 0)
 	if(!isnum(chance) || !GS13_IS_FINITE(chance) || !isnum(min_amount) || !GS13_IS_FINITE(min_amount))

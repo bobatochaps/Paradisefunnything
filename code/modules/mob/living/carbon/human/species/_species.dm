@@ -628,6 +628,7 @@
 
 	target.visible_message(SPAN_DANGER("[user] [pick(attack.attack_verb)]ed [target]!"))
 	target.apply_damage(damage, BRUTE, affecting, armor_block, sharp = attack.sharp)
+	SEND_SIGNAL(target, COMSIG_GS13_HUMAN_UNARMED_HIT, user, damage, armor_block, ("kick" in attack.attack_verb))
 	if((target.stat != DEAD) && damage >= user.dna.species.punchstunthreshold)
 		target.visible_message(SPAN_DANGER("[user] has knocked down [target]!"), \
 						SPAN_USERDANGER("[user] has knocked down [target]!"))
