@@ -43,7 +43,10 @@
 	recipient.gs13_preferences["master_wg_pref"] = TRUE
 	recipient.fatness_real = FATNESS_LEVEL_FATTER
 	recipient.calculate_fatness()
-	TEST_ASSERT("m_belly_round_5_FRONT" in gs13_weight_panel_states(recipient), "Opted-in native rendering combines inherited base shape with the destination's actual weight")
+	TEST_ASSERT_EQUAL(recipient.fatness, FATNESS_LEVEL_FATTER, "Identity transfer preserves the destination's actual weight calculation")
+	TEST_ASSERT_EQUAL(recipient.get_gs13_part_size("belly", gs13_weight_stage(recipient.fatness)), 5, "The inherited base and current stage select the intended physical part size")
+	var/list/states = gs13_weight_panel_states(recipient)
+	TEST_ASSERT("m_belly_round_5_FRONT" in states, "Opted-in native rendering combines inherited shape and weight (states=[json_encode(states)], style=[recipient.get_gs13_belly_style()], species=[recipient.dna.species.type], notransform=[recipient.notransform], skeleton=[HAS_TRAIT(recipient, TRAIT_SKELETONIZED)], enabled=[recipient.gs13_body_effects_enabled()])")
 	TEST_ASSERT_EQUAL(gs13_weight_panel_color(recipient, "m_belly_round_5_FRONT"), "#3366cc", "The inherited independent color reaches actual native appearance")
 	TEST_ASSERT_EQUAL(recipient.get_gs13_part_size("hips", gs13_weight_stage(recipient.fatness)), 2, "Inherited hip limits remain independent of the belly")
 	recipient.dna.gs13_body_shape["weight_belly_base"] = 0
