@@ -178,3 +178,33 @@
 		stomach.process_gs13_stomach_items(2)
 	TEST_ASSERT(QDELETED(pill), "The new coating releases after its actual remaining native digestion")
 	TEST_ASSERT_EQUAL(subject.gs13_test_oral_exposure, 10, "Only the final accepted dose reacts on the current body")
+
+/datum/game_test/room_test/gs13_coated_pill_native_taste/Run()
+	var/mob/living/carbon/human/subject = allocate(/mob/living/carbon/human)
+	subject.notransform = TRUE
+	for(var/coating in list(3, 21, 0))
+		var/obj/item/reagent_containers/pill/pill = allocate(/obj/item/reagent_containers/pill)
+		pill.set_gs13_coating(coating)
+		pill.reagents.add_reagent("water", 5)
+		subject.last_taste_text = "unchanged"
+		subject.last_taste_time = world.time - 10 SECONDS
+		subject.put_in_active_hand(pill)
+		TEST_ASSERT(pill.apply(subject, subject), "The real native pill route accepts each ordinary coating")
+		TEST_ASSERT_EQUAL(subject.last_taste_text, coating ? (coating > 20 ? "water" : "starchy sugar") : "unchanged", "Accepted native taste follows the pinned source coating probability and leaves uncoated medicine unchanged")
+		qdel(pill)
+	var/obj/item/organ/internal/gs13_stomach/stomach = subject.get_organ_slot(GS13_ORGAN_STOMACH)
+	stomach.reagents.maximum_volume = 0
+	var/obj/item/reagent_containers/pill/refused = allocate(/obj/item/reagent_containers/pill)
+	refused.reagents.add_reagent("water", 5)
+	subject.last_taste_text = "unchanged"
+	subject.last_taste_time = world.time - 10 SECONDS
+	subject.put_in_active_hand(refused)
+	TEST_ASSERT_NOT(refused.apply(subject, subject), "A real full stomach still refuses the medicine")
+	TEST_ASSERT_EQUAL(subject.last_taste_text, "unchanged", "Rejected pills cannot produce accepted-intake taste feedback")
+	subject.drop_item_to_ground(refused)
+	subject.set_species(/datum/species/skeleton)
+	subject.last_taste_text = "unchanged"
+	subject.last_taste_time = world.time - 10 SECONDS
+	subject.put_in_active_hand(refused)
+	TEST_ASSERT(refused.apply(subject, subject), "An actual native skeleton can retain medication in its specialized stomach")
+	TEST_ASSERT_EQUAL(subject.last_taste_text, "unchanged", "Coating feedback respects the native species' absent taste sense")

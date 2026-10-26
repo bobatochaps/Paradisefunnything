@@ -20,9 +20,9 @@
 	return ..()
 
 // non destructively tastes a reagent container
-/mob/living/proc/taste(datum/reagents/from)
+/mob/living/proc/taste(datum/reagents/from, text_override)
 	if(last_taste_time + 50 < world.time)
-		var/text_output = from.generate_taste_message(get_taste_sensitivity(), get_taste_category())
+		var/text_output = isnull(text_override) ? from.generate_taste_message(get_taste_sensitivity(), get_taste_category()) : text_override
 		// We dont want to spam the same message over and over again at the
 		// person. Give it a bit of a buffer.
 		if(AmountHallucinate() > 50 SECONDS && prob(25))

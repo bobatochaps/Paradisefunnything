@@ -106,6 +106,16 @@
 /obj/item/reagent_containers/pill/try_gs13_accidental_swallow(mob/living/carbon/consumer)
 	return apply(consumer, consumer)
 
+/// Preserve the pinned source probability, including payload flavor above its
+/// twenty-layer threshold. Native taste owns cooldown and hallucination text.
+/obj/item/reagent_containers/pill/proc/show_gs13_coating_taste(mob/living/carbon/consumer)
+	if(!consumer || QDELETED(consumer) || consumer.get_taste_sensitivity() >= TASTE_SENSITIVITY_NO_TASTE)
+		return
+	if(prob(max(0, 100 * (gs13_sanitize_pill_coating(gs13_layers_remaining) - GS13_PILL_TASTE_LAYERS))))
+		consumer.taste(reagents)
+	else
+		consumer.taste(reagents, "starchy sugar")
+
 // Native ChemMaster pill production keeps its own independent coating choice.
 /datum/chemical_production_mode/pills
 	var/gs13_coating_duration = GS13_DEFAULT_PILL_COATING

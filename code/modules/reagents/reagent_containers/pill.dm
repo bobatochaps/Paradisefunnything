@@ -59,7 +59,10 @@
 	var/atom/destination = C.get_gs13_ingestion_target()
 	if(gs13_sanitize_pill_coating(gs13_layers_remaining) > 0 && istype(destination, /obj/item/organ/internal/gs13_stomach))
 		var/obj/item/organ/internal/gs13_stomach/stomach = destination
-		return stomach.consume_gs13_item(src)
+		if(!stomach.consume_gs13_item(src))
+			return FALSE
+		show_gs13_coating_taste(C)
+		return TRUE
 	if(!reagents.gs13_ingest(C, reagents.total_volume))
 		return FALSE
 	if(reagents.total_volume > 0)
