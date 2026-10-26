@@ -28,6 +28,7 @@
 #include "test_gs13_stomach_surgery.dm"
 #include "test_gs13_stomach_unarmed.dm"
 #include "test_gs13_stomach_acid.dm"
+#include "test_gs13_stomach_item_trauma.dm"
 #include "test_gs13_digestion.dm"
 #include "test_gs13_door_stuckage.dm"
 #include "test_gs13_fov.dm"

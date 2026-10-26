@@ -1,4 +1,11 @@
 // GS13 traits exposed through Paradise's native character quirk system.
+/datum/quirk/gs13_strong_stomach
+	name = "Strong Stomach"
+	desc = "Small swallowed objects dissolve, and retained sharp items do not injure your stomach."
+	cost = 2
+	species_flags = QUIRK_MACHINE_INCOMPATIBLE
+	trait_to_apply = TRAIT_GS13_STRONG_STOMACH
+
 /datum/quirk/gs13_strong_legs
 	name = "Strong Legs"
 	desc = "Your legs are used to carrying heavy loads. GS13 weight slows you down half as much."

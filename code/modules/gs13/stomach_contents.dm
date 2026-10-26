@@ -50,13 +50,18 @@
 			var/power = get_gs13_item_acid_power(item)
 			if(power > 0)
 				item.acid_act(power, 10)
+			if(!QDELETED(src) && owner == holder && !QDELETED(holder) && holder.stat != DEAD && !QDELETED(item) && item.loc == holder)
+				process_gs13_item_trauma(item)
 
 /// Source advanced prostheses use twenty/thirty-five acid power, skip edible
 /// food, and leave living swallowed mobs to their separate native subsystem.
 /obj/item/organ/internal/gs13_stomach/proc/get_gs13_item_acid_power(obj/item/item)
 	if(!istype(item) || QDELETED(item) || istype(item, /obj/item/food) || !isnum(gs13_item_acid_power) || !GS13_IS_FINITE(gs13_item_acid_power))
 		return 0
-	return max(0, gs13_item_acid_power)
+	var/power = max(0, gs13_item_acid_power)
+	if(owner && HAS_TRAIT(owner, TRAIT_GS13_STRONG_STOMACH))
+		power = max(power, 10)
+	return power
 
 /obj/item/organ/internal/gs13_stomach/proc/on_gs13_content_deleted(obj/item/source)
 	SIGNAL_HANDLER
@@ -135,10 +140,10 @@
 			owner.apply_damage(item.w_class * 2, BRUTE, BODY_ZONE_CHEST)
 	return emptied
 
-/// Tiny benign objects hidden through native food insertion can be swallowed
-/// with the final accepted bite. Larger/sharp items retain native discovery.
+/// Tiny objects hidden through native food insertion can be swallowed with
+/// the final accepted bite. High-force sharp items retain native discovery.
 /obj/item/proc/try_gs13_accidental_swallow(mob/living/carbon/consumer)
-	if(!istype(consumer) || QDELETED(consumer) || w_class > WEIGHT_CLASS_TINY || sharp)
+	if(!istype(consumer) || QDELETED(consumer) || w_class > WEIGHT_CLASS_TINY || (sharp && force >= 5))
 		return FALSE
 	var/obj/item/organ/internal/gs13_stomach/stomach = consumer.get_organ_slot(GS13_ORGAN_STOMACH)
 	if(!istype(stomach) || stomach.owner != consumer || !stomach.consume_gs13_item(src))

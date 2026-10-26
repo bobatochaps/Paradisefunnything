@@ -1,0 +1,77 @@
+/datum/game_test/room_test/gs13_native_strong_stomach_quirk/Run()
+	TEST_ASSERT_EQUAL(GLOB.quirk_paths["Strong Stomach"], /datum/quirk/gs13_strong_stomach, "The source trait is normally selectable through the native character quirk registry")
+	var/mob/living/carbon/human/subject = allocate(/mob/living/carbon/human)
+	var/obj/item/organ/internal/gs13_stomach/stomach = subject.get_organ_slot(GS13_ORGAN_STOMACH)
+	var/obj/item/coin/silver/coin = allocate(/obj/item/coin/silver)
+	TEST_ASSERT_EQUAL(stomach.get_gs13_item_acid_power(coin), 0, "Ordinary anatomy begins without the source trait's acid consumer")
+	var/datum/quirk/gs13_strong_stomach/quirk = new
+	quirk.apply_quirk_effects(subject)
+	LAZYADD(allocated, quirk)
+	TEST_ASSERT_EQUAL(quirk.cost, 2, "The source positive quirk uses the existing native positive-point scale")
+	TEST_ASSERT(HAS_TRAIT(subject, TRAIT_GS13_STRONG_STOMACH), "Actual native quirk application grants the body-owned digestive trait")
+	TEST_ASSERT_EQUAL(stomach.get_gs13_item_acid_power(coin), 10, "The actual organ uses the source strong-stomach acid power")
+	ADD_TRAIT(subject, TRAIT_GS13_STRONG_STOMACH, "gs13_test_independent_stomach")
+	qdel(quirk)
+	TEST_ASSERT(HAS_TRAIT(subject, TRAIT_GS13_STRONG_STOMACH), "Deleting the native quirk preserves an independent trait source")
+	REMOVE_TRAIT(subject, TRAIT_GS13_STRONG_STOMACH, "gs13_test_independent_stomach")
+	TEST_ASSERT_EQUAL(stomach.get_gs13_item_acid_power(coin), 0, "Actual native quirk cleanup releases the original digestive modifier")
+
+/obj/item/coin/silver/gs13_low_force_sharp
+	force = 1
+	sharp = TRUE
+
+/datum/game_test/room_test/gs13_native_retained_sharp_item/Run()
+	var/mob/living/carbon/human/subject = allocate(/mob/living/carbon/human)
+	subject.notransform = TRUE
+	subject.nutrition = 100
+	var/obj/item/organ/internal/gs13_stomach/stomach = subject.get_organ_slot(GS13_ORGAN_STOMACH)
+	var/obj/item/food/sliceable/meal = allocate(/obj/item/food/sliceable, get_turf(subject))
+	meal.reagents.add_reagent("gs13_ingestion_probe", 1)
+	var/obj/item/coin/silver/gs13_low_force_sharp/sharp_item = allocate(/obj/item/coin/silver/gs13_low_force_sharp)
+	subject.put_in_active_hand(sharp_item)
+	meal.AltClick(subject)
+	subject.put_in_active_hand(meal)
+	meal.interact_with_atom(subject, subject, list())
+	TEST_ASSERT(sharp_item in stomach.gs13_stomach_contents, "Actual native hidden-food intake can retain a source tiny low-force sharp item")
+	stomach.gs13_item_acid_elapsed = 4
+	stomach.process_gs13_stomach_items(2)
+	TEST_ASSERT_EQUAL(stomach.damage, 1, "A real source-cadence scan applies native organ trauma from the retained sharp object")
+	var/datum/quirk/gs13_strong_stomach/quirk = new
+	quirk.apply_quirk_effects(subject)
+	LAZYADD(allocated, quirk)
+	stomach.gs13_item_acid_elapsed = 4
+	stomach.process_gs13_stomach_items(2)
+	TEST_ASSERT_EQUAL(stomach.damage, 1, "Actual native Strong Stomach prevents retained-object trauma")
+	TEST_ASSERT_EQUAL(sharp_item.acid_level, 100, "The same real source trait scan uses native object-acid processing")
+	qdel(quirk)
+	stomach.receive_damage(98, TRUE)
+	stomach.gs13_item_acid_elapsed = 4
+	stomach.process_gs13_stomach_items(2)
+	TEST_ASSERT(stomach.status & ORGAN_DEAD, "Retained sharp trauma can reach actual native organ failure")
+	TEST_ASSERT_EQUAL(stomach.gs13_cut_open_damage, 50, "The source failure transition opens a tracked half-health incision")
+
+/datum/game_test/room_test/gs13_native_stomach_cavity_migration/Run()
+	var/mob/living/carbon/human/subject = allocate(/mob/living/carbon/human)
+	subject.notransform = TRUE
+	var/obj/item/organ/internal/gs13_stomach/stomach = subject.get_organ_slot(GS13_ORGAN_STOMACH)
+	stomach.receive_damage(40, TRUE)
+	stomach.gs13_cut_open_damage = 30
+	var/obj/item/coin/silver/coin = allocate(/obj/item/coin/silver)
+	stomach.consume_gs13_item(coin)
+	stomach.gs13_item_acid_elapsed = 4
+	stomach.process_gs13_stomach_items(2)
+	var/obj/item/organ/external/chest = subject.get_organ(BODY_ZONE_CHEST)
+	TEST_ASSERT_EQUAL(chest.hidden, coin, "A source-sized object passes through an open stomach into the actual native chest cavity")
+	TEST_ASSERT_NOT(coin in stomach.gs13_stomach_contents, "Cavity migration releases stomach movement/deletion tracking")
+	var/mob/living/carbon/human/surgeon = allocate(/mob/living/carbon/human, get_turf(subject))
+	var/datum/surgery_step/cavity/remove_item/recovery = allocate(/datum/surgery_step/cavity/remove_item)
+	TEST_ASSERT_EQUAL(recovery.end_step(surgeon, subject, BODY_ZONE_CHEST, null, null), SURGERY_STEP_CONTINUE, "The actual native cavity-surgery step retrieves the migrated object")
+	TEST_ASSERT_NULL(chest.hidden, "Native cavity surgery clears its own physical object reference")
+	TEST_ASSERT(surgeon.is_holding(coin), "Native surgical recovery returns the same real item to the surgeon")
+	var/obj/item/storage/backpack/large_item = allocate(/obj/item/storage/backpack)
+	stomach.consume_gs13_item(large_item)
+	var/before = subject.getBruteLoss()
+	stomach.gs13_item_acid_elapsed = 4
+	stomach.process_gs13_stomach_items(2)
+	TEST_ASSERT(large_item in stomach.gs13_stomach_contents, "A source-oversized object cannot enter an empty native chest cavity")
+	TEST_ASSERT_EQUAL(subject.getBruteLoss() - before, large_item.w_class, "An oversized retained object in an open stomach causes actual source-weighted native chest trauma")
