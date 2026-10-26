@@ -6,7 +6,9 @@
 
 /// The pinned source deliberately caps belly art at nine and hips at ten.
 /proc/gs13_shape_preference_maximum(setting)
-	return setting in list("weight_hips_base", "weight_hips_max") ? GS13_HIP_SIZE_MAX : GS13_BELLY_SIZE_MAX
+	if(setting == "weight_hips_base" || setting == "weight_hips_max")
+		return GS13_HIP_SIZE_MAX
+	return GS13_BELLY_SIZE_MAX
 
 /proc/gs13_shape_preference_labels()
 	return list("weight_belly_base" = "Base belly sprite size (0 to 9)", "weight_belly_max" = "Maximum belly sprite size (0 to 9)", "weight_hips_base" = "Base hip sprite size (0 to 10)", "weight_hips_max" = "Maximum hip sprite size (0 to 10)", "weight_belly_custom_color" = "Use a custom belly color", "weight_belly_color" = "Belly color", "weight_hips_custom_color" = "Use a custom hip color", "weight_hips_color" = "Hip color")
