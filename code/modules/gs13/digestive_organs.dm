@@ -26,6 +26,8 @@
 	min_broken_damage = 45
 	var/gs13_digestive_efficiency = 0.05
 	var/gs13_healing_factor = GS13_STANDARD_ORGAN_HEALING
+	var/gs13_item_acid_power = 0
+	var/gs13_item_acid_elapsed = 0
 	var/gs13_digesting = FALSE
 	var/gs13_transfer_id
 	var/gs13_transfer_volume = 0

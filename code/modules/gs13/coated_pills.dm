@@ -69,13 +69,14 @@
 /obj/item/reagent_containers/pill/proc/on_gs13_stomach_digestion(datum/source, obj/item/organ/internal/gs13_stomach/stomach, mob/living/carbon/holder, seconds)
 	SIGNAL_HANDLER
 	if(gs13_coating_timer || !valid_gs13_digestion(stomach, holder) || !isnum(seconds) || !GS13_IS_FINITE(seconds) || seconds <= 0)
-		return
+		return GS13_CANCEL_ITEM_DIGESTION
 	gs13_layers_remaining = max(0, gs13_sanitize_pill_coating(gs13_layers_remaining) - seconds)
 	if(gs13_layers_remaining <= 0)
 		release_gs13_pill(stomach, holder)
 	else if(gs13_layers_remaining < seconds)
 		// Preserve a fractional final tick without holding the old body alive.
 		gs13_coating_timer = addtimer(CALLBACK(src, PROC_REF(finish_gs13_coating), stomach.UID(), holder.UID()), gs13_layers_remaining SECONDS, TIMER_STOPPABLE)
+	return GS13_CANCEL_ITEM_DIGESTION
 
 /obj/item/reagent_containers/pill/proc/finish_gs13_coating(stomach_uid, holder_uid)
 	gs13_coating_timer = null

@@ -48,6 +48,7 @@
 	icon_state = "stomach-c-u"
 	max_damage = 150
 	gs13_digestive_efficiency = 0.07
+	gs13_item_acid_power = 20
 
 /obj/item/organ/internal/gs13_stomach/cybernetic/tier3
 	name = "upgraded cybernetic stomach"
@@ -55,6 +56,7 @@
 	icon_state = "stomach-c-u2"
 	max_damage = 200
 	gs13_digestive_efficiency = 0.1
+	gs13_item_acid_power = 35
 
 /datum/design/gs13_cybernetic_stomach
 	name = "Basic Cybernetic Stomach"

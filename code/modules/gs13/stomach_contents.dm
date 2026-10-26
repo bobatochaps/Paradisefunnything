@@ -34,12 +34,29 @@
 /obj/item/organ/internal/gs13_stomach/proc/process_gs13_stomach_items(seconds = 2)
 	if(!owner || QDELETED(owner) || owner.stat == DEAD || owner.get_organ_slot(slot) != src || !isnum(seconds) || !GS13_IS_FINITE(seconds) || seconds <= 0)
 		return
+	gs13_item_acid_elapsed += seconds
+	var/acid_tick = gs13_item_acid_elapsed >= 6
+	gs13_item_acid_elapsed %= 6
 	var/mob/living/carbon/holder = owner
 	for(var/obj/item/item as anything in gs13_stomach_contents?.Copy())
 		if(QDELETED(src) || owner != holder || QDELETED(holder) || holder.stat == DEAD || holder.get_organ_slot(slot) != src)
 			break
 		if(!QDELETED(item) && item.loc == holder)
-			SEND_SIGNAL(item, COMSIG_GS13_STOMACH_DIGEST_ITEM, src, holder, seconds)
+			var/handled = SEND_SIGNAL(item, COMSIG_GS13_STOMACH_DIGEST_ITEM, src, holder, seconds)
+			if(QDELETED(src) || owner != holder || QDELETED(holder) || holder.stat == DEAD || holder.get_organ_slot(slot) != src)
+				break
+			if(!acid_tick || QDELETED(item) || item.loc != holder || (handled & GS13_CANCEL_ITEM_DIGESTION))
+				continue
+			var/power = get_gs13_item_acid_power(item)
+			if(power > 0)
+				item.acid_act(power, 10)
+
+/// Source advanced prostheses use twenty/thirty-five acid power, skip edible
+/// food, and leave living swallowed mobs to their separate native subsystem.
+/obj/item/organ/internal/gs13_stomach/proc/get_gs13_item_acid_power(obj/item/item)
+	if(!istype(item) || QDELETED(item) || istype(item, /obj/item/food) || !isnum(gs13_item_acid_power) || !GS13_IS_FINITE(gs13_item_acid_power))
+		return 0
+	return max(0, gs13_item_acid_power)
 
 /obj/item/organ/internal/gs13_stomach/proc/on_gs13_content_deleted(obj/item/source)
 	SIGNAL_HANDLER
