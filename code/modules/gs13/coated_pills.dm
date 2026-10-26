@@ -22,7 +22,46 @@
 
 /obj/item/reagent_containers/pill/deserialize(list/data)
 	. = ..()
-	gs13_layers_remaining = gs13_sanitize_pill_coating(data["gs13_layers_remaining"])
+	set_gs13_coating(data["gs13_layers_remaining"])
+
+/// Recovered/recoated medicine cannot retain a timer for its old thin shell.
+/obj/item/reagent_containers/pill/proc/set_gs13_coating(value)
+	if(gs13_coating_timer)
+		deltimer(gs13_coating_timer)
+		gs13_coating_timer = null
+	gs13_layers_remaining = gs13_sanitize_pill_coating(value)
+
+/obj/item/reagent_containers/pill/item_interaction(mob/living/user, obj/item/used, list/modifiers)
+	. = ..()
+	if(.)
+		return
+	var/obj/item/reagent_containers/container
+	if(istype(used, /obj/item/reagent_containers/dropper))
+		container = used
+	else if(istype(used, /obj/item/reagent_containers/glass) || istype(used, /obj/item/reagent_containers/drinks))
+		container = used
+		if(!container.is_open_container())
+			return ITEM_INTERACT_COMPLETE
+	if(!container?.reagents)
+		return
+	var/current = gs13_sanitize_pill_coating(gs13_layers_remaining)
+	var/sugar = container.reagents.get_reagent_amount("sugar")
+	if(sugar > 0)
+		var/amount = FLOOR(min(container.amount_per_transfer_from_this, sugar, GS13_MAX_PILL_COATING - current), 1)
+		if(amount > 0)
+			container.reagents.remove_reagent("sugar", amount)
+			set_gs13_coating(current + amount)
+			to_chat(user, SPAN_NOTICE("You thicken [src]'s coating with sugar."))
+		return ITEM_INTERACT_COMPLETE
+	var/water = container.reagents.get_reagent_amount("water")
+	if(water <= 0)
+		return
+	var/amount = FLOOR(min(container.amount_per_transfer_from_this, water, current), 1)
+	if(amount > 0)
+		container.reagents.remove_reagent("water", amount)
+		set_gs13_coating(current - amount)
+		to_chat(user, SPAN_NOTICE("You dissolve some of [src]'s coating with water."))
+	return ITEM_INTERACT_COMPLETE
 
 /obj/item/reagent_containers/pill/proc/valid_gs13_digestion(obj/item/organ/internal/gs13_stomach/stomach, mob/living/carbon/holder)
 	return !QDELETED(src) && !QDELETED(stomach) && !QDELETED(holder) && stomach && holder && holder.stat != DEAD && stomach.owner == holder && holder.get_organ_slot(GS13_ORGAN_STOMACH) == stomach && loc == holder && (src in stomach.gs13_stomach_contents)
@@ -73,7 +112,7 @@
 
 /datum/chemical_production_mode/pills/configure_item(data, datum/reagents/reagents, obj/item/reagent_containers/pill/pill)
 	. = ..()
-	pill.gs13_layers_remaining = clamp(gs13_sanitize_pill_coating(gs13_coating_duration), 0, GS13_MAX_PRINTABLE_PILL_COATING)
+	pill.set_gs13_coating(clamp(gs13_sanitize_pill_coating(gs13_coating_duration), 0, GS13_MAX_PRINTABLE_PILL_COATING))
 
 /obj/machinery/chem_master/proc/set_gs13_pill_coating(value)
 	if(istext(value))
