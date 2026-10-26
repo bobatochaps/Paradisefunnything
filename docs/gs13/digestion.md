@@ -46,7 +46,7 @@ Changing or restoring a pill's coating cancels its obsolete final-interval timer
 
 The compiled production UI is saved at `126ee862514fe3e294a6619bc64bebb7f0a151ec`. Its unchanged build output comes from the successful UI artifact in run 40318701198 (ZIP SHA-256 `545a0059b1162e739ccb74ab8e62994e26880acd4fe603fe5b5f9f79d52b9780`); the bundle Git blob is `e562161755dfc172d4b8320ea81749478979e810`. The UI source and dependency inputs are identical in the final manual-coating checkpoint. All other generated UI files were byte-identical. Direct client gameplay remains unperformed.
 
-## Bone and Plasmaman stomach candidates
+## Bone and Plasmaman stomachs
 
 The pinned inherited stomach file defines a bone stomach with absorption coefficient 0.025 and an organ-owned no-hunger trait, and a Plasmaman digestive crystal with coefficient 0.06 and no organ-owned trait. Its ordinary human coefficient is 0.05. The source species providers select these exact types: `species_types/skeletons.dm` (Git blob `ad5ef52c4f6fa6b9930fb9ac7a807a0d7f119d9b`) and `species_types/plasmamen.dm` (Git blob `65ae620cf980272a2e0e76463877eea7d83dac64`).
 
@@ -54,7 +54,7 @@ Native Skeleton and Plasmaman layouts now select those specialized physical orga
 
 Bone-organ transplantation grants no-hunger under that organ's unique native trait source; removal/deletion releases only that source. Native species-owned and independently supplied hunger traits remain intact. The crystal explicitly grants no organ-owned hunger immunity, matching the source, while native Plasmaman species immunity remains separate. These are organ/layout adapters, not a replacement for complete source species, hunger, nutrition, organ-food or power systems.
 
-Three added native integration tests cover actual species layouts and return to human/synthetic bodies, real oral compartment/data-conserving absorption at both rates, and actual transplant/deletion trait ownership. Static checks pass; native validation is pending. Other specialized organs, source organ-food/trait consumers and complete Ethereal/Protean dependencies remain open.
+Three added native integration tests cover actual species layouts and return to human/synthetic bodies, real oral compartment/data-conserving absorption at both rates, and actual transplant/deletion trait ownership. Checkpoint `28df46b0adb85bf8d1d3d45fa45a5126f37ecb93` passed 313 focused / 368 full native tests, clean compilation, UI and live MariaDB checks in [run 40413394679](https://github.com/bobatochaps/Paradisefunnything/actions/runs/40413394679). Other specialized organs, source organ-food/trait consumers and complete Ethereal/Protean dependencies remain open.
 
 ## Unarmed-hit ejection candidate
 

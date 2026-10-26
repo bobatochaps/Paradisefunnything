@@ -8523,7 +8523,8 @@
         "code/modules/gs13/digestion.dm",
         "code/modules/gs13/stomach_contents.dm",
         "code/modules/gs13/stomach_surgery.dm",
-        "code/modules/gs13/coated_pills.dm"
+        "code/modules/gs13/coated_pills.dm",
+        "code/modules/gs13/specialized_stomachs.dm"
       ],
       "declarations": [
         "/obj/item/organ/stomach/proc/handle_gaining_weight"
@@ -8532,7 +8533,7 @@
         "code/modules/surgery/organs/internal/stomach/_stomach.dm"
       ],
       "asset_literals": [],
-      "remaining_gate": "Weight conversion, calorite processing, fullness, physical stomach fluid contents, drip absorption, explicit oral routes, source-rate satiety healing, benign tiny-item ownership/vomiting and native incision/cautery recovery have adapters validated through 304 focused / 359 full native tests. Coated pills, normal ChemMaster duration production and manual sugar/water coating pass 310 focused / 365 full native tests with UI/live SQL checks. Specialized species, acid/item digestion, sharp-item embedding, incision wound/cavity behavior, inherited disgust/mood details and direct client checks remain pending."
+      "remaining_gate": "Weight conversion, calorite processing, fullness, physical stomach fluid contents, drip absorption, explicit oral routes, source-rate satiety healing, benign tiny-item ownership/vomiting and native incision/cautery recovery have adapters validated through 304 focused / 359 full native tests. Coated pills, normal ChemMaster duration production and manual sugar/water coating pass 310 focused / 365 full native tests with UI/live SQL checks. Specialized species, acid/item digestion, sharp-item embedding, incision wound/cavity behavior, inherited disgust/mood details and direct client checks remain pending. Native bone/crystal layouts, rates and transplant trait ownership pass 313 focused / 368 full tests. Resolved-unarmed-hit ejection and coating taste feedback are saved candidates pending native validation."
     },
     {
       "source": "modular_gs/code/modules/surgery/organs/internal/stomach/stomach_ethereal.dm",
@@ -19732,9 +19733,10 @@
         "code/modules/gs13/fullness.dm",
         "code/modules/gs13/stomach_contents.dm",
         "code/modules/gs13/stomach_surgery.dm",
-        "code/modules/gs13/coated_pills.dm"
+        "code/modules/gs13/coated_pills.dm",
+        "code/modules/gs13/specialized_stomachs.dm"
       ],
-      "remaining_gate": "Native anatomy, surgery/transplantation, burst trauma/food response, fluid contents/drip absorption/oral routing, source-rate tissue recovery and initial item ownership/vomiting/incision recovery pass 304 focused / 359 full tests. Coated-pill callbacks, normal ChemMaster production and manual coating pass 310 focused / 365 full native tests with UI/live SQL checks. General acid/item digestion, sharp-item embedding, incision wound/cavity behavior, punch-triggered ejection, specialized organs, inherited disgust/mood feedback and client checks remain pending."
+      "remaining_gate": "Native anatomy, surgery/transplantation, burst trauma/food response, fluid contents/drip absorption/oral routing, source-rate tissue recovery and initial item ownership/vomiting/incision recovery pass 304 focused / 359 full tests. Coated-pill callbacks, normal ChemMaster production and manual coating pass 310 focused / 365 full native tests with UI/live SQL checks. General acid/item digestion, sharp-item embedding, incision wound/cavity behavior, punch-triggered ejection, specialized organs, inherited disgust/mood feedback and client checks remain pending. Bone/crystal layouts and native trait lifecycle pass 313 focused / 368 full tests; unarmed-hit ejection is pending native validation."
     },
     {
       "source": "modular_skyrat/modules/customization/modules/surgery/organs/genitals.dm",
@@ -19894,6 +19896,34 @@
         "code/modules/gs13/coated_pills.dm"
       ],
       "remaining_gate": "Only normal pill coating-duration production is adapted through the existing native machine UI and synthesis APIs; native/UI validation passes 310 focused / 365 full tests. Other source printing/container/chemistry behavior, plumbing production and direct client checks remain open."
+    },
+    {
+      "source": "code/modules/mob/living/carbon/human/species_types/skeletons.dm",
+      "git_blob_sha": "ad5ef52c4f6fa6b9930fb9ac7a807a0d7f119d9b",
+      "status": "partial-adapter",
+      "target_adapters": [
+        "code/modules/gs13/specialized_stomachs.dm",
+        "code/modules/gs13/digestive_organs.dm"
+      ],
+      "remaining_gate": "Only the reviewed source stomach selection is adapted through the corresponding native species layout, with actual source rates and transplant trait ownership validated at 313 focused / 368 full tests. Complete source species, organ-food/trait consumers, other specialized anatomy and client checks remain open."
+    },
+    {
+      "source": "code/modules/mob/living/carbon/human/species_types/plasmamen.dm",
+      "git_blob_sha": "65ae620cf980272a2e0e76463877eea7d83dac64",
+      "status": "partial-adapter",
+      "target_adapters": [
+        "code/modules/gs13/specialized_stomachs.dm"
+      ],
+      "remaining_gate": "Only the reviewed source stomach selection is adapted through the corresponding native species layout, with actual source rates and transplant trait ownership validated at 313 focused / 368 full tests. Complete source species, organ-food/trait consumers, other specialized anatomy and client checks remain open."
+    },
+    {
+      "source": "code/modules/mob/living/carbon/human/_species.dm",
+      "git_blob_sha": "9e992d41d5c35f2f08d859f75f3ddeb5f88e41f7",
+      "status": "partial-adapter",
+      "target_adapters": [
+        "code/modules/gs13/stomach_contents.dm"
+      ],
+      "remaining_gate": "Only resolved native unarmed-hit damage/armor/kick data needed by source stomach item ejection is adapted; native validation is pending. Other inherited combat, limb/trait/martial-art behavior and client checks remain open."
     }
   ]
 }
