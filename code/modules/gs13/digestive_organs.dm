@@ -2,11 +2,13 @@
 /datum/species
 	/// Override for inherited species with specialized digestive anatomy.
 	var/gs13_stomach_type = /obj/item/organ/internal/gs13_stomach
+	/// Explicit reviewed reduced layouts may supply a specialized organ.
+	var/gs13_stomach_requires_liver = TRUE
 
 /datum/species/proc/add_gs13_digestive_organs()
 	// Existing organic digestive layouts have a liver. Preserve reduced/synthetic
 	// layouts until their own source species adapters supply specialized organs.
-	if(!gs13_stomach_type || !has_organ["liver"] || has_organ[GS13_ORGAN_STOMACH])
+	if(!gs13_stomach_type || (!has_organ["liver"] && gs13_stomach_requires_liver) || has_organ[GS13_ORGAN_STOMACH])
 		return
 	has_organ = has_organ.Copy()
 	has_organ[GS13_ORGAN_STOMACH] = gs13_stomach_type
