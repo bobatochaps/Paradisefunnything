@@ -13,3 +13,7 @@ Three native integration tests cover scan-time policy isolation and real clone c
 ## Remaining persistence gates
 
 Direct player SQL save/load, reconnects, additional respawn and species/body-creation consumers, persistent fat/muscle rules from the remaining source providers, full inherited anatomy state, and live client workflows remain open. Passing cloning tests does not close the broader interface/persistence milestone.
+
+## Inherited human shape traits
+
+The supported belly/hip bases, maxima, style and color modes now have an independent native DNA blueprint. Native DNA cloning/storage/identity transfer preserve those traits, while live rendering and weight-source permission remain with the destination body. Real native clonescanner/pod coverage additionally verifies inherited shape and independent lists. Changed-trait-only live editing preserves unrelated DNA transformations and actual fluid organs; older DNA keeps policy-backed compatibility. Checkpoint `f8ce3dda39962f8e03448b96d18ad10c58ba62a1` passed 292 focused / 347 full native tests with clean compilation, UI and live MariaDB in [run 40256240814](https://github.com/bobatochaps/Paradisefunnything/actions/runs/40256240814). Full source anatomy/size/color contracts and direct player/client checks remain open.
