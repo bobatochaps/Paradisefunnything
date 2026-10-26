@@ -122,3 +122,5 @@
 // Pinned inherited organ recovery and native food-quality scale.
 #define GS13_STANDARD_ORGAN_HEALING (50 / 100000)
 #define GS13_MAX_SATIETY 600
+#define GS13_BELLY_SIZE_MAX 9
+#define GS13_HIP_SIZE_MAX 10

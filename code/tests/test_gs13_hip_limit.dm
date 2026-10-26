@@ -1,0 +1,63 @@
+/datum/game_test/room_test/gs13_source_part_limits_and_dna/Run()
+	var/list/saved = gs13_sanitize_preferences(json_encode(list("weight_belly_base" = 12, "weight_belly_max" = 12, "weight_hips_base" = 12, "weight_hips_max" = 12)))
+	TEST_ASSERT_EQUAL(saved["weight_belly_base"], 9, "Larger unused belly artwork cannot expand the active pinned source range")
+	TEST_ASSERT_EQUAL(saved["weight_belly_max"], 9, "The belly's own maximum remains nine")
+	TEST_ASSERT_EQUAL(saved["weight_hips_base"], 10, "Character JSON preserves the source hip base boundary")
+	TEST_ASSERT_EQUAL(saved["weight_hips_max"], 10, "Character JSON preserves the source hip maximum boundary")
+	var/list/legacy = gs13_sanitize_preferences(list("weight_hips_max" = 9))
+	TEST_ASSERT_EQUAL(legacy["weight_hips_max"], 9, "An existing saved cap remains an intentional cap")
+	var/mob/living/carbon/human/subject = allocate(/mob/living/carbon/human)
+	var/datum/character_save/character = allocate(/datum/character_save)
+	character.gs13_preferences = saved
+	character.apply_gs13_preferences(subject)
+	TEST_ASSERT_EQUAL(subject.get_gs13_part_size("belly", 9), 9, "Real creation DNA keeps belly rendering inside its independent range")
+	TEST_ASSERT_EQUAL(subject.get_gs13_part_size("hips", 9), 10, "Real creation DNA allows the source maximum hip size")
+	var/datum/dna/restored = allocate(/datum/dna)
+	var/list/stored = subject.dna.serialize()
+	stored["gs13_body_shape"] = json_decode(json_encode(stored["gs13_body_shape"]))
+	restored.deserialize(stored)
+	TEST_ASSERT_EQUAL(restored.gs13_body_shape["weight_hips_base"], 10, "Native DNA serialization preserves hip size ten")
+	var/mob/living/carbon/human/recipient = allocate(/mob/living/carbon/human)
+	restored.transfer_identity(recipient)
+	TEST_ASSERT_EQUAL(recipient.get_gs13_part_size("hips", 0), 10, "Actual native DNA transfer retains the complete hip range")
+	TEST_ASSERT_NULL(recipient.overlays_standing[GS13_WEIGHT_BODY_LAYER], "The wider DNA range still cannot grant another body's visual permission")
+
+/datum/game_test/room_test/gs13_hip_ten_body_and_uniforms/Run()
+	var/mob/living/carbon/human/subject = allocate(/mob/living/carbon/human)
+	var/datum/character_save/character = allocate(/datum/character_save)
+	character.gs13_preferences = gs13_sanitize_preferences(list("master_wg_pref" = TRUE, "weight_hips_base" = 10, "weight_hips_max" = 10, "weight_belly_max" = 0))
+	character.apply_gs13_preferences(subject)
+	var/body_state = "m_butt_pair_gs_10_ADJ_primary"
+	TEST_ASSERT(body_state in gs13_weight_panel_states(subject), "The real opted-in native body selects the unchanged source size-ten frame")
+	gs13_render_weight_preview(subject, "hips_10_body")
+	var/list/uniform_types = list("grey" = /obj/item/clothing/under/color/grey, "dual_tone" = /obj/item/clothing/under/gs13_dual_tone, "button_up" = /obj/item/clothing/under/gs13_dual_tone/button_up, "turtleneck" = /obj/item/clothing/under/gs13_dual_tone/button_up/turtleneck, "costume" = /obj/item/clothing/under/gs13_dual_tone/bunny_suit)
+	for(var/family in uniform_types)
+		var/obj/item/clothing/under/uniform = allocate(uniform_types[family])
+		subject.equip_to_slot_if_possible(uniform, ITEM_SLOT_JUMPSUIT)
+		TEST_ASSERT_EQUAL(subject.w_uniform, uniform, "Every adapted family follows actual native equipment")
+		var/has_hips = FALSE
+		var/has_north = FALSE
+		for(var/mutable_appearance/panel as anything in subject.overlays_standing[GS13_WEIGHT_BODY_LAYER])
+			TEST_ASSERT(icon_exists(panel.icon, panel.icon_state), "The size-ten composition cannot reference nonexistent source artwork")
+			if(findtext(panel.icon_state, "butt_10") == 1)
+				has_hips = TRUE
+				if(findtext(panel.icon_state, "_NORTH"))
+					has_north = TRUE
+		TEST_ASSERT(has_hips && has_north, "Every adapted family supplies real source size-ten front and north clothing panels")
+		TEST_ASSERT_NOT(body_state in gs13_weight_panel_states(subject), "Native uniform coverage hides the underlying hip frame")
+		gs13_render_weight_preview(subject, "hips_10_[family]")
+		subject.drop_item_to_ground(uniform)
+		TEST_ASSERT(body_state in gs13_weight_panel_states(subject), "Native unequipping restores the size-ten body frame")
+	var/obj/item/organ/external/leg = subject.get_organ(BODY_ZONE_L_LEG)
+	leg.status |= ORGAN_ROBOT
+	subject.update_gs13_weight_appearance(TRUE)
+	TEST_ASSERT_NULL(subject.overlays_standing[GS13_WEIGHT_BODY_LAYER], "The larger frame cannot paint flesh over a native prosthetic leg")
+	leg.status &= ~ORGAN_ROBOT
+	subject.update_gs13_weight_appearance(TRUE)
+	TEST_ASSERT(body_state in gs13_weight_panel_states(subject), "Restoring supported organic limbs restores the chosen size")
+	character.gs13_preferences["weight_hips_max"] = 9
+	character.apply_gs13_preferences(subject, FALSE)
+	TEST_ASSERT("m_butt_pair_gs_9_ADJ_primary" in gs13_weight_panel_states(subject), "Live native character edits can still cap the wider base at nine")
+	character.gs13_preferences["weight_body_sprites"] = FALSE
+	character.apply_gs13_preferences(subject, FALSE)
+	TEST_ASSERT_NULL(subject.overlays_standing[GS13_WEIGHT_BODY_LAYER], "Explicit body-sprite opt-out clears the maximum-size frame")

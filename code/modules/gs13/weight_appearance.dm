@@ -2,10 +2,14 @@
 // The first compatible body is the standard human. Other species keep their
 // native appearance until their body-specific sprites have been adapted.
 /proc/gs13_shape_default_preferences()
-	return list("weight_belly_base" = 0, "weight_belly_max" = 9, "weight_hips_base" = 0, "weight_hips_max" = 9)
+	return list("weight_belly_base" = 0, "weight_belly_max" = GS13_BELLY_SIZE_MAX, "weight_hips_base" = 0, "weight_hips_max" = GS13_HIP_SIZE_MAX)
+
+/// The pinned source deliberately caps belly art at nine and hips at ten.
+/proc/gs13_shape_preference_maximum(setting)
+	return setting in list("weight_hips_base", "weight_hips_max") ? GS13_HIP_SIZE_MAX : GS13_BELLY_SIZE_MAX
 
 /proc/gs13_shape_preference_labels()
-	return list("weight_belly_base" = "Base belly sprite size (0 to 9)", "weight_belly_max" = "Maximum belly sprite size (0 to 9)", "weight_hips_base" = "Base hip sprite size (0 to 9)", "weight_hips_max" = "Maximum hip sprite size (0 to 9)", "weight_belly_custom_color" = "Use a custom belly color", "weight_belly_color" = "Belly color", "weight_hips_custom_color" = "Use a custom hip color", "weight_hips_color" = "Hip color")
+	return list("weight_belly_base" = "Base belly sprite size (0 to 9)", "weight_belly_max" = "Maximum belly sprite size (0 to 9)", "weight_hips_base" = "Base hip sprite size (0 to 10)", "weight_hips_max" = "Maximum hip sprite size (0 to 10)", "weight_belly_custom_color" = "Use a custom belly color", "weight_belly_color" = "Belly color", "weight_hips_custom_color" = "Use a custom hip color", "weight_hips_color" = "Hip color")
 
 /proc/gs13_shape_color_preferences()
 	return list("weight_belly_color" = "#fcccb3", "weight_hips_color" = "#fcccb3")
@@ -18,13 +22,14 @@
 	return gs13_weight_skin_color(limb, sample_y)
 
 /// Source growth adds the current weight stage to each part's independent base,
-/// then applies its maximum. The native uniform adapter supports sizes 0 to 9.
+/// then applies its maximum within each part's source body/clothing range.
 /mob/living/carbon/human/proc/get_gs13_part_size(part, weight_stage)
 	var/base = get_gs13_shape_setting("weight_[part]_base")
 	var/maximum = get_gs13_shape_setting("weight_[part]_max")
-	base = isnum(base) && GS13_IS_FINITE(base) ? clamp(round(base), 0, 9) : 0
-	maximum = isnum(maximum) && GS13_IS_FINITE(maximum) ? clamp(round(maximum), 0, 9) : 9
-	return min(clamp(weight_stage + base, 0, 9), maximum)
+	var/limit = gs13_shape_preference_maximum("weight_[part]_max")
+	base = isnum(base) && GS13_IS_FINITE(base) ? clamp(round(base), 0, limit) : 0
+	maximum = isnum(maximum) && GS13_IS_FINITE(maximum) ? clamp(round(maximum), 0, limit) : limit
+	return min(clamp(weight_stage + base, 0, limit), maximum)
 
 /proc/gs13_belly_styles()
 	return list("Smooth without arms", "Classic", "Round", "Smooth")

@@ -101,7 +101,7 @@
 		if(!isnum(value) || !GS13_IS_FINITE(value))
 			continue
 		if(pref in gs13_shape_default_preferences())
-			result[pref] = clamp(round(value), 0, 9)
+			result[pref] = clamp(round(value), 0, gs13_shape_preference_maximum(pref))
 			continue
 		if(pref in gs13_anatomy_numeric_preferences())
 			result[pref] = clamp(value, pref == "max_breast_size" ? 0 : 0.5, 80)
@@ -189,7 +189,7 @@
 				minimum = GS13_BODY_SIZE_MIN
 				maximum = GS13_BODY_SIZE_MAX
 			else if(setting in gs13_shape_default_preferences())
-				maximum = 9
+				maximum = gs13_shape_preference_maximum(setting)
 			else if(setting in gs13_anatomy_numeric_preferences())
 				minimum = setting == "max_breast_size" ? 0 : 0.5
 				maximum = 80
