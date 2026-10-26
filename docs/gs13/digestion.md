@@ -108,7 +108,7 @@ Pinned `code/datums/quirks/positive_quirks/strong_stomach.dm` (Git blob `3cfcc08
 
 The pinned root stomach permits tiny sharp objects below five force through accidental food swallowing. Its six-second retained-item scan damages the physical organ for sharp objects and tracks a half-health incision on the transition to native failure. An open incision moves normal-sized or smaller objects into the actual native chest cavity when empty; native cavity surgery retrieves that same object. Larger retained objects cause source weight-scaled chest trauma. Food and callback-cancelled items retain their exclusions. Source embedding on biting high-force objects and critical wound spilling remain open.
 
-Three integration tests cover native quirk selection/application/cleanup, actual hidden-food intake and sharp-object failure/protection, and migration followed by the native cavity-recovery step plus oversized-item chest injury. Native validation is pending.
+Three integration tests cover native quirk selection/application/cleanup, actual hidden-food intake and sharp-object failure/protection, and migration followed by the native cavity-recovery step plus oversized-item chest injury. Checkpoint `231be2f50bd62685c4f071459c6e58e90e64925f` passed 328 focused / 383 full native tests with clean compilation, UI and live database checks in run 40420717538.
 
 ## High-force hidden-object bite candidate
 
