@@ -31,3 +31,53 @@
 	icon_state = "stomach-p"
 	gs13_digestive_efficiency = 0.06
 	gs13_organ_traits = null
+
+// Three normally researched source prostheses. Native electronic-organ EMP,
+// repair, necrosis and transplant APIs own their ordinary medical lifecycle.
+/obj/item/organ/internal/gs13_stomach/cybernetic
+	name = "basic cybernetic stomach"
+	desc = "A basic electronic replacement for a digestive stomach."
+	icon_state = "stomach-c"
+	status = ORGAN_ROBOT
+	max_damage = 50
+	gs13_digestive_efficiency = 0.035
+
+/obj/item/organ/internal/gs13_stomach/cybernetic/tier2
+	name = "cybernetic stomach"
+	desc = "An electronic stomach with improved digestion and durability."
+	icon_state = "stomach-c-u"
+	max_damage = 150
+	gs13_digestive_efficiency = 0.07
+
+/obj/item/organ/internal/gs13_stomach/cybernetic/tier3
+	name = "upgraded cybernetic stomach"
+	desc = "An upgraded electronic stomach with rapid digestive processing."
+	icon_state = "stomach-c-u2"
+	max_damage = 200
+	gs13_digestive_efficiency = 0.1
+
+/datum/design/gs13_cybernetic_stomach
+	name = "Basic Cybernetic Stomach"
+	desc = "A basic prosthetic digestive stomach."
+	id = "gs13_cybernetic_stomach"
+	req_tech = list("biotech" = 4, "materials" = 4)
+	build_type = PROTOLATHE | MECHFAB
+	materials = list(MAT_METAL = 500, MAT_GLASS = 500)
+	construction_time = 60
+	build_path = /obj/item/organ/internal/gs13_stomach/cybernetic
+	category = list("Medical")
+
+/datum/design/gs13_cybernetic_stomach/tier2
+	name = "Cybernetic Stomach"
+	desc = "An improved prosthetic digestive stomach."
+	id = "gs13_cybernetic_stomach_tier2"
+	req_tech = list("biotech" = 5, "materials" = 5, "engineering" = 5)
+	build_path = /obj/item/organ/internal/gs13_stomach/cybernetic/tier2
+
+/datum/design/gs13_cybernetic_stomach/tier3
+	name = "Upgraded Cybernetic Stomach"
+	desc = "An upgraded prosthetic digestive stomach."
+	id = "gs13_cybernetic_stomach_tier3"
+	req_tech = list("biotech" = 6, "materials" = 6, "engineering" = 6)
+	materials = list(MAT_METAL = 500, MAT_GLASS = 500, MAT_SILVER = 500)
+	build_path = /obj/item/organ/internal/gs13_stomach/cybernetic/tier3
