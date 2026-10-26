@@ -19944,6 +19944,15 @@
         "code/modules/gs13/stomach_surgery.dm"
       ],
       "remaining_gate": "Native selectable trait with source acid/retained-item trauma consumers saved at 231be2f50bd62685c4f071459c6e58e90e64925f, pending native validation. Source dirty-food, vomiting/alcohol and mail behavior remain open."
+    },
+    {
+      "source": "code/datums/components/infective.dm",
+      "git_blob_sha": "83a56890e85046d25b443da5e7a73e7e2f063bbc",
+      "status": "partial-adapter",
+      "target_adapters": [
+        "code/modules/gs13/quirks.dm"
+      ],
+      "remaining_gate": "Strong Stomach oral infection guard is adapted through native viral_contamination eat/drink callbacks, pending validation. Native contamination component is the implementation site; source mood, weak exposure, feeder protection, infectious-organ filtering and other infective behaviors remain open."
     }
   ]
 }

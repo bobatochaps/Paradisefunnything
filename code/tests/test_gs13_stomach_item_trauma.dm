@@ -127,3 +127,39 @@
 	TEST_ASSERT_EQUAL(large_object.loc, get_turf(subject), "An ordinary object too large to swallow is discovered intact")
 	TEST_ASSERT_EQUAL(subject.AmountLoseBreath(), 4 SECONDS, "A rejected embed applies only source initial bite breath loss")
 	REMOVE_TRAIT(subject, TRAIT_PIERCEIMMUNE, "gs13_test_bite")
+
+// Remove only random native contraction resistance; retain real disease copying.
+/mob/living/carbon/human/gs13_oral_infection_test/can_contract_disease(datum/disease/disease, spread_method = SPREAD_CONTACT_GENERAL)
+	return TRUE
+
+/datum/game_test/room_test/gs13_native_strong_stomach_contamination/Run()
+	var/datum/disease/cold/seed = allocate(/datum/disease/cold)
+	seed.spread_flags = SPREAD_BLOOD
+	var/mob/living/carbon/human/gs13_oral_infection_test/eater = allocate(/mob/living/carbon/human/gs13_oral_infection_test)
+	eater.nutrition = 100
+	var/datum/quirk/gs13_strong_stomach/quirk = new
+	quirk.apply_quirk_effects(eater)
+	LAZYADD(allocated, quirk)
+	var/obj/item/food/sliceable/meal = allocate(/obj/item/food/sliceable, get_turf(eater))
+	meal.bitesize = 1
+	meal.reagents.add_reagent("gs13_ingestion_probe", 3)
+	meal.AddComponent(/datum/component/viral_contamination, list(seed))
+	eater.put_in_active_hand(meal)
+	meal.interact_with_atom(eater, eater, list())
+	TEST_ASSERT_EQUAL(length(eater.viruses), 0, "Actual native quirk blocks infection from a real contaminated food bite")
+	qdel(quirk)
+	meal.interact_with_atom(eater, eater, list())
+	TEST_ASSERT_EQUAL(length(eater.viruses), 1, "The same native food/component retains actual disease transmission after quirk removal")
+	var/mob/living/carbon/human/gs13_oral_infection_test/drinker = allocate(/mob/living/carbon/human/gs13_oral_infection_test)
+	ADD_TRAIT(drinker, TRAIT_GS13_STRONG_STOMACH, "gs13_test_oral_infection")
+	var/obj/item/reagent_containers/glass/beaker/drink = allocate(/obj/item/reagent_containers/glass/beaker, get_turf(drinker))
+	drink.reagents.add_reagent("gs13_ingestion_probe", 10)
+	drink.AddComponent(/datum/component/viral_contamination, list(seed))
+	drinker.put_in_active_hand(drink)
+	drink.mob_act(drinker, drinker)
+	TEST_ASSERT_EQUAL(length(drinker.viruses), 0, "An actual native contaminated drinking interaction honors the source oral immunity")
+	var/obj/item/reagent_containers/syringe/contact = allocate(/obj/item/reagent_containers/syringe)
+	contact.AddComponent(/datum/component/viral_contamination, list(seed))
+	SEND_SIGNAL(contact, COMSIG_MOB_REAGENT_EXCHANGE, drinker)
+	TEST_ASSERT_EQUAL(length(drinker.viruses), 1, "The native contamination callback still infects through a nonoral container despite Strong Stomach")
+	REMOVE_TRAIT(drinker, TRAIT_GS13_STRONG_STOMACH, "gs13_test_oral_infection")

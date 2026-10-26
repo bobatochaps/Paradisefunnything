@@ -1,7 +1,7 @@
 // GS13 traits exposed through Paradise's native character quirk system.
 /datum/quirk/gs13_strong_stomach
 	name = "Strong Stomach"
-	desc = "Small swallowed objects dissolve, and retained sharp items do not injure your stomach."
+	desc = "Contaminated food and drink do not infect you. Small swallowed objects dissolve, and retained sharp items do not injure your stomach."
 	cost = 2
 	species_flags = QUIRK_MACHINE_INCOMPATIBLE
 	trait_to_apply = TRAIT_GS13_STRONG_STOMACH

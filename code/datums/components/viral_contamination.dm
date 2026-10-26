@@ -35,6 +35,9 @@
 	SIGNAL_HANDLER // COMSIG_MOB_REAGENT_EXCHANGE
 	if(!istype(target))
 		return
+	// Source Strong Stomach blocks contaminated oral intake, not other contacts.
+	if(HAS_TRAIT(target, TRAIT_GS13_STRONG_STOMACH) && (istype(source, /obj/item/food) || istype(source, /obj/item/reagent_containers/glass) || istype(source, /obj/item/reagent_containers/drinks)))
+		return
 	for(var/disease_id in viruses)
 		var/datum/disease/virus = viruses[disease_id]
 		if(istype(virus))

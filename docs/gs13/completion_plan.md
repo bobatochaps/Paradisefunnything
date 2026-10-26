@@ -18,7 +18,7 @@ The [generated inventory](source_inventory.md) lists all 302 modular DM files. T
 
 | Milestone | Current evidence | Work required before closure |
 |---|---|---|
-| A. Source scope | Full modular file enumeration and historical delta recorded; 85 modular files and 25 reviewed inherited providers have identified partial adapters | Review each row, identify behavior-level dependencies, attach destination paths and tests, record justified exclusions such as source-disabled code |
+| A. Source scope | Full modular file enumeration and historical delta recorded; 85 modular files and 26 reviewed inherited providers have identified partial adapters | Review each row, identify behavior-level dependencies, attach destination paths and tests, record justified exclusions such as source-disabled code |
 | B. Paradise baseline | Complete for the recorded target: merged, both calorite and iridium preserved, rebuilt UI saved, full native and live SQL checks pass | Recheck when updating the target pin |
 | C. Body model and measurements | Weight/fullness/exercise, physical size/mass/BMI, DNA/cloning, optional weight-driven growth, and initial human appearance pass native tests | Taur/body-shape anatomy, remaining measurements, supported species, previews and body changes |
 | D. Helplessness | Saved thresholds, quirks, movement/hands/speech/face/nearsight, directional FOV, immunity, server configuration, clothing fit, buckling, chair breakage, waddling, and doorway squeezing pass focused/full native tests | Direct client FOV rendering/performance, remaining source feedback and variants, complete client gameplay checks |
