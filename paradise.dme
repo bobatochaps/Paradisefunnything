@@ -3810,6 +3810,7 @@
 #include "code\modules\gs13\antiburst_collar.dm"
 #include "code\modules\gs13\starshine.dm"
 #include "code\modules\gs13\stomach_contents.dm"
+#include "code\modules\gs13\stomach_surgery.dm"
 #include "code\modules\gs13\transformations.dm"
 #include "code\modules\gs13\hydroponics.dm"
 #include "code\modules\gs13\quirks.dm"
