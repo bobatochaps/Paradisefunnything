@@ -36,12 +36,12 @@
 		release_gs13_pill(stomach, holder)
 	else if(gs13_layers_remaining < seconds)
 		// Preserve a fractional final tick without holding the old body alive.
-		gs13_coating_timer = addtimer(CALLBACK(src, PROC_REF(finish_gs13_coating), WEAKREF(stomach), WEAKREF(holder)), gs13_layers_remaining SECONDS, TIMER_STOPPABLE)
+		gs13_coating_timer = addtimer(CALLBACK(src, PROC_REF(finish_gs13_coating), stomach.UID(), holder.UID()), gs13_layers_remaining SECONDS, TIMER_STOPPABLE)
 
-/obj/item/reagent_containers/pill/proc/finish_gs13_coating(datum/weakref/stomach_ref, datum/weakref/holder_ref)
+/obj/item/reagent_containers/pill/proc/finish_gs13_coating(stomach_uid, holder_uid)
 	gs13_coating_timer = null
-	var/obj/item/organ/internal/gs13_stomach/stomach = stomach_ref.resolve()
-	var/mob/living/carbon/holder = holder_ref.resolve()
+	var/obj/item/organ/internal/gs13_stomach/stomach = locateUID(stomach_uid)
+	var/mob/living/carbon/holder = locateUID(holder_uid)
 	if(!valid_gs13_digestion(stomach, holder))
 		return
 	gs13_layers_remaining = 0
