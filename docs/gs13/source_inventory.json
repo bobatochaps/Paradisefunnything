@@ -8533,7 +8533,7 @@
         "code/modules/surgery/organs/internal/stomach/_stomach.dm"
       ],
       "asset_literals": [],
-      "remaining_gate": "Physical native digestive storage/absorption, satiety healing, bone/crystal layouts, researched cybernetic tiers, pill coating/manual coating/taste, ordinary/forced ejection, advanced native item acid, progressive EMP failure, selectable Strong Stomach acid/trauma consumers, retained sharp-object injury and native cavity recovery are partially adapted and validated at 231be2f50bd62685c4f071459c6e58e90e64925f (328 focused / 383 full), with UI/live SQL checks. High-force bites/native embedding/discovery, Strong Stomach oral infection and nutrition discount are saved in 2523afa4e5d7a4367790d29601d7014297f44c39 pending CI. Critical wounds, organ-food/disgust/mood/hunger details, other specialized species/organs, EMP vomiting/cooldown/scanner feedback, map/admin aliases and client checks remain open."
+      "remaining_gate": "Physical native digestive storage/absorption, satiety healing, bone/crystal layouts, researched cybernetic tiers, pill coating/manual coating/taste, ordinary/forced ejection, advanced native item acid, progressive EMP failure, selectable Strong Stomach acid/trauma consumers, retained sharp-object injury and native cavity recovery are partially adapted and validated at 231be2f50bd62685c4f071459c6e58e90e64925f (328 focused / 383 full), with UI/live SQL checks. High-force bites/native embedding/discovery, Strong Stomach oral infection and nutrition discount are validated at 2523afa4e5d7a4367790d29601d7014297f44c39 (332 focused / 387 full). Critical wounds, organ-food/disgust/mood/hunger details, other specialized species/organs, EMP vomiting/cooldown/scanner feedback, map/admin aliases and client checks remain open."
     },
     {
       "source": "modular_gs/code/modules/surgery/organs/internal/stomach/stomach_ethereal.dm",
@@ -19736,7 +19736,7 @@
         "code/modules/gs13/coated_pills.dm",
         "code/modules/gs13/specialized_stomachs.dm"
       ],
-      "remaining_gate": "Physical native digestive storage/absorption, satiety healing, bone/crystal layouts, researched cybernetic tiers, pill coating/manual coating/taste, ordinary/forced ejection, advanced native item acid, progressive EMP failure, selectable Strong Stomach acid/trauma consumers, retained sharp-object injury and native cavity recovery are partially adapted and validated at 231be2f50bd62685c4f071459c6e58e90e64925f (328 focused / 383 full), with UI/live SQL checks. High-force bites/native embedding/discovery, Strong Stomach oral infection and nutrition discount are saved in 2523afa4e5d7a4367790d29601d7014297f44c39 pending CI. Critical wounds, organ-food/disgust/mood/hunger details, other specialized species/organs, EMP vomiting/cooldown/scanner feedback, map/admin aliases and client checks remain open."
+      "remaining_gate": "Physical native digestive storage/absorption, satiety healing, bone/crystal layouts, researched cybernetic tiers, pill coating/manual coating/taste, ordinary/forced ejection, advanced native item acid, progressive EMP failure, selectable Strong Stomach acid/trauma consumers, retained sharp-object injury and native cavity recovery are partially adapted and validated at 231be2f50bd62685c4f071459c6e58e90e64925f (328 focused / 383 full), with UI/live SQL checks. High-force bites/native embedding/discovery, Strong Stomach oral infection and nutrition discount are validated at 2523afa4e5d7a4367790d29601d7014297f44c39 (332 focused / 387 full). Critical wounds, organ-food/disgust/mood/hunger details, other specialized species/organs, EMP vomiting/cooldown/scanner feedback, map/admin aliases and client checks remain open."
     },
     {
       "source": "modular_skyrat/modules/customization/modules/surgery/organs/genitals.dm",
@@ -19866,7 +19866,7 @@
       "target_adapters": [
         "code/modules/gs13/stomach_contents.dm"
       ],
-      "remaining_gate": "Tiny benign/low-force-sharp hidden-food intake and retained-object recovery validated at 328 focused / 383 full; high-force bite/native embedding/intact discovery saved in 2523afa4e5d7a4367790d29601d7014297f44c39 pending CI. Material-specific accidental-consumption effects, other inherited item helpers and client checks remain open."
+      "remaining_gate": "Tiny benign/low-force-sharp hidden-food intake and retained-object recovery validated at 328 focused / 383 full; high-force bite/native embedding/intact discovery validated at 2523afa4e5d7a4367790d29601d7014297f44c39 (332 focused / 387 full). Material-specific accidental-consumption effects, other inherited item helpers and client checks remain open."
     },
     {
       "source": "code/__DEFINES/reagents.dm",
@@ -19943,7 +19943,7 @@
         "code/modules/gs13/stomach_contents.dm",
         "code/modules/gs13/stomach_surgery.dm"
       ],
-      "remaining_gate": "Native selectable trait acid/retained-trauma consumers validated at 328 focused / 383 full. Native oral infection guard and ordinary vomit nutrition discount saved in 2523afa4e5d7a4367790d29601d7014297f44c39 pending CI. Source status-duration, aged-rum grants, mail and other quirk consumers remain open."
+      "remaining_gate": "Native selectable trait acid/retained-trauma consumers validated at 328 focused / 383 full. Native oral infection guard and ordinary vomit nutrition discount validated at 2523afa4e5d7a4367790d29601d7014297f44c39 (332 focused / 387 full). Source status-duration, aged-rum grants, mail and other quirk consumers remain open."
     },
     {
       "source": "code/datums/components/infective.dm",
@@ -19952,7 +19952,7 @@
       "target_adapters": [
         "code/modules/gs13/quirks.dm"
       ],
-      "remaining_gate": "Strong Stomach oral infection guard is adapted through native viral_contamination eat/drink callbacks, pending validation. Native contamination component is the implementation site; source mood, weak exposure, feeder protection, infectious-organ filtering and other infective behaviors remain open."
+      "remaining_gate": "Strong Stomach oral infection guard is adapted through native viral_contamination eat/drink callbacks, validated at 332 focused / 387 full. Native contamination component is the implementation site; source mood, weak exposure, feeder protection, infectious-organ filtering and other infective behaviors remain open."
     },
     {
       "source": "code/modules/mob/living/carbon/carbon.dm",
@@ -19962,7 +19962,7 @@
         "code/modules/gs13/quirks.dm",
         "code/modules/gs13/stomach_contents.dm"
       ],
-      "remaining_gate": "Only Strong Stomach ordinary vomit nutrition discount and the previously reviewed stomach ejection signal are adapted through native carbon_procs. Nutrition candidate pending CI. Source status-duration changes, mood, complete purge/force contracts and other inherited carbon behavior remain open."
+      "remaining_gate": "Only Strong Stomach ordinary vomit nutrition discount and the previously reviewed stomach ejection signal are adapted through native carbon_procs. Nutrition consumer validated at 332 focused / 387 full. Source status-duration changes, mood, complete purge/force contracts and other inherited carbon behavior remain open."
     }
   ]
 }
