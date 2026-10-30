@@ -93,6 +93,10 @@
 	var/mob/living/carbon/human/feeder = allocate(/mob/living/carbon/human)
 	feeder.set_species(/datum/species/moth)
 	var/mob/living/carbon/human/subject = allocate(/mob/living/carbon/human, get_turf(feeder))
+	// Keep normal background digestion from changing the retained-dose assertion
+	// while still running the actual native three-second feeding action.
+	feeder.notransform = TRUE
+	subject.notransform = TRUE
 	feeder.nutrition = 100
 	subject.nutrition = 100
 	var/obj/item/clothing/under/color/grey/uniform = allocate(/obj/item/clothing/under/color/grey)
@@ -121,3 +125,20 @@
 	uniform.interact_with_atom(feeder, feeder, list())
 	TEST_ASSERT_EQUAL(uniform.obj_integrity, before, "Native indestructible clothing cannot be consumed")
 	TEST_ASSERT_EQUAL(stomach.reagents.get_reagent_amount("gs13_cloth_fibers"), 1, "Blocked clothing cannot produce an unrelated target dose")
+
+/datum/game_test/room_test/gs13_moth_cloth_native_player_click/Run()
+	var/datum/test_puppeteer/player = new(src)
+	var/mob/living/carbon/human/subject = player.puppet
+	subject.set_species(/datum/species/moth)
+	subject.nutrition = 100
+	var/obj/item/organ/internal/gs13_stomach/stomach = subject.get_organ_slot(GS13_ORGAN_STOMACH)
+	var/obj/item/clothing/under/color/grey/uniform = player.spawn_obj_in_hand(/obj/item/clothing/under/color/grey)
+	var/before = uniform.obj_integrity
+	player.set_intent(INTENT_HELP)
+	player.click_on(player)
+	TEST_ASSERT_EQUAL(stomach.reagents.get_reagent_amount("gs13_cloth_fibers"), 1, "An actual native player click reaches contextual moth feeding through the full item attack chain")
+	TEST_ASSERT_EQUAL(uniform.obj_integrity, before - 15, "The actual player click consumes physical clothing integrity exactly once")
+	player.set_intent(INTENT_HARM)
+	player.click_on(player)
+	TEST_ASSERT_EQUAL(stomach.reagents.get_reagent_amount("gs13_cloth_fibers"), 1, "Harm-intent player clicks cannot take an unintended cloth bite")
+	TEST_ASSERT_EQUAL(uniform.obj_integrity, before - 15, "Combat fallback cannot consume an extra piece of the garment")
