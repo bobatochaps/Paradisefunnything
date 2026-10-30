@@ -1033,3 +1033,8 @@ Pinned identified partial providers are separate from modular counts and lexical
 | `code/datums/quirks/positive_quirks/strong_stomach.dm` | `3cfcc085233379d9f088c7d2a238f60218cbe6f4` | partial-adapter | `code/modules/gs13/quirks.dm`, `code/modules/gs13/stomach_contents.dm`, `code/modules/gs13/stomach_surgery.dm` |
 | `code/datums/components/infective.dm` | `83a56890e85046d25b443da5e7a73e7e2f063bbc` | partial-adapter | `code/modules/gs13/quirks.dm` |
 | `code/modules/mob/living/carbon/carbon.dm` | `73e656d3f12d46829bc1b6242324eecfd097eba8` | partial-adapter | `code/modules/gs13/quirks.dm`, `code/modules/gs13/stomach_contents.dm` |
+| `code/modules/mob/living/carbon/human/species_types/mothmen.dm` | `efea3ea7feb81be1c78fe8cdf8998b4e4255c8aa` | partial-adapter | `code/modules/gs13/specialized_stomachs.dm` |
+| `code/modules/clothing/clothing.dm` | `6525997802ce41f6a4d086e436381b2349076772` | partial-adapter | `code/modules/gs13/cloth_eating.dm` |
+| `code/modules/reagents/chemistry/reagents/food_reagents.dm` | `c304dc6a8d2e4cd9835bb1a081f950b264ca8aa5` | partial-adapter | `code/modules/gs13/cloth_eating.dm` |
+| `code/__DEFINES/clothing.dm` | `a85dcc8d4d09dc9acaaada293ae04c7f42d2389c` | partial-adapter | `code/modules/gs13/cloth_eating.dm` |
+| `code/__DEFINES/mobs.dm` | `cf3447577a078fd07d8c05925ea31764ad0997a9` | partial-adapter | `code/modules/gs13/cloth_eating.dm` |

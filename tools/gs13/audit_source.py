@@ -112,6 +112,11 @@ ADAPTERS = {
 }
 
 INHERITED_ADAPTERS = {
+    "code/modules/mob/living/carbon/human/species_types/mothmen.dm": ["specialized_stomachs"],
+    "code/modules/clothing/clothing.dm": ["cloth_eating"],
+    "code/modules/reagents/chemistry/reagents/food_reagents.dm": ["cloth_eating"],
+    "code/__DEFINES/clothing.dm": ["cloth_eating"],
+    "code/__DEFINES/mobs.dm": ["cloth_eating"],
     "code/modules/mob/living/carbon/carbon.dm": ["quirks", "stomach_contents"],
     "code/datums/components/infective.dm": ["quirks"],
     "code/datums/quirks/positive_quirks/strong_stomach.dm": ["quirks", "stomach_contents", "stomach_surgery"],
