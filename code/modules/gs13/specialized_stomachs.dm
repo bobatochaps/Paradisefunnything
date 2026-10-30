@@ -1,4 +1,4 @@
-// Pinned source bone/crystal stomachs through native species and organ APIs.
+// Pinned specialized stomachs through native species and physical organ APIs.
 /datum/species/skeleton
 	gs13_stomach_type = /obj/item/organ/internal/gs13_stomach/bone
 	gs13_stomach_requires_liver = FALSE
@@ -11,19 +11,10 @@
 	desc = "A dense cluster of bones that slowly processes swallowed material."
 	icon_state = "stomach-bone"
 	gs13_digestive_efficiency = 0.025
-	var/list/gs13_organ_traits = list(TRAIT_NOHUNGER)
+	gs13_organ_traits = list(TRAIT_NOHUNGER)
 
-/obj/item/organ/internal/gs13_stomach/bone/insert(mob/living/carbon/recipient, special = 0, dont_remove_slot = 0)
-	. = ..()
-	if(owner && owner.get_organ_slot(slot) == src)
-		for(var/trait in gs13_organ_traits)
-			ADD_TRAIT(owner, trait, "gs13_stomach_[UID()]")
-
-/obj/item/organ/internal/gs13_stomach/bone/remove(mob/living/carbon/previous_owner, special = 0)
-	if(owner)
-		for(var/trait in gs13_organ_traits)
-			REMOVE_TRAIT(owner, trait, "gs13_stomach_[UID()]")
-	return ..()
+/obj/item/organ/internal/gs13_stomach
+	var/list/gs13_organ_traits
 
 /obj/item/organ/internal/gs13_stomach/bone/plasmaman
 	name = "digestive crystal"
@@ -132,3 +123,12 @@
 	req_tech = list("biotech" = 6, "materials" = 6, "engineering" = 6)
 	materials = list(MAT_METAL = 500, MAT_GLASS = 500, MAT_SILVER = 500)
 	build_path = /obj/item/organ/internal/gs13_stomach/cybernetic/tier3
+
+/datum/species/moth
+	gs13_stomach_type = /obj/item/organ/internal/gs13_stomach/moth
+
+/obj/item/organ/internal/gs13_stomach/moth
+	name = "moth stomach"
+	desc = "An insectoid stomach adapted to digesting textile fibers."
+	icon_state = "spinner-x"
+	gs13_organ_traits = list(TRAIT_GS13_CLOTH_EATER)

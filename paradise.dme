@@ -3802,6 +3802,7 @@
 #include "code\modules\gs13\body_shape_dna.dm"
 #include "code\modules\gs13\clothing_distribution.dm"
 #include "code\modules\gs13\coated_pills.dm"
+#include "code\modules\gs13\cloth_eating.dm"
 #include "code\modules\gs13\modular_clothing.dm"
 #include "code\modules\gs13\modular_clothing_variants.dm"
 #include "code\modules\gs13\modular_clothing_distribution.dm"

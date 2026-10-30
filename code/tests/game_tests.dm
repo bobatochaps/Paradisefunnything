@@ -39,6 +39,7 @@
 #include "test_gs13_persistence.dm"
 #include "test_gs13_starshine.dm"
 #include "test_gs13_specialized_stomachs.dm"
+#include "test_gs13_cloth_eating.dm"
 #include "test_gs13_transformations.dm"
 #include "test_gs13_weight.dm"
 #endif

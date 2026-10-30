@@ -78,6 +78,8 @@
 	. = ..()
 	if(!owner || QDELETED(owner) || owner == old_owner)
 		return
+	for(var/trait in gs13_organ_traits)
+		ADD_TRAIT(owner, trait, "gs13_stomach_[UID()]")
 	RegisterSignal(owner, COMSIG_GS13_CARBON_VOMITED, PROC_REF(on_gs13_owner_vomit))
 	RegisterSignal(owner, COMSIG_GS13_HUMAN_UNARMED_HIT, PROC_REF(on_gs13_owner_unarmed_hit))
 	for(var/obj/item/item as anything in gs13_stomach_contents?.Copy())
@@ -85,6 +87,8 @@
 
 /obj/item/organ/internal/gs13_stomach/remove(mob/living/carbon/previous_owner, special = 0)
 	if(owner)
+		for(var/trait in gs13_organ_traits)
+			REMOVE_TRAIT(owner, trait, "gs13_stomach_[UID()]")
 		UnregisterSignal(owner, list(COMSIG_GS13_CARBON_VOMITED, COMSIG_GS13_HUMAN_UNARMED_HIT))
 	// Move before native removal clears owner, preserving the source's accepted
 	// owner-or-organ locations during each real movement signal.

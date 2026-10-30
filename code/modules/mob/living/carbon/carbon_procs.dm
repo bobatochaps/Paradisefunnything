@@ -1345,7 +1345,7 @@ GLOBAL_LIST_INIT(ventcrawl_machinery, list(/obj/machinery/atmospherics/unary/ven
 		playsound(loc, to_eat.consume_sound, rand(10, 50), TRUE)
 	if(to_eat.reagents.total_volume)
 		taste(to_eat.reagents)
-		if(!to_eat.reagents.gs13_ingest(src, this_bite))
+		if(!to_eat.reagents.gs13_ingest(src, this_bite, validate = to_eat.gs13_bite_validator))
 			return FALSE
 
 	if(HAS_TRAIT(src, TRAIT_GLUTTONOUS_GLORY))
